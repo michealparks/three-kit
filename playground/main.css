@@ -1,0 +1,49 @@
+:root {
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#app {
+  width: 100vw;
+  margin: 0 auto;
+  text-align: center;
+  overflow: hidden;
+}
+
+#canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+#logs {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  background: white;
+  color: #333;
+  padding: 0.25rem 0.5rem;
+}
