@@ -1,4 +1,5 @@
 export * as assets from './assets'
+export * as lights from './lights'
 export * as xr from './xr'
 export { createRenderer, resizeRendererToDisplaySize } from './renderer'
 export { createScene } from './scene'

@@ -2,11 +2,8 @@
 import type { EffectComposer } from 'postprocessing'
 import * as THREE from 'three'
 import * as lib from './lib'
-import { createDebugTools, Debug } from './debug'
 
-export const xr = lib.xr
-export const assets = lib.assets
-
+export { assets, lights, xr } from './lib'
 export { createDebugTools } from './debug'
 
 export const threekit = (parameters: {
@@ -49,7 +46,7 @@ export const threekit = (parameters: {
 
   if (parameters.xr === true) {
     renderer.xr.enabled = true
-    xr.registerSessionGrantedListener()
+    lib.xr.registerSessionGrantedListener()
   }
 
   if (parameters.shadowMap === true) {
