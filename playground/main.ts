@@ -1,21 +1,35 @@
 import './main.css'
 import * as THREE from 'three'
-import { threekit } from '../src/main'
+import { threekit, xr, createDebugTools } from '../src/main'
 
 const canvas = document.querySelector<HTMLCanvasElement>('#canvas')!
 
-const { debug, xr, scene, camera, setAnimationLoop } = threekit({
+const initParams = {
   canvas,
   antialias: false,
   xr: true,
-  shadowMap: false,
-  post: false,
-  debug: true,
-})
+  shadowMap: true,
+  post: true,
+}
+
+const {
+  renderer,
+  scene,
+  camera,
+  setAnimationLoop
+} = threekit(initParams)
+
+const debug = createDebugTools(initParams, renderer, scene, camera)
 
 canvas.addEventListener('click', () => {
-  xr?.requestSession()
+  xr.requestSession(renderer)
 })
+
+{
+  const supportState = await xr.requestXrSessionSupport()!
+  const supportMessage = xr.xrSupportStateMessage[supportState]
+  console.log(supportMessage)
+}
 
 {
   const light = new THREE.DirectionalLight( 0xefc070, 4.0 )
@@ -43,12 +57,12 @@ const parameters = {
   rotateY: 0.01
 };
 
-debug?.ui.add(parameters, 'scale', 0.1, 5 ).onChange(() => {
+debug.ui.add(parameters, 'scale', 0.1, 5 ).onChange(() => {
   mesh.scale.setScalar(parameters.scale)
 })
 
-debug?.ui.add(parameters, 'rotateX', 0.001, 0.1 )
-debug?.ui.add(parameters, 'rotateY', 0.001, 0.1 )
+debug.ui.add(parameters, 'rotateX', 0.001, 0.1 )
+debug.ui.add(parameters, 'rotateY', 0.001, 0.1 )
 
 setAnimationLoop((elapsed: number) => {
   mesh.rotation.x += parameters.rotateX

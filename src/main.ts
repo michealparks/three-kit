@@ -13,13 +13,15 @@ interface Parameters {
   linear?: boolean
   flat?: boolean
   post?: boolean
-  debug?: boolean
 }
 
+export const xr = lib.xr
+export const assets = lib.assets
+
+export { createDebugTools } from './debug'
+
 export const threekit = (parameters: Parameters) => {
-  let xrSupported = false
   let composer: EffectComposer
-  let debug: Debug
 
   const scene = lib.createScene()
   const camera = lib.createCamera(parameters.camera)
@@ -29,13 +31,27 @@ export const threekit = (parameters: Parameters) => {
   })
   renderer.physicallyCorrectLights = true
 
+  const setAnimationLoop = (fn: XRFrameRequestCallback) => {
+    renderer.setAnimationLoop((time, frame) => {
+      lib.resizeRendererToDisplaySize(renderer, camera, composer)
+
+      fn(time, frame)
+
+      if (parameters.post) {
+        composer.render()
+      } else {
+        renderer.render(scene, camera)
+      }
+    })
+  }
+
   if (parameters.post) {
     composer = lib.createComposer(renderer, scene, camera)
   }
 
   if (parameters.xr === true) {
     renderer.xr.enabled = true
-    xrSupported = lib.registerSessionGrantedListener()
+    xr.registerSessionGrantedListener()
   }
 
   if (parameters.shadowMap === true) {
@@ -51,39 +67,10 @@ export const threekit = (parameters: Parameters) => {
     ? THREE.NoToneMapping
     : THREE.ACESFilmicToneMapping
 
-  const xr = xrSupported
-    ? {
-      requestSession: () => lib.requestSession(renderer),
-      endSession: lib.endSession,
-    }
-    : undefined
-
-  if (parameters.debug) {
-    debug = createDebugTools(parameters, renderer, scene, camera)
-  }
-
-  const setAnimationLoop = (fn: XRFrameRequestCallback) => {
-    renderer.setAnimationLoop((time, frame) => {
-      lib.resizeRendererToDisplaySize(renderer, camera, composer)
-
-      fn(time, frame)
-
-      if (parameters.post) {
-        composer.render()
-      } else {
-        renderer.render(scene, camera)
-      }
-
-      debug?.update()
-    })
-  }
-
   return {
-    debug,
     scene,
     camera,
     renderer,
-    xr,
     setAnimationLoop,
   }
 }
