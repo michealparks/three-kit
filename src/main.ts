@@ -4,7 +4,12 @@ import * as THREE from 'three'
 import * as lib from './lib'
 import { createDebugTools, Debug } from './debug'
 
-interface Parameters {
+export const xr = lib.xr
+export const assets = lib.assets
+
+export { createDebugTools } from './debug'
+
+export const threekit = (parameters: {
   canvas?: HTMLCanvasElement
   antialias?: boolean
   camera?: 'perspective' | 'orthographic'
@@ -13,14 +18,7 @@ interface Parameters {
   linear?: boolean
   flat?: boolean
   post?: boolean
-}
-
-export const xr = lib.xr
-export const assets = lib.assets
-
-export { createDebugTools } from './debug'
-
-export const threekit = (parameters: Parameters) => {
+}) => {
   let composer: EffectComposer
 
   const scene = lib.createScene()
