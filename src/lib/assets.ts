@@ -65,7 +65,7 @@ const loadAseprite = async (file: string) => {
   return sprite
 }
 
-const get = <Type>(file: string): Type => {
+export const get = <Type>(file: string): Type => {
   return cache.get(file)
 }
 
@@ -83,6 +83,6 @@ const loadOne = (file: string) => {
   throw new Error('Unsupported file type')
 }
 
-export const load = (file: string): unknown => {
-  return get(file) ?? loadOne(file)
+export const load = <Type>(file: string): Promise<Type> => {
+  return loadOne(file)
 }
