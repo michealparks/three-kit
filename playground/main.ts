@@ -1,6 +1,7 @@
 import './main.css'
 import * as THREE from 'three'
-import { threekit, xr, createDebugTools } from '../src/main'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { threekit, xr, createDebugTools, lights } from '../src/main'
 
 const canvas = document.querySelector<HTMLCanvasElement>('#canvas')!
 
@@ -19,6 +20,8 @@ const {
   setAnimationLoop
 } = threekit(initParams)
 
+const debugControls = new OrbitControls(camera, canvas)
+
 const debug = createDebugTools(initParams, renderer, scene, camera)
 
 canvas.addEventListener('click', () => {
@@ -32,24 +35,42 @@ canvas.addEventListener('click', () => {
 }
 
 {
-  const light = new THREE.DirectionalLight( 0xefc070, 4.0 )
+  const light = lights.createAmbient()
   light.position.set( 1, 1, 1 ).normalize()
   scene.add( light )
 }
 
 {
-  const light = new THREE.AmbientLight(0xfff5b6, 0.5)
-  light.position.set( 1, 1, 1 ).normalize()
+  const light = lights.createDirectional(undefined, 0.5)
+  light.castShadow = true
+  light.position.set( 3, 3, 3 )
   scene.add( light )
 }
+
+// {
+//   const light = lights.createSpot(undefined, 5)
+//   light.castShadow = true
+//   light.position.set(0, 5, 0)
+//   scene.add(light)
+// }
 
 const geometry = new THREE.IcosahedronGeometry( )
 const material = new THREE.MeshStandardMaterial( { color: 0x00ff00 } )
 const mesh = new THREE.Mesh( geometry, material )
-mesh.position.set(0, 1.8, -3)
+mesh.position.set(0, 1, -3)
+mesh.castShadow = true
 scene.add( mesh )
 
-camera.position.set(0, 1.8, 3)
+camera.position.set(0, 2, 3)
+
+{
+  const planeGeo = new THREE.PlaneGeometry(10, 10)
+  const planeMat = new THREE.MeshStandardMaterial()
+  const plane = new THREE.Mesh(planeGeo, planeMat)
+  plane.receiveShadow = true
+  scene.add(plane)
+  plane.rotation.set(-Math.PI / 2, 0, 0)
+}
 
 const parameters = {
   scale: 1,
@@ -67,4 +88,6 @@ debug.ui.add(parameters, 'rotateY', 0.001, 0.1 )
 setAnimationLoop((elapsed: number) => {
   mesh.rotation.x += parameters.rotateX
   mesh.rotation.y += parameters.rotateY
+  debug.update()
+  debugControls.update()
 })
