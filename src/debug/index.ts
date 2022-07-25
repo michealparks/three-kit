@@ -77,14 +77,16 @@ export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: TH
 
   console.log(statsMesh?.material)
 
-  const update = () => {
-    stats.update()
-  
+  setInterval(() => {
     // Canvas elements doesn't trigger DOM updates, so we have to update the texture
     // @ts-ignore
     statsMesh?.material.map.update()
     // @ts-ignore
     uiMesh?.material.map.update()
+  }, 1000)
+
+  const update = () => {
+    stats.update()
   }
 
   return {
