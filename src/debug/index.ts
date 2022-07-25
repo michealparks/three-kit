@@ -5,8 +5,7 @@ import { createUI } from './ui'
 import { createHTMLMesh } from './html-mesh'
 import { createControllerModels } from './xr'
 import * as lights from './lights'
-
-type GUI = ReturnType<typeof createUI>
+import type GUI from 'lil-gui'
 
 export interface Debug {
   ui: GUI
@@ -33,12 +32,19 @@ const createHelperFolder = (ui: GUI, scene: THREE.Scene) => {
 }
 
 export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera): Debug => {
+  const ui = createUI()
+  let uiMesh: HTMLMesh | undefined
+
+  const lightsFolder = ui.addFolder('lights')
+
   const add = scene.add.bind(scene)
+  const remove = scene.remove.bind(scene)
+
   scene.add = (...args) => {
     const [object] = args
 
-    if ((object as THREE.Light).isLight && ('isAmbientLight' in object) === false) {
-      lights.register(object as THREE.Light)
+    if ((object as THREE.Light).isLight) {
+      lights.register(scene, object as THREE.Light, lightsFolder)
     }
 
     add(...args)
@@ -46,20 +52,23 @@ export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: TH
     return scene
   }
 
-  
-  const stats = createStats()
-  const ui = createUI()
-  let htmlMesh: HTMLMesh | undefined
-  let statsMesh: HTMLMesh | undefined
+  scene.remove = (...args) => {
+    remove(...args)
+
+    return scene
+  }
 
   createHelperFolder(ui, scene)
 
   const gameFolder = ui.addFolder('game')
 
+  const stats = createStats()
+  let statsMesh: HTMLMesh | undefined
+
   if (parameters.xr) {
-    htmlMesh = createHTMLMesh(ui.domElement, renderer, scene, camera)
-    htmlMesh.position.set(-0.75, 1.5, -0.5)
-    htmlMesh.rotation.set(0, Math.PI / 4, 0)
+    uiMesh = createHTMLMesh(ui.domElement, renderer, scene, camera)
+    uiMesh.position.set(-0.75, 1.5, -0.5)
+    uiMesh.rotation.set(0, Math.PI / 4, 0)
 
     statsMesh = createHTMLMesh(stats.dom, renderer, scene, camera)
     statsMesh.position.set(-0.75, 1.8, -0.5)
@@ -75,7 +84,7 @@ export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: TH
     // @ts-ignore
     statsMesh?.material.map.update()
     // @ts-ignore
-    htmlMesh?.material.map.update()
+    uiMesh?.material.map.update()
   }
 
   return {
