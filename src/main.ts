@@ -2,8 +2,9 @@
 import type { EffectComposer } from 'postprocessing'
 import * as THREE from 'three'
 import * as lib from './lib'
+import { scene } from './lib/scene'
 
-export { assets, lights, xr } from './lib'
+export { assets, lights, xr, scene } from './lib'
 export { createDebugTools } from './debug'
 
 export const threekit = (parameters: {
@@ -18,7 +19,6 @@ export const threekit = (parameters: {
 }) => {
   let composer: EffectComposer
 
-  const scene = lib.createScene()
   const camera = lib.createCamera(parameters.camera)
   const renderer = lib.createRenderer({
     antialias: parameters.antialias,
@@ -63,7 +63,6 @@ export const threekit = (parameters: {
     : THREE.ACESFilmicToneMapping
 
   return {
-    scene,
     camera,
     renderer,
     setAnimationLoop,

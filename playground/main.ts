@@ -1,7 +1,7 @@
 import './main.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { threekit, xr, createDebugTools, lights } from '../src/main'
+import { threekit, xr, createDebugTools, lights, scene } from '../src/main'
 
 const canvas = document.querySelector<HTMLCanvasElement>('#canvas')!
 
@@ -15,7 +15,6 @@ const initParams = {
 
 const {
   renderer,
-  scene,
   camera,
   setAnimationLoop
 } = threekit(initParams)
@@ -31,7 +30,7 @@ canvas.addEventListener('click', () => {
 {
   const supportState = await xr.requestXrSessionSupport()!
   const supportMessage = xr.xrSupportStateMessage[supportState]
-  console.log(supportMessage)
+  console.log('support:', supportMessage)
 }
 
 {
@@ -46,6 +45,13 @@ canvas.addEventListener('click', () => {
 //   light.position.set(3, 3, 3)
 //   scene.add(light)
 // }
+
+{
+  const light = lights.createRectArea(undefined, 1, 1, 3)
+  light.position.set(0, 5, 1)
+  light.rotation.set(-Math.PI / 4, 0, 0)
+  scene.add(light)
+}
 
 {
   const light = lights.createSpot(undefined, 5)

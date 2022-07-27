@@ -37,9 +37,7 @@ export const deregister = (scene: THREE.Scene, light: THREE.Light) => {
 }
 
 export const addGui = (light: THREE.Light, ui: GUI) => {
-  console.log(light)
   const folder = ui.addFolder(`light #${light.id} (${light.type})`)
-
   const parameters: any = {
     color: `#${light.color.getHexString().toUpperCase()}`,
     intensity: light.intensity,

@@ -86,3 +86,13 @@ const loadOne = (file: string) => {
 export const load = <Type>(file: string): Promise<Type> => {
   return loadOne(file)
 }
+
+export const preload = <Type>(files: string[]): Promise<Type[]> => {
+  const promises: Promise<Type>[] = []
+
+  for (const file of files) {
+    promises.push(load<Type>(file))
+  }
+
+  return Promise.all(promises)
+}
