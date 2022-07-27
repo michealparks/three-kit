@@ -1,11 +1,12 @@
 import * as THREE from 'three'
 import type { HTMLMesh } from 'three/examples/jsm/interactive/HTMLMesh'
+import GUI from 'lil-gui'
 import { createStats } from './stats'
-import { createUI } from './ui'
 import { createHTMLMesh } from './html-mesh'
 import { createControllerModels } from './xr'
 import * as lights from './lights'
-import type GUI from 'lil-gui'
+import * as meshes from './meshes'
+import * as folders from './folders'
 
 export interface Debug {
   ui: GUI
@@ -15,7 +16,7 @@ export interface Debug {
 
 const createHelperFolder = (ui: GUI, scene: THREE.Scene) => {
   const axesHelper = new THREE.AxesHelper(1_000)
-  const folder = ui.addFolder('helpers')
+  const folder = folders.addFolder(ui, 'helpers')
 
   const params = {
     axes: false,
@@ -31,20 +32,9 @@ const createHelperFolder = (ui: GUI, scene: THREE.Scene) => {
   })
 }
 
-const tryParse = (str: string | null) => {
-  try {
-    return JSON.parse(str || '{}')
-  } catch {
-    return {}
-  }
-}
+const createUI = () => {
+  const ui = new GUI({ width: 300 })
 
-export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera): Debug => {
-  const ui = createUI()
-  ui.onChange((arg) => {
-    console.log(arg)
-  })
-  
   window.onbeforeunload = () => {
     const closed: Record<string, boolean> = {}
     for (const folder of ui.foldersRecursive()) {
@@ -53,27 +43,26 @@ export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: TH
     localStorage.setItem('gui.folders', JSON.stringify(closed))
   }
 
-  const closed = tryParse(localStorage.getItem('gui.folders'))
-  const addFolder = ui.addFolder.bind(ui)
-  ui.addFolder = (name: string) => {
-    const folder = addFolder(name)
-    if (closed[name] === true || closed[name] === undefined) {
-      folder.close()
-    }
-    return folder
-  }
+  return ui
+}
+
+export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera): Debug => {
+  const ui = createUI()
 
   let uiMesh: HTMLMesh | undefined
 
-  const folder = ui.addFolder('lights')
+  const lightFolder = folders.addFolder(ui, 'lights')
+  const meshFolder = folders.addFolder(ui, 'meshes')
   const add = scene.add.bind(scene)
   const remove = scene.remove.bind(scene)
 
   scene.add = (...args) => {
     const [object] = args
 
-    if ((object as THREE.Light).isLight) {
-      lights.register(scene, object as THREE.Light, folder)
+    if ('isLight' in object) {
+      lights.register(scene, object as THREE.Light, lightFolder)
+    } else if ('isMesh' in object) {
+      meshes.register(meshFolder, object as THREE.Mesh)
     }
 
     return add(...args)
@@ -85,7 +74,7 @@ export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: TH
 
   createHelperFolder(ui, scene)
 
-  const gameFolder = ui.addFolder('game')
+  const gameFolder = folders.addFolder(ui, 'game')
   const stats = createStats()
   let statsMesh: HTMLMesh | undefined
 

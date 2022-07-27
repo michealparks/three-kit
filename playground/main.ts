@@ -63,6 +63,7 @@ canvas.addEventListener('click', () => {
 const geometry = new THREE.IcosahedronGeometry()
 const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 })
 const mesh = new THREE.Mesh(geometry, material)
+mesh.name = 'Icosahedron'
 mesh.position.set(0, 1, -3)
 mesh.castShadow = true
 scene.add(mesh)
