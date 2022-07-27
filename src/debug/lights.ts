@@ -74,6 +74,10 @@ export const addGui = (light: THREE.Light, ui: GUI) => {
     }
   }
 
+  if ('isAmbientLight' in light) {
+    return
+  }
+
   folders.addTransformFolder(folder, light)
 }
 
