@@ -1,4 +1,5 @@
 export * as assets from './assets'
+export * as controls from './controls'
 export * as lights from './lights'
 export * as xr from './xr'
 export { scene } from './scene'

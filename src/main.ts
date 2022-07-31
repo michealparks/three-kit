@@ -4,7 +4,14 @@ import * as THREE from 'three'
 import * as lib from './lib'
 import { scene } from './lib/scene'
 
-export { assets, lights, xr, scene } from './lib'
+export {
+  assets,
+  controls,
+  lights,
+  scene,
+  xr,
+} from './lib'
+
 export { createDebugTools } from './debug'
 
 export const threekit = (parameters: {
