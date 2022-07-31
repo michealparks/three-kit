@@ -1,58 +1,43 @@
 import * as THREE from 'three'
 import type { HTMLMesh } from 'three/examples/jsm/interactive/HTMLMesh'
-import GUI from 'lil-gui'
 import { createStats } from './stats'
 import { createHTMLMesh } from './html-mesh'
 import { createControllerModels } from './xr'
 import * as lights from './lights'
 import * as meshes from './meshes'
-import * as folders from './folders'
+import * as ui from './pane'
 
 export interface Debug {
-  ui: GUI
+  ui: ui.Panes
   update(): void
   createControllerModels: typeof createControllerModels
 }
 
-const createHelperFolder = (ui: GUI, scene: THREE.Scene) => {
+const createHelperFolder = (pane: ui.Panes, scene: THREE.Scene) => {
   const axesHelper = new THREE.AxesHelper(1_000)
-  const folder = folders.addFolder(ui, 'helpers')
+  const folder = ui.addFolder(pane, 'helpers')
 
   const params = {
     axes: false,
     lights: false,
   }
 
-  folder.add(params, 'axes').onChange(() => {
+  folder.addInput(params, 'axes').on('change', () => {
     return params.axes ? scene.add(axesHelper) : scene.remove(axesHelper)
   })
 
-  folder.add(params, 'lights').onChange(() => {
+  folder.addInput(params, 'lights').on('change', () => {
     lights.toggleHelpers(scene, params.lights)
   })
 }
 
-const createUI = () => {
-  const ui = new GUI({ width: 300 })
-
-  window.onbeforeunload = () => {
-    const closed: Record<string, boolean> = {}
-    for (const folder of ui.foldersRecursive()) {
-      closed[folder._title] = folder._closed
-    }
-    localStorage.setItem('gui.folders', JSON.stringify(closed))
-  }
-
-  return ui
-}
-
 export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera): Debug => {
-  const ui = createUI()
+  const pane = ui.create()
 
   let uiMesh: HTMLMesh | undefined
 
-  const lightFolder = folders.addFolder(ui, 'lights')
-  const meshFolder = folders.addFolder(ui, 'meshes')
+  const lightFolder = ui.addFolder(pane, 'lights')
+  const meshFolder = ui.addFolder(pane, 'meshes')
   const add = scene.add.bind(scene)
   const remove = scene.remove.bind(scene)
 
@@ -72,14 +57,14 @@ export const createDebugTools = (parameters: { xr?: boolean } = {}, renderer: TH
     return remove(...args)
   }
 
-  createHelperFolder(ui, scene)
+  createHelperFolder(pane, scene)
 
-  const gameFolder = folders.addFolder(ui, 'game')
+  const gameFolder = ui.addFolder(pane, 'game')
   const stats = createStats()
   let statsMesh: HTMLMesh | undefined
 
   if (parameters.xr) {
-    uiMesh = createHTMLMesh(ui.domElement, renderer, scene, camera)
+    uiMesh = createHTMLMesh(pane.element, renderer, scene, camera)
     uiMesh.position.set(-0.75, 1.5, -0.5)
     uiMesh.rotation.set(0, Math.PI / 4, 0)
 

@@ -1,13 +1,12 @@
 import * as THREE from 'three'
-import type GUI from 'lil-gui'
-import * as folders from './folders'
+import * as ui from './pane'
 
 const meshes = new Set<THREE.Mesh>()
 
-export const register = (ui: GUI, mesh: THREE.Mesh) => {
+export const register = (pane: ui.Panes, mesh: THREE.Mesh) => {
   meshes.add(mesh)
-  const folder = folders.addFolder(ui, `#${mesh.id} ${mesh.name || 'no name'}`)
-  folders.addTransformFolder(folder, mesh)
+  const folder = ui.addFolder(pane, `#${mesh.id} ${mesh.name || 'no name'}`)
+  ui.addTransformInputs(folder, mesh)
 }
 
 export const deregister = (mesh: THREE.Mesh) => {

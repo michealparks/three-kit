@@ -5,7 +5,6 @@ const events = new Map<string, ((key: string) => void)[]>()
 let gamepadConnected = false
 let keyboardControlling = false
 
-
 export const update = () => {
   if (gamepadConnected === false || keyboardControlling === true) {
     return

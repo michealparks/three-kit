@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
-import type GUI from 'lil-gui'
-import * as folders from './folders'
+import * as ui from './pane'
 
 type LightHelper = 
   | THREE.SpotLightHelper
@@ -17,10 +16,10 @@ const shadowCameraHelpers = new Map<THREE.Light, THREE.CameraHelper>()
 
 let helpersOn = false
 
-export const register = (scene: THREE.Scene, light: THREE.Light, ui: GUI) => {
+export const register = (scene: THREE.Scene, light: THREE.Light, pane: ui.Panes) => {
   lights.add(light)
   
-  addGui(light, ui)
+  addGui(light, pane)
 
   if ('isAmbientLight' in light) return
 }
@@ -41,8 +40,8 @@ export const deregister = (scene: THREE.Scene, light: THREE.Light) => {
   }
 }
 
-export const addGui = (light: THREE.Light, ui: GUI) => {
-  const folder = folders.addFolder(ui, `#${light.id} ${light.name} (${light.type})`)
+export const addGui = (light: THREE.Light, pane: ui.Panes) => {
+  const folder = ui.addFolder(pane, `#${light.id} ${light.name} (${light.type})`)
   const parameters: any = {
     color: `#${light.color.getHexString().toUpperCase()}`,
     intensity: light.intensity,
@@ -60,8 +59,7 @@ export const addGui = (light: THREE.Light, ui: GUI) => {
 
   for (const key of Object.keys(parameters)) {
     if (key in light) {
-      const method = key === 'color' ? 'addColor' : 'add'
-      folder[method](parameters, key).onChange(() => {
+      folder.addInput(parameters, key).on('change', () => {
         if (key === 'color') {
           light.color.set(parameters.color)
         } else {
@@ -78,7 +76,7 @@ export const addGui = (light: THREE.Light, ui: GUI) => {
     return
   }
 
-  folders.addTransformFolder(folder, light)
+  ui.addTransformInputs(folder, light)
 }
 
 const addHelpers = (scene: THREE.Scene, light: THREE.Light) => {

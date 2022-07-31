@@ -5,7 +5,7 @@ export const createStats = () => {
   stats.dom.style.width = '80px'
 	stats.dom.style.height = '48px'
 
-  document.body.append( stats.dom )
+  document.body.append(stats.dom)
 
   return stats
 }

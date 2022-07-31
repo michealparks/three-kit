@@ -10,7 +10,7 @@ const initParams = {
   antialias: false,
   xr: true,
   shadowMap: true,
-  post: true,
+  post: false,
 }
 
 const {
@@ -46,12 +46,12 @@ canvas.addEventListener('click', () => {
 //   scene.add(light)
 // }
 
-{
-  const light = lights.createRectArea(undefined, 1, 1, 3)
-  light.position.set(0, 5, 1)
-  light.rotation.set(-Math.PI / 4, 0, 0)
-  scene.add(light)
-}
+// {
+//   const light = lights.createRectArea(undefined, 1, 1, 3)
+//   light.position.set(0, 5, 1)
+//   light.rotation.set(-Math.PI / 4, 0, 0)
+//   scene.add(light)
+// }
 
 {
   const light = lights.createSpot(undefined, 5)
@@ -81,20 +81,25 @@ camera.position.set(0, 2, 3)
 
 const parameters = {
   scale: 1,
-  rotateX: 0.01,
-  rotateY: 0.01
+  autoRotate: true,
+  rotate: {
+    x: 0.01,
+    y: 0.01,
+  },
 }
 
-debug.ui.add(parameters, 'scale', 0.1, 5).onChange(() => {
+debug.ui.addInput(parameters, 'scale').on('change', () => {
   mesh.scale.setScalar(parameters.scale)
 })
 
-debug.ui.add(parameters, 'rotateX', 0.001, 0.1)
-debug.ui.add(parameters, 'rotateY', 0.001, 0.1)
+debug.ui.addInput(parameters, 'autoRotate')
+debug.ui.addInput(parameters, 'rotate')
 
 setAnimationLoop((elapsed: number) => {
-  mesh.rotation.x += parameters.rotateX
-  mesh.rotation.y += parameters.rotateY
+  if (parameters.autoRotate) {
+    mesh.rotation.x += parameters.rotate.x
+    mesh.rotation.y += parameters.rotate.y
+  }
   debug.update()
   debugControls.update()
 })
