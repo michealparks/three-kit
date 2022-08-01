@@ -6,6 +6,7 @@
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
     "strict": true,
+    "declaration": true, // generates declaration files
     "sourceMap": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -16,5 +17,5 @@
     "noImplicitReturns": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }

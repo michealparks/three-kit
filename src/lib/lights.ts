@@ -1,15 +1,21 @@
 import * as THREE from 'three'
 import { RectAreaLightUniformsLib } from  'three/examples/jsm/lights/RectAreaLightUniformsLib'
 
-export const createSpot = (color = 0xEFC070, intensity = 1.5, castShadow = false) => {
+export const createSpot = (color = 0xEFC070, intensity = 20, castShadow = false) => {
   const light = new THREE.SpotLight(color, intensity)
+  light.penumbra = 1
+  light.decay = 2
   light.castShadow = castShadow
+  light.shadow.camera.near = 1
+  light.shadow.camera.far = 50
   return light
 }
 
 export const createDirectional = (color = 0xEFC070, intensity = 3, castShadow = false) => {
   const light = new THREE.DirectionalLight(color, intensity)
   light.castShadow = castShadow
+  light.shadow.camera.near = 1
+  light.shadow.camera.far = 50
   return light
 }
 

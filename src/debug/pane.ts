@@ -34,5 +34,21 @@ export const addTransformInputs = (pane: Pane | FolderApi, object3D: THREE.Objec
 }
 
 export const pane = new Pane()
+pane.element.parentElement!.style.width = '300px';
+pane.element.style.overflow = 'auto'
+pane.element.style.maxHeight = 'calc(100vh - 16px)'
+pane.element.style.borderRadius = '5px'
+pane.element.style.transition = 'transform 300ms'
+
+document.addEventListener('keypress', (event) => {
+  if (event.key === '/') {
+    if (pane.element.style.transform) {
+      pane.element.style.transform = ''
+    } else {
+      pane.element.style.transform = 'translate(110%, 0)'
+    }
+  }
+})
+
 export const lightFolder = addFolder(pane, 'lights')
 export const meshFolder = addFolder(pane, 'meshes')

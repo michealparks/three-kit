@@ -13,8 +13,6 @@ addRendererFolder(pane)
 export const ui = addFolder(pane, 'game')
 const stats = createStats()
 
-
-
 let statsMesh: HTMLMesh | undefined
 
 if (import.meta.env.THREE_XR) {

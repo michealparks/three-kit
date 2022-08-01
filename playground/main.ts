@@ -30,15 +30,15 @@ renderer.domElement.addEventListener('click', () => {
 //   scene.add(light)
 // }
 
-// {
-//   const light = lights.createRectArea(undefined, 1, 1, 3)
-//   light.position.set(0, 5, 1)
-//   light.rotation.set(-Math.PI / 4, 0, 0)
-//   scene.add(light)
-// }
+{
+  const light = lights.createRectArea(undefined, 1, 1, 3)
+  light.position.set(0, 5, 1)
+  light.rotation.set(-Math.PI / 4, 0, 0)
+  scene.add(light)
+}
 
 {
-  const light = lights.createSpot(undefined, 5)
+  const light = lights.createSpot()
   light.castShadow = true
   light.position.set(0, 5, 0)
   scene.add(light)
@@ -48,7 +48,7 @@ const geometry = new THREE.IcosahedronGeometry()
 const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 })
 const mesh = new THREE.Mesh(geometry, material)
 mesh.name = 'Icosahedron'
-mesh.position.set(0, 1, -3)
+mesh.position.set(0, 1, -2)
 mesh.castShadow = true
 scene.add(mesh)
 

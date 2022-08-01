@@ -1,5 +1,14 @@
 import * as THREE from 'three'
 import * as post from 'postprocessing'
+import { softShadows } from './soft-shadows'
+
+// softShadows({
+//   frustum: 1.75,
+//   size: 0.005,
+//   near: 2.5,
+//   samples: 10,
+//   rings: 1, // Rings (default: 11) must be a int
+// })
 
 export const renderer = new THREE.WebGLRenderer({
   powerPreference: 'high-performance',
@@ -10,13 +19,15 @@ export const renderer = new THREE.WebGLRenderer({
 })
 document.body.append(renderer.domElement)
 
-console.log(import.meta.env)
 renderer.physicallyCorrectLights = true
 renderer.xr.enabled = import.meta.env.THREE_XR
 
 if (import.meta.env.THREE_SHADOW_MAP) {
   renderer.shadowMap.enabled = true
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  // renderer.shadowMap.type = THREE.ShadowMapType
+  // renderer.shadowMap.type = THREE.VSMShadowMap
+  renderer.shadowMap.type = THREE.PCFShadowMap
+  // renderer.shadowMap.type = THREE.PCFSoftShadowMap
 }
 
 renderer.outputEncoding = import.meta.env.THREE_LINEAR

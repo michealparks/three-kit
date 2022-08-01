@@ -65,8 +65,8 @@ export const addGui = (light: THREE.Light, pane: Panes) => {
   }
 
   if (isSpot) {
-    folder.addInput(light as THREE.SpotLight, 'angle')
-    folder.addInput(light as THREE.SpotLight, 'penumbra')
+    folder.addInput(light as THREE.SpotLight, 'angle', { min: 0, max: Math.PI / 2 })
+    folder.addInput(light as THREE.SpotLight, 'penumbra', { min: 0, max: 1 })
   }
 
   if (isSpot || isPoint) {
@@ -78,11 +78,39 @@ export const addGui = (light: THREE.Light, pane: Panes) => {
     folder.addInput(light as THREE.SpotLight | THREE.PointLight | THREE.RectAreaLight, 'power')
   }
 
+  if (isRectArea) {
+    folder.addInput(light as THREE.RectAreaLight, 'width')
+    folder.addInput(light as THREE.RectAreaLight, 'height')
+  }
+
   if (light.castShadow) {
-    folder.addInput(light.shadow.mapSize, 'x')
-    folder.addInput(light.shadow.mapSize, 'y')
-    // light.shadow.mapSize.width = SHADOW_MAP_WIDTH;
-		// 		light.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+    const camFolder = addFolder(folder, `#${light.id} shadow`)
+
+    const shadowMapParams = {
+      mapSize: light.shadow.mapSize.x,
+      
+    }
+    camFolder.addInput(shadowMapParams, 'mapSize', {
+      options: {
+        256: 256,
+        512: 512,
+        1024: 1024,
+        2048: 2048,
+      },
+    }).on('change', () => {
+      light.shadow.mapSize.width = shadowMapParams.mapSize
+      light.shadow.mapSize.height = shadowMapParams.mapSize
+      //light.shadow.needsUpdate = true
+      light.shadow.dispose()
+      light.shadow.map = null
+      //light.shadow.camera.updateProjectionMatrix()
+    })
+
+    camFolder.addInput(light.shadow, 'bias', { min: 0, max: 0.09, step: 0.001 })
+
+    camFolder.addInput(light.shadow.camera, 'near').on('change', () => light.shadow.camera.updateProjectionMatrix())
+    camFolder.addInput(light.shadow.camera, 'far').on('change', () => light.shadow.camera.updateProjectionMatrix())
+    camFolder.addInput(light.shadow.camera, 'focus', { min: 0, max: 1 }).on('change', () => light.shadow.camera.updateProjectionMatrix())
   }
 
   folder.on('change', () => {
