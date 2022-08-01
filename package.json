@@ -3,12 +3,11 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "main": "./src/main.ts",
   "exports": {
     ".": {
       "import": "./src/main.ts"
     },
-    "debug": {
+    "./debug": {
       "import": "./src/debug/index.ts"
     }
   },
