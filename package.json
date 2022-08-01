@@ -4,6 +4,11 @@
   "version": "0.0.1",
   "type": "module",
   "main": "./src/main.ts",
+  "exports": {
+    "debug": {
+      "import": "./src/debug/index.ts"
+    }
+  },
   "scripts": {
     "start": "vite --host",
     "build": "tsc && vite build",
