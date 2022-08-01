@@ -5,6 +5,9 @@
   "type": "module",
   "main": "./src/main.ts",
   "exports": {
+    ".": {
+      "import": "./src/main.ts"
+    },
     "debug": {
       "import": "./src/debug/index.ts"
     }
