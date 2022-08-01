@@ -1,7 +1,8 @@
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory'
 import * as THREE from 'three'
+import { renderer, scene } from '../lib'
 
-export const createControllerModels = (renderer: THREE.WebGLRenderer, scene: THREE.Scene) => {
+export const createControllerModels = () => {
   const controllerModelFactory = new XRControllerModelFactory()
 
   const controllerGrip1 = renderer.xr.getControllerGrip(0)

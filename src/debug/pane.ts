@@ -6,17 +6,13 @@ export type Panes = Pane | FolderApi
 const storedState: Record<string, boolean> = get('expandedPanes')
 const panes: Panes[] = []
 
-window.onbeforeunload = (e) => {
+window.onbeforeunload = () => {
   const state: Record<string, boolean> = {}
   for (const pane of panes) {
     state[pane.title!] = pane.expanded
   }
 
   set('expandedPanes', state)
-}
-
-export const create = () => {
-  return new Pane()
 }
 
 export const addFolder = (pane: Pane | FolderApi, title: string) => {
@@ -36,3 +32,7 @@ export const addTransformInputs = (pane: Pane | FolderApi, object3D: THREE.Objec
   pane.addInput(params, 'position', { step: 0.1 })
   pane.addInput(params, 'rotation', { step: 0.01 })
 }
+
+export const pane = new Pane()
+export const lightFolder = addFolder(pane, 'lights')
+export const meshFolder = addFolder(pane, 'meshes')

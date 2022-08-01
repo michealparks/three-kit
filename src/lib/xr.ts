@@ -1,3 +1,4 @@
+import { renderer } from '.'
 
 let session: XRSession
 let xrSessionIsGranted = false
@@ -41,19 +42,7 @@ export const requestXrSessionSupport = async () => {
   }
 }
 
-export const registerSessionGrantedListener = () => {
-  // WebXRViewer (based on Firefox) has a bug where addEventListener
-  // throws a silent exception and aborts execution entirely.
-  if (navigator.xr === undefined || /WebXRViewer\//i.test(navigator.userAgent)) {
-    return
-  }
-
-  navigator.xr.addEventListener('sessiongranted', () => {
-    xrSessionIsGranted = true
-  })
-}
-
-export const requestSession = async (renderer: THREE.WebGLRenderer) => {
+export const requestSession = async () => {
   session = await navigator.xr!.requestSession('immersive-vr', {
     optionalFeatures: [
       'local-floor',
@@ -68,4 +57,16 @@ export const requestSession = async (renderer: THREE.WebGLRenderer) => {
 
 export const endSession = () => {
   session!.end()
+}
+
+if (import.meta.env.THREE_XR) {
+  // WebXRViewer (based on Firefox) has a bug where addEventListener
+  // throws a silent exception and aborts execution entirely.
+  if (navigator.xr === undefined || /WebXRViewer\//i.test(navigator.userAgent)) {
+    // do nothing
+  } else {
+    navigator.xr.addEventListener('sessiongranted', () => {
+      xrSessionIsGranted = true
+    })
+  }
 }

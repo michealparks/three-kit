@@ -1,7 +1,8 @@
 import { InteractiveGroup } from 'three/examples/jsm/interactive/InteractiveGroup'
 import { HTMLMesh } from 'three/examples/jsm/interactive/HTMLMesh'
+import { renderer, camera, scene } from '../lib'
 
-export const createHTMLMesh = (element: HTMLElement, renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera) => {
+export const createHTMLMesh = (element: HTMLElement) => {
   const group = new InteractiveGroup(renderer, camera)
   scene.add(group)
 

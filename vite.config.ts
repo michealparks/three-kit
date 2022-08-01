@@ -14,4 +14,5 @@ export default defineConfig({
   plugins: [
     ssl(),
   ],
+  envPrefix: 'THREE',
 })

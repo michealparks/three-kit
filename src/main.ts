@@ -1,77 +1,27 @@
 
-import type { EffectComposer } from 'postprocessing'
-import * as THREE from 'three'
 import * as lib from './lib'
-import { scene } from './lib/scene'
+import { renderer, composer, scene, camera } from './lib'
 
 export {
   assets,
   controls,
   lights,
+  renderer,
   scene,
+  camera,
   xr,
 } from './lib'
 
-export { createDebugTools } from './debug'
+export const setAnimationLoop = (fn: XRFrameRequestCallback) => {
+  renderer.setAnimationLoop((time, frame) => {
+    lib.resizeRendererToDisplaySize(renderer, camera, composer)
 
-export const threekit = (parameters: {
-  canvas?: HTMLCanvasElement
-  antialias?: boolean
-  camera?: 'perspective' | 'orthographic'
-  xr?: boolean
-  shadowMap?: boolean
-  linear?: boolean
-  flat?: boolean
-  post?: boolean
-}) => {
-  let composer: EffectComposer
+    fn(time, frame)
 
-  const camera = lib.createCamera(parameters.camera)
-  const renderer = lib.createRenderer({
-    antialias: parameters.antialias,
-    canvas: parameters.canvas,
+    if (import.meta.env.THREE_POSTPROCESSING) {
+      composer.render()
+    } else {
+      renderer.render(scene, camera)
+    }
   })
-  renderer.physicallyCorrectLights = true
-
-  const setAnimationLoop = (fn: XRFrameRequestCallback) => {
-    renderer.setAnimationLoop((time, frame) => {
-      lib.resizeRendererToDisplaySize(renderer, camera, composer)
-
-      fn(time, frame)
-
-      if (parameters.post) {
-        composer.render()
-      } else {
-        renderer.render(scene, camera)
-      }
-    })
-  }
-
-  if (parameters.post) {
-    composer = lib.createComposer(renderer, scene, camera)
-  }
-
-  if (parameters.xr === true) {
-    renderer.xr.enabled = true
-    lib.xr.registerSessionGrantedListener()
-  }
-
-  if (parameters.shadowMap === true) {
-    renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap
-  }
-
-  renderer.outputEncoding = parameters.linear === true
-    ? THREE.LinearEncoding
-    : THREE.sRGBEncoding
-
-  renderer.toneMapping = parameters.flat === true
-    ? THREE.NoToneMapping
-    : THREE.ACESFilmicToneMapping
-
-  return {
-    camera,
-    renderer,
-    setAnimationLoop,
-  }
 }

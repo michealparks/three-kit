@@ -1,30 +1,14 @@
 import './main.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { threekit, xr, createDebugTools, lights, scene } from '../src/main'
+import { renderer, camera, setAnimationLoop, xr, lights, scene } from '../src/main'
+import * as debug from '../src/debug'
 
-const canvas = document.querySelector<HTMLCanvasElement>('#canvas')!
+console.log(renderer.domElement)
+const debugControls = new OrbitControls(camera, renderer.domElement)
 
-const initParams = {
-  canvas,
-  antialias: false,
-  xr: true,
-  shadowMap: true,
-  post: false,
-}
-
-const {
-  renderer,
-  camera,
-  setAnimationLoop
-} = threekit(initParams)
-
-const debugControls = new OrbitControls(camera, canvas)
-
-const debug = createDebugTools(initParams, renderer, scene, camera)
-
-canvas.addEventListener('click', () => {
-  xr.requestSession(renderer)
+renderer.domElement.addEventListener('click', () => {
+  xr.requestSession()
 })
 
 {

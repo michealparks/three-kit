@@ -1,16 +1,32 @@
 import * as THREE from 'three'
-import * as post from "postprocessing"
+import * as post from 'postprocessing'
 
-export const createRenderer = (parameters: THREE.WebGLRendererParameters = {}) => {
-  return new THREE.WebGLRenderer({
-    canvas: parameters.canvas,
-    powerPreference: 'high-performance',
-    antialias: parameters.antialias ?? false,
-    alpha: parameters.alpha ?? false,
-    // depth: parameters.depth ?? false,
-    // stencil: parameters.stencil ?? false,
-  })  
+export const renderer = new THREE.WebGLRenderer({
+  powerPreference: 'high-performance',
+  antialias: import.meta.env.THREE_POSTPROCESSING ? false : true,
+  alpha: import.meta.env.THREE_ALPHA ?? false,
+  stencil: import.meta.env.THREE_POSTPROCESSING ? false : true,
+  depth: import.meta.env.THREE_POSTPROCESSING ? false : true,
+})
+document.body.append(renderer.domElement)
+
+console.log(import.meta.env)
+renderer.physicallyCorrectLights = true
+renderer.xr.enabled = import.meta.env.THREE_XR
+
+if (import.meta.env.THREE_SHADOW_MAP) {
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
 }
+
+renderer.outputEncoding = import.meta.env.THREE_LINEAR
+  ? THREE.LinearEncoding
+  : THREE.sRGBEncoding
+
+renderer.toneMapping = import.meta.env.THREE_FLAT
+  ? THREE.NoToneMapping
+  : THREE.ACESFilmicToneMapping
+
 
 export const resizeRendererToDisplaySize = (renderer: THREE.Renderer, camera: THREE.Camera, composer?: post.EffectComposer) => {
   const canvas = renderer.domElement

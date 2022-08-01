@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
-import * as ui from './pane'
+import { Panes, lightFolder, addFolder, addTransformInputs } from './pane'
+import { scene } from './scene'
 
 type LightHelper = 
   | THREE.SpotLightHelper
@@ -16,15 +17,13 @@ const shadowCameraHelpers = new Map<THREE.Light, THREE.CameraHelper>()
 
 let helpersOn = false
 
-export const register = (scene: THREE.Scene, light: THREE.Light, pane: ui.Panes) => {
+export const register = (light: THREE.Light) => {
   lights.add(light)
   
-  addGui(light, pane)
-
-  if ('isAmbientLight' in light) return
+  addGui(light, lightFolder)
 }
 
-export const deregister = (scene: THREE.Scene, light: THREE.Light) => {
+export const deregister = (light: THREE.Light) => {
   lights.delete(light)
 
   if (helpersOn && lightHelpers.has(light)) {
@@ -34,49 +33,63 @@ export const deregister = (scene: THREE.Scene, light: THREE.Light) => {
     lightHelpers.delete(light)
 
     if (shadowCameraHelpers.has(light)) {
-      const helper = lightHelpers.get(light)!
+      // const helper = lightHelpers.get(light)!
       // @todo
     }
   }
 }
 
-export const addGui = (light: THREE.Light, pane: ui.Panes) => {
-  const folder = ui.addFolder(pane, `#${light.id} ${light.name} (${light.type})`)
-  const parameters: any = {
-    color: `#${light.color.getHexString().toUpperCase()}`,
-    intensity: light.intensity,
-    distance: light.distance,
-    angle: light.angle,
-    penumbra: light.penumbra,
-    decay: light.decay,
-    focus: light.shadow?.focus,
-    castShadow: light.castShadow,
+export const addGui = (light: THREE.Light, pane: Panes) => {
+  const isDirectional = 'isDirectional' in light
+  const isHemi = 'isHemisphereLight' in light
+  const isSpot = 'isSpotLight' in light
+  const isPoint = 'isPointLight' in light
+  const isRectArea = 'isRectAreaLight' in light
+
+  const folder = addFolder(pane, `#${light.id} ${light.name} (${light.type})`)
+
+  const lightColor = {
+    color: `#${light.color.getHexString().toUpperCase()}` }
+
+  folder.addInput(lightColor, 'color').on('change', () => light.color.set(lightColor.color))
+  folder.addInput(light, 'intensity')
+
+  if (isHemi) {
+    folder.addInput(light as THREE.HemisphereLight, 'groundColor')
   }
 
-  if ('isAmbientLight' in light) {
-    delete parameters.castShadow
+  if (isDirectional || isSpot || isPoint || isDirectional) {
+    folder.addInput(light as THREE.SpotLight | THREE.DirectionalLight | THREE.PointLight | THREE.DirectionalLight, 'castShadow')
+    addTransformInputs(folder, light)
+    // @TODO camera position
   }
 
-  for (const key of Object.keys(parameters)) {
-    if (key in light) {
-      folder.addInput(parameters, key).on('change', () => {
-        if (key === 'color') {
-          light.color.set(parameters.color)
-        } else {
-          light[key] = parameters[key]
-        }
-
-        lightHelpers.get(light)?.update?.()
-        shadowCameraHelpers.get(light)?.update?.()
-      })
-    }
+  if (isSpot) {
+    folder.addInput(light as THREE.SpotLight, 'angle')
+    folder.addInput(light as THREE.SpotLight, 'penumbra')
   }
 
-  if ('isAmbientLight' in light) {
-    return
+  if (isSpot || isPoint) {
+    folder.addInput(light as THREE.SpotLight | THREE.PointLight, 'decay')
+    folder.addInput(light as THREE.SpotLight | THREE.PointLight, 'distance')
   }
 
-  ui.addTransformInputs(folder, light)
+  if (isSpot || isPoint || isRectArea) {
+    folder.addInput(light as THREE.SpotLight | THREE.PointLight | THREE.RectAreaLight, 'power')
+  }
+
+  if (light.castShadow) {
+    folder.addInput(light.shadow.mapSize, 'x')
+    folder.addInput(light.shadow.mapSize, 'y')
+    // light.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+		// 		light.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+  }
+
+  folder.on('change', () => {
+    // @ts-ignore
+    lightHelpers.get(light)?.update?.()
+    shadowCameraHelpers.get(light)?.update?.()
+  })
 }
 
 const addHelpers = (scene: THREE.Scene, light: THREE.Light) => {
