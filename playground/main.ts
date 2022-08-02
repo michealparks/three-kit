@@ -1,7 +1,7 @@
 import './main.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { renderer, camera, setAnimationLoop, xr, lights, scene } from '../src/main'
+import { renderer, camera, setAnimationLoop, xr, lights, scene, controls } from '../src/main'
 import * as debug from '../src/debug'
 
 console.log(renderer.domElement)
@@ -18,17 +18,17 @@ renderer.domElement.addEventListener('click', () => {
 }
 
 {
-  const light = lights.createAmbient()
+  const light = lights.createAmbient(undefined, 0.2)
   light.position.set(1, 1, 1).normalize()
   scene.add(light)
 }
 
-// {
-//   const light = lights.createDirectional(undefined, 0.5)
-//   light.castShadow = true
-//   light.position.set(3, 3, 3)
-//   scene.add(light)
-// }
+{
+  const light = lights.createDirectional(undefined, 0.5)
+  light.castShadow = true
+  light.position.set(3, 3, 3)
+  scene.add(light)
+}
 
 {
   const light = lights.createRectArea(undefined, 1, 1, 3)
@@ -86,4 +86,10 @@ setAnimationLoop((elapsed: number) => {
   }
   debug.update()
   debugControls.update()
+
+  controls.update()
+
+  if (controls.gamepad.connected) {
+    console.log(JSON.stringify(controls.gamepad))
+  }
 })

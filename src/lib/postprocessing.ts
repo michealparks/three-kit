@@ -5,7 +5,6 @@ import { renderer, scene, camera } from '.'
 export const composer = new post.EffectComposer(renderer, {
   frameBufferType: THREE.HalfFloatType
 })
-console.log(composer.multisampling)
 composer.multisampling = 8
 
 const smaaEffect = new post.SMAAEffect({

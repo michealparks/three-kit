@@ -59,7 +59,7 @@ export const endSession = () => {
   session!.end()
 }
 
-if (import.meta.env.THREE_XR) {
+if (import.meta.env.THREE_XR === 'true') {
   // WebXRViewer (based on Firefox) has a bug where addEventListener
   // throws a silent exception and aborts execution entirely.
   if (navigator.xr === undefined || /WebXRViewer\//i.test(navigator.userAgent)) {

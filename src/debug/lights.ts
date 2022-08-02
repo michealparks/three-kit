@@ -100,17 +100,19 @@ export const addGui = (light: THREE.Light, pane: Panes) => {
     }).on('change', () => {
       light.shadow.mapSize.width = shadowMapParams.mapSize
       light.shadow.mapSize.height = shadowMapParams.mapSize
-      //light.shadow.needsUpdate = true
       light.shadow.dispose()
+      // @ts-ignore
       light.shadow.map = null
-      //light.shadow.camera.updateProjectionMatrix()
     })
 
     camFolder.addInput(light.shadow, 'bias', { min: 0, max: 0.09, step: 0.001 })
-
-    camFolder.addInput(light.shadow.camera, 'near').on('change', () => light.shadow.camera.updateProjectionMatrix())
-    camFolder.addInput(light.shadow.camera, 'far').on('change', () => light.shadow.camera.updateProjectionMatrix())
-    camFolder.addInput(light.shadow.camera, 'focus', { min: 0, max: 1 }).on('change', () => light.shadow.camera.updateProjectionMatrix())
+    
+    if (isSpot) {
+      const camera = light.shadow.camera as THREE.PerspectiveCamera
+      camFolder.addInput(camera, 'near') // .on('change', () => camera.updateProjectionMatrix())
+      camFolder.addInput(camera, 'far') // .on('change', () => camera.updateProjectionMatrix())
+      camFolder.addInput(camera, 'focus', { min: 0, max: 1 }) // .on('change', () => camera.updateProjectionMatrix())
+    }
   }
 
   folder.on('change', () => {

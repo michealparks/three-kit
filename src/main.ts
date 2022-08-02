@@ -18,7 +18,7 @@ export const setAnimationLoop = (fn: XRFrameRequestCallback) => {
 
     fn(time, frame)
 
-    if (import.meta.env.THREE_POSTPROCESSING) {
+    if (import.meta.env.THREE_POSTPROCESSING === 'true') {
       composer.render()
     } else {
       renderer.render(scene, camera)

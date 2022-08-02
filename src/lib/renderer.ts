@@ -2,27 +2,27 @@ import * as THREE from 'three'
 import * as post from 'postprocessing'
 import { softShadows } from './soft-shadows'
 
-// softShadows({
-//   frustum: 1.75,
-//   size: 0.005,
-//   near: 2.5,
-//   samples: 10,
-//   rings: 1, // Rings (default: 11) must be a int
-// })
+softShadows({
+  frustum: 1.75,
+  size: 0.005,
+  near: 2.5,
+  samples: 10,
+  rings: 1, // Rings (default: 11) must be a int
+})
 
 export const renderer = new THREE.WebGLRenderer({
   powerPreference: 'high-performance',
-  antialias: import.meta.env.THREE_POSTPROCESSING ? false : true,
-  alpha: import.meta.env.THREE_ALPHA ?? false,
-  stencil: import.meta.env.THREE_POSTPROCESSING ? false : true,
-  depth: import.meta.env.THREE_POSTPROCESSING ? false : true,
+  antialias: import.meta.env.THREE_POSTPROCESSING === 'true' ? false : true,
+  alpha: import.meta.env.THREE_ALPHA === 'true' ? true : false,
+  stencil: import.meta.env.THREE_POSTPROCESSING === 'true' ? false : true,
+  depth: import.meta.env.THREE_POSTPROCESSING === 'true' ? false : true,
 })
 document.body.append(renderer.domElement)
 
 renderer.physicallyCorrectLights = true
-renderer.xr.enabled = import.meta.env.THREE_XR
+renderer.xr.enabled = import.meta.env.THREE_XR === 'true'
 
-if (import.meta.env.THREE_SHADOW_MAP) {
+if (import.meta.env.THREE_SHADOW_MAP === 'true') {
   renderer.shadowMap.enabled = true
   // renderer.shadowMap.type = THREE.ShadowMapType
   // renderer.shadowMap.type = THREE.VSMShadowMap
@@ -30,11 +30,11 @@ if (import.meta.env.THREE_SHADOW_MAP) {
   // renderer.shadowMap.type = THREE.PCFSoftShadowMap
 }
 
-renderer.outputEncoding = import.meta.env.THREE_LINEAR
+renderer.outputEncoding = import.meta.env.THREE_LINEAR === 'true'
   ? THREE.LinearEncoding
   : THREE.sRGBEncoding
 
-renderer.toneMapping = import.meta.env.THREE_FLAT
+renderer.toneMapping = import.meta.env.THREE_FLAT === 'true'
   ? THREE.NoToneMapping
   : THREE.ACESFilmicToneMapping
 
