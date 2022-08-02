@@ -24,10 +24,20 @@ renderer.xr.enabled = import.meta.env.THREE_XR === 'true'
 
 if (import.meta.env.THREE_SHADOW_MAP === 'true') {
   renderer.shadowMap.enabled = true
-  // renderer.shadowMap.type = THREE.ShadowMapType
-  // renderer.shadowMap.type = THREE.VSMShadowMap
-  renderer.shadowMap.type = THREE.PCFShadowMap
-  // renderer.shadowMap.type = THREE.PCFSoftShadowMap
+
+  const type = import.meta.env.THREE_SHADOW_MAP_TYPE ?? 'basic'
+
+  if (type === 'basic') {
+    renderer.shadowMap.type = THREE.BasicShadowMap
+  } else if (type === 'pcf') {
+    renderer.shadowMap.type = THREE.PCFShadowMap
+  } else if (type === 'pcf_soft') {
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  } else if (type === 'vsm') {
+    renderer.shadowMap.type = THREE.VSMShadowMap
+  }
+
+  console.log(renderer.shadowMap.type)
 }
 
 renderer.outputEncoding = import.meta.env.THREE_LINEAR === 'true'
