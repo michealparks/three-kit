@@ -55,8 +55,6 @@ export const update = () => {
 
   const [pad1, pad2] = navigator.getGamepads()
 
-  console.log(pad1, pad2)
-
   if (!pad1 && !pad2) {
     return
   }
@@ -126,8 +124,6 @@ const handleGamepadConnected = () => {
   if (!pad1 && !pad2) {
     return
   }
-
-  console.log(pad1, pad2)
 
   gamepad.connected = true
   window.addEventListener('gamepaddisconnected', handleGamepadDisconnected)

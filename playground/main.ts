@@ -4,7 +4,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { renderer, camera, setAnimationLoop, xr, lights, scene, controls } from '../src/main'
 import * as debug from '../src/debug'
 
-console.log(renderer.domElement)
 const debugControls = new OrbitControls(camera, renderer.domElement)
 
 renderer.domElement.addEventListener('click', () => {
@@ -88,8 +87,4 @@ setAnimationLoop((elapsed: number) => {
   debugControls.update()
 
   controls.update()
-
-  if (controls.gamepad.connected) {
-    console.log(JSON.stringify(controls.gamepad))
-  }
 })
