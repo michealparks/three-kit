@@ -36,8 +36,6 @@ if (import.meta.env.THREE_SHADOW_MAP === 'true') {
   } else if (type === 'vsm') {
     renderer.shadowMap.type = THREE.VSMShadowMap
   }
-
-  console.log(renderer.shadowMap.type)
 }
 
 renderer.outputEncoding = import.meta.env.THREE_LINEAR === 'true'
