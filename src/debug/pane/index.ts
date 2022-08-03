@@ -45,11 +45,30 @@ export const stats = new Pane()
 stats.registerPlugin(EssentialsPlugin)
 stats.element.parentElement!.classList.add('pane-left')
 
+const mb = 1_048_576
+
+const statsParams = {
+  memory: performance.memory ? performance.memory.usedJSHeapSize / mb : 0
+}
+
 export const fpsGraph = stats.addBlade({
   view: 'fpsgraph',
-  label: 'fpsgraph',
+  label: 'fps',
   lineCount: 2,
 });
+
+
+if (performance.memory) {
+  stats.addMonitor(statsParams, 'memory', {
+    view: 'graph',
+    min: 0,
+    max: performance.memory.jsHeapSizeLimit / mb,
+  });
+
+  setInterval(() => {
+    statsParams.memory = performance.memory.usedJSHeapSize / mb
+  }, 3000)
+}
 
 window.onbeforeunload = () => {
   const state: Record<string, boolean> = {}
