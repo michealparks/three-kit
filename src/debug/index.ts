@@ -1,25 +1,15 @@
-import type { HTMLMesh } from 'three/examples/jsm/interactive/HTMLMesh'
-import { createStats } from './stats'
+import './helpers'
 import { createHTMLMesh } from './html-mesh'
-import { addHelpersFolder } from './helpers'
-import { addRendererFolder } from './renderer'
-import { pane, addFolder } from './pane'
+import { pane, stats, fpsGraph, addPane } from './pane'
 
-addHelpersFolder(pane)
-addRendererFolder(pane)
-
-export const ui = addFolder(pane, 'game')
-const stats = createStats()
-
-let uiMesh: HTMLMesh | undefined
-let statsMesh: HTMLMesh | undefined
+export { addPane }
 
 if (import.meta.env.THREE_XR === 'true' && import.meta.env.THREE_XR_DEBUG_UI === 'true') {
-  uiMesh = createHTMLMesh(pane.element)
+  const uiMesh = createHTMLMesh(pane.element)
   uiMesh.position.set(-0.75, 1.5, -0.5)
   uiMesh.rotation.set(0, Math.PI / 4, 0)
 
-  statsMesh = createHTMLMesh(stats.dom)
+  const statsMesh = createHTMLMesh(stats.element)
   statsMesh.position.set(-0.75, 1.8, -0.5)
   statsMesh.rotation.set(0, Math.PI / 4, 0)
 
@@ -33,5 +23,6 @@ if (import.meta.env.THREE_XR === 'true' && import.meta.env.THREE_XR_DEBUG_UI ===
 }
 
 export const update = () => {
-  stats.update()
+  fpsGraph.end()
+  fpsGraph.begin()
 }

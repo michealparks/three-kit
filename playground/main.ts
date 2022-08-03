@@ -71,12 +71,14 @@ const parameters = {
   },
 }
 
-debug.ui.addInput(parameters, 'scale').on('change', () => {
+const pane = debug.addPane('game')
+
+pane.addInput(parameters, 'scale').on('change', () => {
   mesh.scale.setScalar(parameters.scale)
 })
 
-debug.ui.addInput(parameters, 'autoRotate')
-debug.ui.addInput(parameters, 'rotate')
+pane.addInput(parameters, 'autoRotate')
+pane.addInput(parameters, 'rotate')
 
 setAnimationLoop((elapsed: number) => {
   if (parameters.autoRotate) {

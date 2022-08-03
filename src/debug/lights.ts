@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
-import { Panes, lightFolder, addFolder, addTransformInputs } from './pane'
+import { Panes, pane, addFolder, addTransformInputs } from './pane'
 import { scene } from './scene'
 
 type LightHelper = 
@@ -10,6 +10,8 @@ type LightHelper =
   | RectAreaLightHelper
   | THREE.PointLightHelper
   | THREE.CameraHelper
+
+export const lightFolder = addFolder(pane, 'lights')
 
 const lights = new Set<THREE.Light>()
 const lightHelpers = new Map<THREE.Light, LightHelper>()
