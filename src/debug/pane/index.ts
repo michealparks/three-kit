@@ -6,6 +6,7 @@ import { get, set } from '../storage'
 
 export type Panes = Pane | FolderApi
 
+const savedSelectedPanelTitle = localStorage.getItem('threekit.selectedPanelTitle')
 const storedState: Record<string, boolean> = get('expandedPanes')
 const panes: Panes[] = []
 const paneContainers: HTMLElement[] = []
@@ -32,6 +33,11 @@ export const addPane = (title: string) => {
   paneContainers.push(parent)
   panels.addPanelEntry(title, pane)
 
+  console.log()
+  if (savedSelectedPanelTitle === title) {
+    panels.selectPanel(title)
+  }
+
   return pane
 }
 
@@ -46,7 +52,9 @@ export const addTransformInputs = (pane: Pane | FolderApi, object3D: THREE.Objec
 }
 
 export const pane = addPane('world')
-panels.selectPanel('world')
+if (!savedSelectedPanelTitle) {
+  panels.selectPanel('world')
+}
 
 export const stats = new Pane()
 stats.registerPlugin(EssentialsPlugin)

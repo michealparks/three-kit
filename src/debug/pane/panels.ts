@@ -27,6 +27,7 @@ const createButton = (title: string) => {
 
 export const selectPanel = (title: string) => {
   selectedTitle = title
+  localStorage.setItem('threekit.selectedPanelTitle', title)
 
   selected?.classList.add('hidden')
   selectedButton?.classList.remove('selected')
