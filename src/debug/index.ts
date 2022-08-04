@@ -2,6 +2,7 @@ import './helpers'
 import { createHTMLMesh } from './html-mesh'
 import { pane, stats, fpsGraph, addPane } from './pane'
 
+export { stats }
 export { addPane }
 
 if (
