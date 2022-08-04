@@ -2,10 +2,11 @@
 
 .env file:
 ```bash
-THREE_DEBUG=true
 THREE_ALPHA=false
 THREE_ANTIALIAS=false
 THREE_CAMERA=perspective
+THREE_CONTROLS=true
+THREE_DEBUG=true
 THREE_FLAT=false
 THREE_LINEAR=false
 THREE_POSTPROCESSING=true
