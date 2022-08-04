@@ -1,6 +1,10 @@
-const pressedKeys: Set<string> = new Set()
+export const pressedKeys: Set<string> = new Set()
 
-const events = new Map<string, ((key: string) => void)[]>()
+type KeyListener = (key: string) => void
+
+const events = new Map<string, Set<KeyListener>>()
+events.set('keydown', new Set<KeyListener>())
+events.set('keyup', new Set<KeyListener>())
 
 let keyboardControlling = false
 
@@ -12,18 +16,18 @@ export interface GamepadState {
   rightStickY: number
   padX: number
   padY: number
-  A: GamepadButton
-  B: GamepadButton
-  X: GamepadButton
-  Y: GamepadButton
-  leftBumper: GamepadButton
-  rightBumper: GamepadButton
-  leftTrigger: GamepadButton
-  rightTrigger: GamepadButton
-  back: GamepadButton
-  start: GamepadButton
-  leftStickButton: GamepadButton
-  rightStickButton: GamepadButton
+  A: number
+  B: number
+  X: number
+  Y: number
+  leftBumper: number
+  rightBumper: number
+  leftTrigger: number
+  rightTrigger: number
+  back: number
+  start: number
+  leftStickButton: number
+  rightStickButton: number
 }
 
 export const gamepad: GamepadState = {
@@ -46,6 +50,10 @@ export const gamepad: GamepadState = {
   start: undefined!,
   leftStickButton: undefined!,
   rightStickButton: undefined!,
+}
+
+export const on = (event: 'keydown' | 'keyup', callback: KeyListener) => {
+  events.get(event)!.add(callback)
 }
 
 export const update = () => {

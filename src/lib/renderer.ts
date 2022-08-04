@@ -59,10 +59,11 @@ export const resizeRendererToDisplaySize = (renderer: THREE.Renderer, camera: TH
       camera.aspect = canvas.clientWidth / canvas.clientHeight
       camera.updateProjectionMatrix()
     } else {
-      camera.left = size.width / -2
-      camera.right = size.width / 2
-      camera.top = size.height / 2
-      camera.bottom = size.height / -2
+      // @TODO support ortho camz
+      // camera.left = size.width / -2
+      // camera.right = size.width / 2
+      // camera.top = size.height / 2
+      // camera.bottom = size.height / -2
     }
 
     composer?.setSize(width, height, false)

@@ -15,4 +15,7 @@ export default defineConfig({
     ssl(),
   ],
   envPrefix: 'THREE',
+  build: {
+    minify: false,
+  },
 })

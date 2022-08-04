@@ -46,9 +46,13 @@ stats.registerPlugin(EssentialsPlugin)
 stats.element.parentElement!.classList.add('pane-left')
 
 const mb = 1_048_576
+const { memory } = performance as unknown as { memory: undefined | {
+  usedJSHeapSize: number
+  jsHeapSizeLimit: number
+} }
 
 const statsParams = {
-  memory: performance.memory ? performance.memory.usedJSHeapSize / mb : 0
+  memory: memory ? memory.usedJSHeapSize / mb : 0
 }
 
 export const fpsGraph = stats.addBlade({
@@ -58,15 +62,15 @@ export const fpsGraph = stats.addBlade({
 });
 
 
-if (performance.memory) {
+if (memory) {
   stats.addMonitor(statsParams, 'memory', {
     view: 'graph',
     min: 0,
-    max: performance.memory.jsHeapSizeLimit / mb,
+    max: memory.jsHeapSizeLimit / mb,
   });
 
   setInterval(() => {
-    statsParams.memory = performance.memory.usedJSHeapSize / mb
+    statsParams.memory = memory.usedJSHeapSize / mb
   }, 3000)
 }
 

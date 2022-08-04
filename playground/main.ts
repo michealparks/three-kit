@@ -10,11 +10,13 @@ renderer.domElement.addEventListener('click', () => {
   xr.requestSession()
 })
 
-{
+const _xrSupportLog = async () => {
   const supportState = await xr.requestXrSessionSupport()!
   const supportMessage = xr.xrSupportStateMessage[supportState]
   console.log('support:', supportMessage)
 }
+
+_xrSupportLog()
 
 {
   const light = lights.createAmbient(undefined, 0.2)

@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "types": "./src/main.ts",
   "exports": {
     ".": {
       "import": "./src/main.ts"
@@ -13,13 +14,13 @@
   },
   "scripts": {
     "start": "vite --host",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "check": "tsc",
     "preview": "vite preview --host"
   },
   "devDependencies": {
     "@types/three": "^0.143.0",
     "@vitejs/plugin-basic-ssl": "^0.1.1",
-    "postprocessing": "^6.28.4",
     "three": "^0.143.0",
     "typescript": "^4.7.4",
     "vite": "^3.0.4"
@@ -28,8 +29,7 @@
     "@0b5vr/tweakpane-plugin-rotation": "^0.1.1",
     "@tweakpane/core": "^1.1.0",
     "@tweakpane/plugin-essentials": "^0.1.4",
-    "i": "^0.3.7",
-    "npm": "^8.15.1",
+    "postprocessing": "^6.28.5",
     "tweakpane": "^3.1.0"
   }
 }
