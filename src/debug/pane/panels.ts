@@ -5,6 +5,7 @@ const style = document.createElement('style')
 style.innerHTML = css
 document.head.append(style)
 
+let selectedTitle = ''
 let selected: HTMLElement | undefined
 let selectedButton: HTMLButtonElement | undefined
 
@@ -12,7 +13,8 @@ export const element = document.createElement('div')
 element.className = 'panels tp-rotv'
 document.body.append(element)
 
-const paneMap = new Map<string, Pane>()
+export const paneMap = new Map<string, Pane>()
+export const paneTitles: string[] = []
 
 const createButton = (title: string) => {
   const button = document.createElement('button')
@@ -24,6 +26,8 @@ const createButton = (title: string) => {
 }
 
 export const selectPanel = (title: string) => {
+  selectedTitle = title
+
   selected?.classList.add('hidden')
   selectedButton?.classList.remove('selected')
 
@@ -35,7 +39,18 @@ export const selectPanel = (title: string) => {
 
 }
 
+export const selectNextPanel = () => {
+  const index = paneTitles.indexOf(selectedTitle)
+  selectPanel(paneTitles[index + 1] ?? paneTitles[0])
+}
+
+export const selectPreviousPanel = () => {
+  const index = paneTitles.indexOf(selectedTitle)
+  selectPanel(paneTitles[index - 1] ?? paneTitles[paneTitles.length - 1])
+}
+
 export const addPanelEntry = (title: string, pane: Pane) => {
+  paneTitles.push(title)
   paneMap.set(title, pane)
   element.append(createButton(title))
   pane.element.classList.add('hidden')

@@ -8,6 +8,9 @@ export type Panes = Pane | FolderApi
 
 const storedState: Record<string, boolean> = get('expandedPanes')
 const panes: Panes[] = []
+const paneContainers: HTMLElement[] = []
+
+let isVisible = true
 
 export const addFolder = (pane: Pane | FolderApi, title: string) => {
   const folder = pane.addFolder({ title, expanded: storedState[title] ?? false })
@@ -22,7 +25,11 @@ export const addPane = (title: string) => {
   pane.registerPlugin(EssentialsPlugin)
   pane.registerPlugin(RotationPlugin)
   pane.element.classList.add('pane')
-  pane.element.parentElement!.style.width = '300px';
+
+  const parent = pane.element.parentElement!
+  parent.style.transition = 'transform 300ms'
+  parent.style.width = '300px'
+  paneContainers.push(parent)
   panels.addPanelEntry(title, pane)
 
   return pane
@@ -89,16 +96,19 @@ document.addEventListener('keypress', (event) => {
 
   switch (event.key.toLowerCase()) {
     case 'a':
-      if (pane.element.style.transform) {
-        panels.element.style.transform = ''
-        pane.element.style.transform = ''
-      } else {
-        panels.element.style.transform = 'translate(0, -150%)'
-        pane.element.style.transform = 'translate(110%, 0)'
+      for (const element of paneContainers) {
+        element.style.transform = isVisible ? 'translate(110%, 0)' : ''
       }
+      panels.element.style.transform = isVisible ? 'translate(0, -150%)' : ''
+      isVisible = !isVisible
       break
-    
+
     case '~':
+      panels.selectPreviousPanel()
+      break
+
+    case '!':
+      panels.selectNextPanel()
       break
   }
 })
