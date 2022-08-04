@@ -89,6 +89,4 @@ setAnimationLoop((elapsed: number) => {
   }
   debug.update()
   debugControls.update()
-
-  controls.update()
 })

@@ -1,36 +1,17 @@
 export const pressedKeys: Set<string> = new Set()
 
-type KeyListener = (key: string) => void
-
-const events = new Map<string, Set<KeyListener>>()
-events.set('keydown', new Set<KeyListener>())
-events.set('keyup', new Set<KeyListener>())
-
 let keyboardControlling = false
 
-export interface GamepadState {
-  connected: boolean
-  leftStickX: number
-  leftStickY: number
-  rightStickX: number
-  rightStickY: number
-  padX: number
-  padY: number
-  A: number
-  B: number
-  X: number
-  Y: number
-  leftBumper: number
-  rightBumper: number
-  leftTrigger: number
-  rightTrigger: number
-  back: number
-  start: number
-  leftStickButton: number
-  rightStickButton: number
+export const keyboard = {
+  x: 0,
+  y: 0,
+  space: 0,
+  q: 0,
+  e: 0,
+  shift: 0,
 }
 
-export const gamepad: GamepadState = {
+export const gamepad = {
   connected: false,
   leftStickX: 0,
   leftStickY: 0,
@@ -38,22 +19,18 @@ export const gamepad: GamepadState = {
   rightStickY: 0,
   padX: 0,
   padY: 0,
-  A: undefined!,
-  B: undefined!,
-  X: undefined!,
-  Y: undefined!,
-  leftBumper: undefined!,
-  rightBumper: undefined!,
-  leftTrigger: undefined!,
-  rightTrigger: undefined!,
-  back: undefined!,
-  start: undefined!,
-  leftStickButton: undefined!,
-  rightStickButton: undefined!,
-}
-
-export const on = (event: 'keydown' | 'keyup', callback: KeyListener) => {
-  events.get(event)!.add(callback)
+  A: 0,
+  B: 0,
+  X: 0,
+  Y: 0,
+  leftBumper: 0,
+  rightBumper: 0,
+  leftTrigger: 0,
+  rightTrigger: 0,
+  back: 0,
+  start: 0,
+  leftStickButton: 0,
+  rightStickButton: 0,
 }
 
 export const update = () => {
@@ -96,29 +73,54 @@ const handleGamepad = ({ axes, buttons }: Gamepad) => {
   gamepad.padX = buttons[14].pressed ? -1 : buttons[15].pressed ? 1 : 0
 }
 
-const handleKeyDown = ({ key }: { key: string }) => {
+const handleKey = (key: string, pressed: number) => {
+  switch (key.toLowerCase()) {
+  case 's':
+  case 'arrowdown':
+    keyboard.y = -1 * pressed
+    break
+  case 'w':
+  case 'arrowup':
+    keyboard.y = +1 * pressed
+    break
+  case 'a':
+  case 'arrowleft':
+    keyboard.x = -1 * pressed
+    break
+  case 'd':
+  case 'arrowright':
+    keyboard.x = +1 * pressed
+    break
+  case ' ':
+    keyboard.space = +1 * pressed
+    break
+  case 'q':
+  case 'e':
+  case 'shift':
+    keyboard[key as 'q' | 'e' | 'shift'] = +1 * pressed
+    break
+  }
+}
+
+const handleKeyDown = (event: { key: string }) => {
+  const key = event.key.toLowerCase()
   keyboardControlling = true
 
   pressedKeys.add(key)
 
   for (const key of pressedKeys) {
-    for (const fn of events.get('keydown') ?? []) {
-      fn(key)
-    }
+    handleKey(key, 1)
   }
 }
 
-const handleKeyUp = ({ key }: { key: string }) => {
+const handleKeyUp = (event: { key: string }) => {
+  const key = event.key.toLowerCase()
   pressedKeys.delete(key)
 
-  for (const fn of events.get('keyup') ?? []) {
-    fn(key)
-  }
+  handleKey(key, 0)
 
   for (const key of pressedKeys) {
-    for (const fn of events.get('keydown') ?? []) {
-      fn(key)
-    }
+    handleKey(key, 1)
   }
 
   if (pressedKeys.size === 0) {
@@ -141,6 +143,8 @@ const handleGamepadDisconnected = () => {
   gamepad.connected = false
 }
 
-window.addEventListener('keydown', handleKeyDown, { passive: true })
-window.addEventListener('keyup', handleKeyUp, { passive: true })
-window.addEventListener('gamepadconnected', handleGamepadConnected)
+if (import.meta.env.THREE_CONTROLS === 'true') {
+  window.addEventListener('keydown', handleKeyDown, { passive: true })
+  window.addEventListener('keyup', handleKeyUp, { passive: true })
+  window.addEventListener('gamepadconnected', handleGamepadConnected)
+}

@@ -1,6 +1,6 @@
 
 import * as lib from './lib'
-import { renderer, composer, scene, camera } from './lib'
+import { renderer, composer, scene, camera, controls } from './lib'
 
 export {
   assets,
@@ -15,6 +15,10 @@ export {
 export const setAnimationLoop = (fn: XRFrameRequestCallback) => {
   renderer.setAnimationLoop((time, frame) => {
     lib.resizeRendererToDisplaySize(renderer, camera, composer)
+
+    if (import.meta.env.THREE_CONTROLS === 'true') {
+      controls.update()
+    }
 
     fn(time, frame)
 

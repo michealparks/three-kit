@@ -59,8 +59,7 @@ export const fpsGraph = stats.addBlade({
   view: 'fpsgraph',
   label: 'fps',
   lineCount: 2,
-});
-
+})
 
 if (memory) {
   stats.addMonitor(statsParams, 'memory', {

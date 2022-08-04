@@ -4,7 +4,7 @@ import { renderer, scene, camera } from '.'
 
 export let composer: post.EffectComposer
 
-if (import.meta.env.THREE_POSTPROCESSING) {
+if (import.meta.env.THREE_POSTPROCESSING === 'true') {
   composer = new post.EffectComposer(renderer, {
     frameBufferType: THREE.HalfFloatType
   })
