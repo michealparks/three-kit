@@ -1,9 +1,9 @@
 import './helpers'
 import { createHTMLMesh } from './html-mesh'
-import { pane, stats, fpsGraph, addPane } from './pane'
+import { pane, stats, fpsGraph, addPane, addFolder } from './pane'
 
 export { stats }
-export { addPane }
+export { addPane, addFolder }
 
 if (
   import.meta.env.THREE_XR === 'true' &&
