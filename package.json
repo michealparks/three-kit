@@ -9,7 +9,8 @@
       "import": "./src/main.ts"
     },
     "./debug": {
-      "import": "./src/debug/index.ts"
+      "import": "./src/debug/index.ts",
+      "types": "./src/debug/index.ts"
     }
   },
   "scripts": {
