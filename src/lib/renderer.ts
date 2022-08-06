@@ -4,10 +4,10 @@ import './soft-shadows'
 
 export const renderer = new THREE.WebGLRenderer({
   powerPreference: 'high-performance',
-  antialias: import.meta.env.THREE_POSTPROCESSING === 'true' ? false : true,
-  alpha: import.meta.env.THREE_ALPHA === 'true' ? true : false,
-  stencil: import.meta.env.THREE_POSTPROCESSING === 'true' ? false : true,
-  depth: import.meta.env.THREE_POSTPROCESSING === 'true' ? false : true,
+  antialias: import.meta.env.THREE_POSTPROCESSING !== 'true',
+  alpha: import.meta.env.THREE_ALPHA === 'true',
+  stencil: import.meta.env.THREE_POSTPROCESSING !== 'true',
+  depth: import.meta.env.THREE_POSTPROCESSING !== 'true',
 })
 document.body.append(renderer.domElement)
 
