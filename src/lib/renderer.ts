@@ -1,14 +1,6 @@
 import * as THREE from 'three'
 import * as post from 'postprocessing'
-import { softShadows } from './soft-shadows'
-
-softShadows({
-  frustum: 1.75,
-  size: 0.005,
-  near: 2.5,
-  samples: 10,
-  rings: 1, // Rings (default: 11) must be a int
-})
+import './soft-shadows'
 
 export const renderer = new THREE.WebGLRenderer({
   powerPreference: 'high-performance',
@@ -55,9 +47,10 @@ export const resizeRendererToDisplaySize = (renderer: THREE.Renderer, camera: TH
   const needResize = canvas.width !== width || canvas.height !== height
 
   if (needResize) {
-    if (camera instanceof THREE.PerspectiveCamera) {
-      camera.aspect = canvas.clientWidth / canvas.clientHeight
-      camera.updateProjectionMatrix()
+    if (import.meta.env.THREE_CAMERA === 'perspective') {
+      const cam = camera as THREE.PerspectiveCamera
+      cam.aspect = canvas.clientWidth / canvas.clientHeight
+      cam.updateProjectionMatrix()
     } else {
       // @TODO support ortho camz
       // camera.left = size.width / -2
@@ -66,7 +59,10 @@ export const resizeRendererToDisplaySize = (renderer: THREE.Renderer, camera: TH
       // camera.bottom = size.height / -2
     }
 
-    composer?.setSize(width, height, false)
+    if (import.meta.env.THREE_POSTPROCESSING === 'true') {
+      composer!.setSize(width, height, false)
+    }
+
     renderer.setSize(width, height, false)
 
     canvas.style.width = '100%'

@@ -1,23 +1,11 @@
 import * as THREE from 'three'
 
-const pcss = ({
-  frustum = 3.75,
-  size = 0.005,
-  near = 9.5,
-  samples = 17,
-  rings = 11,
-}: {
-  frustum?: number
-  size?: number
-  near?: number
-  samples?: number
-  rings?: number
-} = {}) => `#define LIGHT_WORLD_SIZE ${size}
-#define LIGHT_FRUSTUM_WIDTH ${frustum}
+const pcss = `#define LIGHT_WORLD_SIZE ${Number.parseFloat(import.meta.env.THREE_PCSS_SIZE)}
+#define LIGHT_FRUSTUM_WIDTH ${Number.parseFloat(import.meta.env.THREE_PCSS_FRUSTUM)}
 #define LIGHT_SIZE_UV (LIGHT_WORLD_SIZE / LIGHT_FRUSTUM_WIDTH)
-#define NEAR_PLANE ${near}
-#define NUM_SAMPLES ${samples}
-#define NUM_RINGS ${rings}
+#define NEAR_PLANE ${Number.parseFloat(import.meta.env.THREE_PCSS_NEAR)}
+#define NUM_SAMPLES ${Number.parseInt(import.meta.env.THREE_PCSS_SAMPLES, 10)}
+#define NUM_RINGS ${Number.parseInt(import.meta.env.THREE_PCSS_RINGS, 10)}
 #define BLOCKER_SEARCH_NUM_SAMPLES NUM_SAMPLES
 #define PCF_NUM_SAMPLES NUM_SAMPLES
 vec2 poissonDisk[NUM_SAMPLES];
@@ -74,18 +62,16 @@ float PCSS(sampler2D shadowMap, vec4 coords) {
 }`
 
 let deployed = false
-export const softShadows = (props?: {
-  frustum?: number
-  size?: number
-  near?: number
-  samples?: number
-  rings?: number
-}) => {
+
+if (import.meta.env.THREE_SOFT_SHADOWS === 'true') {
   // Avoid adding the effect twice, which may happen in HMR scenarios
   if (!deployed) {
     deployed = true
     let shader = THREE.ShaderChunk.shadowmap_pars_fragment
-    shader = shader.replace('#ifdef USE_SHADOWMAP', '#ifdef USE_SHADOWMAP\n' + pcss({ ...props }))
+    shader = shader.replace(
+      '#ifdef USE_SHADOWMAP',
+      `#ifdef USE_SHADOWMAP\n${pcss}`
+    )
     shader = shader.replace(
       '#if defined( SHADOWMAP_TYPE_PCF )',
       '\nreturn PCSS(shadowMap, shadowCoord);\n#if defined( SHADOWMAP_TYPE_PCF )'

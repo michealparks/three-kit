@@ -3,6 +3,7 @@ import { Pane, FolderApi } from 'tweakpane'
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
 import { get, set } from '../storage'
+import { renderer } from '../../lib';
 
 export type Panes = Pane | FolderApi
 
@@ -86,6 +87,18 @@ if (memory) {
   setInterval(() => {
     statsParams.memory = memory.usedJSHeapSize / mb
   }, 3000)
+}
+
+if (import.meta.env.THREE_POSTPROCESSING === 'true') {
+  // add message
+} else {
+  const folder = addFolder(stats, 'renderer')
+  folder.addMonitor(renderer.info.memory, 'geometries', { interval: 3_000 })
+  folder.addMonitor(renderer.info.memory, 'textures', { interval: 3_000 })
+  folder.addMonitor(renderer.info.render, 'calls', { interval: 3_000 })
+  folder.addMonitor(renderer.info.render, 'lines', { interval: 3_000 })
+  folder.addMonitor(renderer.info.render, 'points', { interval: 3_000 })
+  folder.addMonitor(renderer.info.render, 'triangles', { interval: 3_000 })
 }
 
 window.onbeforeunload = () => {

@@ -144,7 +144,12 @@ const handleGamepadDisconnected = () => {
 }
 
 if (import.meta.env.THREE_CONTROLS === 'true') {
-  window.addEventListener('keydown', handleKeyDown, { passive: true })
-  window.addEventListener('keyup', handleKeyUp, { passive: true })
-  window.addEventListener('gamepadconnected', handleGamepadConnected)
+  if (import.meta.env.THREE_CONTROLS_KEYBOARD === 'true') {
+    window.addEventListener('keydown', handleKeyDown, { passive: true })
+    window.addEventListener('keyup', handleKeyUp, { passive: true })
+  }
+
+  if (import.meta.env.THREE_CONTROLS_GAMEPAD === 'true') {
+    window.addEventListener('gamepadconnected', handleGamepadConnected)
+  }
 }

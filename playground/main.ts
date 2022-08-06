@@ -1,10 +1,33 @@
 import './main.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { renderer, camera, setAnimationLoop, xr, lights, scene, controls } from '../src/main'
-import * as debug from '../src/debug'
+import { renderer, camera, setAnimationLoop, xr, lights, scene } from '../src/main'
 
-const debugControls = new OrbitControls(camera, renderer.domElement)
+let debug
+let debugControls: OrbitControls
+
+const parameters = {
+  scale: 1,
+  autoRotate: true,
+  rotate: {
+    x: 0.01,
+    y: 0.01,
+  },
+}
+
+if (import.meta.env.THREE_DEBUG === 'true') {
+  debug = await import('../src/debug')
+
+  debugControls = new OrbitControls(camera, renderer.domElement)
+  const pane = debug.addPane('game')
+
+  pane.addInput(parameters, 'scale').on('change', () => {
+    mesh.scale.setScalar(parameters.scale)
+  })
+
+  pane.addInput(parameters, 'autoRotate')
+  pane.addInput(parameters, 'rotate')
+}
 
 renderer.domElement.addEventListener('click', () => {
   xr.requestSession()
@@ -64,29 +87,13 @@ camera.position.set(0, 2, 3)
   plane.rotation.set(-Math.PI / 2, 0, 0)
 }
 
-const parameters = {
-  scale: 1,
-  autoRotate: true,
-  rotate: {
-    x: 0.01,
-    y: 0.01,
-  },
-}
-
-const pane = debug.addPane('game')
-
-pane.addInput(parameters, 'scale').on('change', () => {
-  mesh.scale.setScalar(parameters.scale)
-})
-
-pane.addInput(parameters, 'autoRotate')
-pane.addInput(parameters, 'rotate')
-
 setAnimationLoop((elapsed: number) => {
   if (parameters.autoRotate) {
     mesh.rotation.x += parameters.rotate.x
     mesh.rotation.y += parameters.rotate.y
   }
-  debug.update()
-  debugControls.update()
+
+  if (import.meta.env.THREE_DEBUG === 'true') {
+    debug?.update()
+  }
 })

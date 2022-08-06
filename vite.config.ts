@@ -16,6 +16,6 @@ export default defineConfig({
   ],
   envPrefix: 'THREE',
   build: {
-    minify: false,
+    minify: 'terser',
   },
 })

@@ -2,55 +2,50 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export const manager = new THREE.LoadingManager()
-const textureLoader = new THREE.TextureLoader(manager)
-const audioLoader = new THREE.AudioLoader(manager)
-const gltfLoader = new GLTFLoader(manager)
-const cache = new Map()
+export const textureLoader = new THREE.TextureLoader(manager)
+export const audioLoader = new THREE.AudioLoader(manager)
+export const gltfLoader = new GLTFLoader(manager)
+export const cache = new Map()
 
-let rootPath = ''
+textureLoader.setPath(import.meta.env.THREE_TEXTURE_PATH)
+audioLoader.setPath(import.meta.env.THREE_AUDIO_PATH)
+gltfLoader.setPath(import.meta.env.THREE_GLB_PATH)
 
-export const setRootPath = (path: string) => {
-  rootPath = path
-  textureLoader.setPath(`${rootPath}/textures/`)
-  audioLoader.setPath(`${rootPath}/audio/`)
-  gltfLoader.setPath(`${rootPath}/glb/`)
-}
-
-const loadJSON = async (file: string) => {
-  const response = await fetch(`${rootPath}/json/${file}`)
+export const loadJSON = async (file: string) => {
+  const response = await fetch(`${import.meta.env.THREE_JSON_PATH}${file}`)
   const json = await response.json()
   cache.set(file, json)
   return json
 }
 
-const loadText = async (file: string, path: string) => {
-  const response = await fetch(`${rootPath}/${path}/${file}`)
+export const loadText = async (file: string) => {
+  const response = await fetch(`${import.meta.env.THREE_TEXT_PATH}${file}`)
   const text = await response.text()
   cache.set(file, text)
   return text
 }
 
-const loadTexture = async (file: string) => {
+export const loadTexture = async (file: string) => {
   const texture = await textureLoader.loadAsync(file)
   cache.set(file, texture)
   return texture
 }
 
-const loadAudio = async (file: string) => {
+export const loadAudio = async (file: string) => {
   const audio = await audioLoader.loadAsync(file)
   cache.set(file, audio)
   return audio
 }
 
-const loadGLTF = async (file: string) => {
+export const loadGLTF = async (file: string) => {
   const gltf = await gltfLoader.loadAsync(file)
   cache.set(file, gltf)
   return gltf
 }
 
-const loadAseprite = async (file: string) => {
+export const loadAseprite = async (file: string) => {
   const [data, tex] = await Promise.all([
-    fetch(`${rootPath}/textures/${file.replace('sprite', 'json')}`).then((result) => result.json()),
+    fetch(`${import.meta.env.THREE_TEXTURE_PATH}/${file.replace('sprite', 'json')}`).then((result) => result.json()),
     textureLoader.loadAsync(file.replace('sprite', 'png'))
   ])
 
@@ -76,8 +71,6 @@ const loadOne = (file: string) => {
     case 'mp3': return loadAudio(file)
     case 'json': return loadJSON(file)
     case 'aseprite': return loadAseprite(file)
-    case 'obj': return loadText(file, 'obj')
-    case 'glsl': return loadText(file, 'glsl')
   }
 
   throw new Error('Unsupported file type')
