@@ -1,9 +1,8 @@
 import * as panels from './panels'
 import { Pane, FolderApi } from 'tweakpane'
-import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
+import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
 import { get, set } from '../storage'
-import { renderer } from '../../lib';
 
 export type Panes = Pane | FolderApi
 
@@ -14,8 +13,12 @@ const paneContainers: HTMLElement[] = []
 
 let isVisible = true
 
-export const addFolder = (pane: Pane | FolderApi, title: string) => {
-  const folder = pane.addFolder({ title, expanded: storedState[title] ?? false })
+export const addFolder = (pane: Pane | FolderApi, title: string, index?: number) => {
+  const folder = pane.addFolder({
+    title,
+    index,
+    expanded: storedState[title] ?? false,
+  })
 
   panes.push(folder)
 
@@ -55,50 +58,6 @@ export const addTransformInputs = (pane: Pane | FolderApi, object3D: THREE.Objec
 export const pane = addPane('world')
 if (!savedSelectedPanelTitle) {
   panels.selectPanel('world')
-}
-
-export const stats = new Pane()
-stats.registerPlugin(EssentialsPlugin)
-stats.element.parentElement!.classList.add('pane-left')
-
-const mb = 1_048_576
-const { memory } = performance as unknown as { memory: undefined | {
-  usedJSHeapSize: number
-  jsHeapSizeLimit: number
-} }
-
-const statsParams = {
-  memory: memory ? memory.usedJSHeapSize / mb : 0
-}
-
-export const fpsGraph = stats.addBlade({
-  view: 'fpsgraph',
-  label: 'fps',
-  lineCount: 2,
-})
-
-if (memory) {
-  stats.addMonitor(statsParams, 'memory', {
-    view: 'graph',
-    min: 0,
-    max: memory.jsHeapSizeLimit / mb,
-  });
-
-  setInterval(() => {
-    statsParams.memory = memory.usedJSHeapSize / mb
-  }, 3000)
-}
-
-if (import.meta.env.THREE_POSTPROCESSING === 'true') {
-  // add message
-} else {
-  const folder = addFolder(stats, 'renderer')
-  folder.addMonitor(renderer.info.memory, 'geometries', { interval: 3_000 })
-  folder.addMonitor(renderer.info.memory, 'textures', { interval: 3_000 })
-  folder.addMonitor(renderer.info.render, 'calls', { interval: 3_000 })
-  folder.addMonitor(renderer.info.render, 'lines', { interval: 3_000 })
-  folder.addMonitor(renderer.info.render, 'points', { interval: 3_000 })
-  folder.addMonitor(renderer.info.render, 'triangles', { interval: 3_000 })
 }
 
 window.onbeforeunload = () => {

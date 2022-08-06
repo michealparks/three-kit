@@ -1,6 +1,8 @@
-import './helpers'
+import './scene-patcher'
 import { createHTMLMesh } from './html-mesh'
-import { pane, stats, fpsGraph, addPane, addFolder } from './pane'
+import { pane, addPane, addFolder } from './pane'
+import { stats, fpsGraph } from './pane/stats'
+import './scene'
 
 export { stats }
 export { addPane, addFolder }

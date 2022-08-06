@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { pane, addFolder, addTransformInputs } from './pane'
 
-export const meshFolder = addFolder(pane, 'meshes')
+export const meshFolder = addFolder(pane, 'meshes', 2)
 
 const meshes = new Set<THREE.Mesh>()
 

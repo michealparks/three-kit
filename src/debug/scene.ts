@@ -1,32 +1,40 @@
-import { scene } from '../lib/scene'
+import * as THREE from 'three'
+import { pane, addFolder } from './pane'
 import * as lights from './lights'
-import * as meshes from './meshes'
+import { scene, camera } from '../lib'
 
-const add = scene.add.bind(scene)
-const remove = scene.remove.bind(scene)
+const sceneFolder = addFolder(pane, 'scene', 0)
+const axesHelper = new THREE.AxesHelper(1_000)
 
-scene.add = (...args) => {
-  const [object] = args
-
-  if ('isLight' in object) {
-    lights.register(object as THREE.Light)
-  } else if ('isMesh' in object) {
-    meshes.register(object as THREE.Mesh)
-  }
-
-  return add(...args)
+const params = {
+  axesHelper: false,
+  lightHelper: false,
 }
 
-scene.remove = (...args) => {
-  const [object] = args
+sceneFolder.addInput(params, 'axesHelper', {
+  label: 'axes',
+}).on('change', () => {
+  return params.axesHelper ? scene.add(axesHelper) : scene.remove(axesHelper)
+})
 
-  if ('isLight' in object) {
-    lights.deregister(object as THREE.Light)
-  } else if ('isMesh' in object) {
-    meshes.register(object as THREE.Mesh)
-  }
+sceneFolder.addInput(params, 'lightHelper', {
+  label: 'light helpers'
+}).on('change', () => {
+  lights.toggleHelpers(scene, params.lightHelper)
+})
 
-  return remove(...args)
+const handleCameraChange = () => {
+  camera.updateProjectionMatrix()
 }
 
-export { scene }
+const cameraFolder = addFolder(sceneFolder, 'camera')
+cameraFolder.addInput(camera, 'near').on('change', handleCameraChange)
+cameraFolder.addInput(camera, 'far').on('change', handleCameraChange)
+
+if (import.meta.env.THREE_CAMERA === 'perspective') {
+  const cam = camera as THREE.PerspectiveCamera
+  cameraFolder.addInput(cam, 'fov').on('change', handleCameraChange)
+  cameraFolder.addInput(cam, 'filmOffset').on('change', handleCameraChange)
+  cameraFolder.addInput(cam, 'filmGauge').on('change', handleCameraChange)
+  cameraFolder.addInput(cam, 'zoom').on('change', handleCameraChange)
+}
