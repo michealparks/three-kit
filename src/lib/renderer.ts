@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import * as post from 'postprocessing'
+import type * as post from 'postprocessing'
 import './soft-shadows'
 
 export const renderer = new THREE.WebGLRenderer({

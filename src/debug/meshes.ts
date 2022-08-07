@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import type * as THREE from 'three'
 import { pane, addFolder, addTransformInputs } from './pane'
 
 export const meshFolder = addFolder(pane, 'meshes', 2)
