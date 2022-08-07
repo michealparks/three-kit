@@ -83,8 +83,8 @@ export const load = <Type>(file: string): Promise<Type> => {
 export const preload = <Type>(files: string[]): Promise<Type[]> => {
   const promises: Promise<Type>[] = []
 
-  for (const file of files) {
-    promises.push(load<Type>(file))
+  for (let i = 0, l = files.length; i < l; i += 1) {
+    promises.push(load<Type>(files[i]))
   }
 
   return Promise.all(promises)

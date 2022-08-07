@@ -113,6 +113,7 @@ const handleKeyDown = (event: { key: string }) => {
   }
 }
 
+
 const handleKeyUp = (event: { key: string }) => {
   const key = event.key.toLowerCase()
   pressedKeys.delete(key)
