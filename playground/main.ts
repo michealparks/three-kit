@@ -1,9 +1,6 @@
 import './main.css'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { renderer, camera, run, update, xr, lights, scene } from '../src/main'
-
-let debug
+import { camera, run, update, xr, lights, scene } from '../src/main'
 
 const parameters = {
   scale: 1,
@@ -14,16 +11,11 @@ const parameters = {
   },
 }
 
+/**
+ * This is how debugging should be imported to allow tree-shaking
+ */
 if (import.meta.env.THREE_DEBUG === 'true') {
-  debug = await import('../src/debug')
-
-  const debugControls = new OrbitControls(camera, renderer.domElement)
-  debugControls.enableDamping = true
-
-  update(() => {
-    debugControls.update()
-  })
-
+  const debug = await import('../src/debug')
   const pane = debug.addPane('game')
 
   pane.addInput(parameters, 'scale').on('change', () => {
@@ -34,17 +26,9 @@ if (import.meta.env.THREE_DEBUG === 'true') {
   pane.addInput(parameters, 'rotate')
 }
 
-renderer.domElement.addEventListener('click', () => {
-  xr.requestSession()
-})
-
-const _xrSupportLog = async () => {
-  const supportState = await xr.requestXrSessionSupport()!
-  const supportMessage = xr.xrSupportStateMessage[supportState]
-  console.log('support:', supportMessage)
+if (import.meta.env.THREE_XR === 'true') {
+  xr.addButton()
 }
-
-_xrSupportLog()
 
 {
   const light = lights.createAmbient(undefined, 0.2)
@@ -73,6 +57,33 @@ _xrSupportLog()
   scene.add(light)
 }
 
+{
+  const planeGeo = new THREE.PlaneGeometry(10, 10)
+  const planeMat = new THREE.MeshStandardMaterial()
+  const plane = new THREE.Mesh(planeGeo, planeMat)
+  plane.name = 'Floor'
+  plane.receiveShadow = true
+  scene.add(plane)
+  plane.rotation.set(-Math.PI / 2, 0, 0)
+}
+
+const mat4 = new THREE.Matrix4()
+const size = 0.5
+const count = 5
+const boxGeo = new THREE.BoxGeometry(size, size, size)
+const boxMat = new THREE.MeshStandardMaterial({ color: 'hotpink' })
+const boxes = new THREE.InstancedMesh(boxGeo, boxMat, count)
+boxes.name = 'Boxes'
+boxes.castShadow = true
+boxes.receiveShadow = true
+scene.add(boxes)
+boxes.position.set(-3, 0, 0)
+
+for (let i = 0; i < count; i += 1) {
+  mat4.setPosition(i + 0.5, size / 2, 0)
+  boxes.setMatrixAt(i, mat4)
+}
+
 const geometry = new THREE.IcosahedronGeometry()
 const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 })
 const mesh = new THREE.Mesh(geometry, material)
@@ -83,23 +94,27 @@ scene.add(mesh)
 
 camera.position.set(0, 2, 3)
 
-{
-  const planeGeo = new THREE.PlaneGeometry(10, 10)
-  const planeMat = new THREE.MeshStandardMaterial()
-  const plane = new THREE.Mesh(planeGeo, planeMat)
-  plane.receiveShadow = true
-  scene.add(plane)
-  plane.rotation.set(-Math.PI / 2, 0, 0)
-}
+let ry = 0
 
-update((elapsed: number) => {
+const pos = new THREE.Vector3()
+
+update((time: number) => {
+  ry += 0.1
+
+  boxes.getMatrixAt(2, mat4)
+  pos.setFromMatrixPosition(mat4)
+  
+  mat4.makeRotationY(ry)
+  pos.z = (Math.sin(time / 200) / 2)
+  mat4.setPosition(pos)
+  
+  boxes.setMatrixAt(2, mat4)
+  boxes.instanceMatrix.needsUpdate = true
+
   if (parameters.autoRotate) {
+    mesh.position.y = (Math.sin(time / 1000) / 2) + 2
     mesh.rotation.x += parameters.rotate.x
     mesh.rotation.y += parameters.rotate.y
-  }
-
-  if (import.meta.env.THREE_DEBUG === 'true') {
-    debug?.update()
   }
 })
 

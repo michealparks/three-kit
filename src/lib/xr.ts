@@ -8,14 +8,14 @@ export const xrSupportState = {
   NOT_SECURE: 1,
   NOT_ALLOWED: 2,
   ALLOWED: 3
-}
+} as const
 
 export const xrSupportStateMessage = {
-  0: 'VR not supported',
-  1: 'VR requires HTTPS',
-  2: 'VR is not allowed',
-  3: 'Enter VR'
-}
+  0: 'XR not supported',
+  1: 'XR requires HTTPS',
+  2: 'XR is not allowed',
+  3: 'Enter XR'
+} as const
 
 export const requestXrSessionSupport = async () => {
   if (navigator.xr === undefined) {
@@ -57,6 +57,28 @@ export const requestSession = async () => {
 
 export const endSession = () => {
   session!.end()
+}
+
+export const addButton = async (parent = document.body, style?: string) => {
+  const xrSupport = await requestXrSessionSupport()
+  const button = document.createElement('button')
+  button.textContent = xrSupportStateMessage[xrSupport]
+  button.style.cssText = style ?? `
+    font-family: monospace;
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    appearance: none;
+    color: white;
+    border: 1px solid white;
+    background-color: transparent;
+    padding: 0.75rem 1rem;
+  `
+  if (xrSupport === xrSupportState.ALLOWED) {
+    button.addEventListener('click', () => requestSession())
+  }
+
+  parent.append(button)
 }
 
 if (import.meta.env.THREE_XR === 'true') {

@@ -20,7 +20,7 @@ export const createAmbient = (
 }
 
 export const createDirectional = (
-  color = import.meta.env.THREE_DIRECTIONAL_INTENSITY,
+  color = import.meta.env.THREE_DIRECTIONAL_COLOR,
   intensity = DIRECTIONAL_INTENSITY,
   shadowNear = 2,
   shadowFar = 50,

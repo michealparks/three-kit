@@ -2,6 +2,7 @@ import './scene-patcher'
 import { createHTMLMesh } from './html-mesh'
 import { pane, addPane, addFolder } from './pane'
 import { stats, fpsGraph } from './pane/stats'
+import { update } from '../lib'
 import './scene'
 
 export { stats }
@@ -20,9 +21,9 @@ if (
   statsMesh.rotation.set(0, Math.PI / 4, 0)
 }
 
-export const update = () => {
+update(() => {
   // @TODO why are these not typed?
   const graph = fpsGraph as unknown as { begin(): void; end(): void }
   graph.end()
   graph.begin()
-}
+})

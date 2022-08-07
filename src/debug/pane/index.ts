@@ -37,22 +37,11 @@ export const addPane = (title: string) => {
   paneContainers.push(parent)
   panels.addPanelEntry(title, pane)
 
-  console.log()
   if (savedSelectedPanelTitle === title) {
     panels.selectPanel(title)
   }
 
   return pane
-}
-
-export const addTransformInputs = (pane: Pane | FolderApi, object3D: THREE.Object3D) => {
-  const params = {
-    position: object3D.position,
-    rotation: object3D.quaternion,
-  }
-
-  pane.addInput(params, 'position', { step: 0.1 })
-  pane.addInput(params, 'rotation', { view: 'rotation', picker: 'inline' })
 }
 
 export const pane = addPane('world')
@@ -68,6 +57,15 @@ window.onbeforeunload = () => {
 
   set('expandedPanes', state)
 }
+
+export const state = { controlling: false }
+
+pane.element.addEventListener('mousedown', () => {
+  state.controlling = true
+})
+pane.element.addEventListener('mouseup', () => {
+  state.controlling = false
+})
 
 document.addEventListener('keypress', (event) => {
   if (event.shiftKey === false) {

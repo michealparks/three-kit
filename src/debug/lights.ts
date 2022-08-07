@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
-import { Panes, pane, addFolder, addTransformInputs } from './pane'
+import { Panes, pane, addFolder } from './pane'
+import { addTransformInputs } from './pane/inputs'
 import { scene } from '../lib'
 
 type LightHelper = 
@@ -42,7 +43,7 @@ export const deregister = (light: THREE.Light) => {
 }
 
 export const addGui = (light: THREE.Light, pane: Panes) => {
-  const isDirectional = 'isDirectional' in light
+  const isDirectional = 'isDirectionalLight' in light
   const isHemi = 'isHemisphereLight' in light
   const isSpot = 'isSpotLight' in light
   const isPoint = 'isPointLight' in light
@@ -90,8 +91,8 @@ export const addGui = (light: THREE.Light, pane: Panes) => {
 
     const shadowMapParams = {
       mapSize: light.shadow.mapSize.x,
-      
     }
+
     camFolder.addInput(shadowMapParams, 'mapSize', {
       options: {
         256: 256,
@@ -109,11 +110,15 @@ export const addGui = (light: THREE.Light, pane: Panes) => {
 
     camFolder.addInput(light.shadow, 'bias', { min: 0, max: 0.09, step: 0.001 })
     
+    if (isSpot || isDirectional) {
+      const camera = light.shadow.camera as THREE.OrthographicCamera
+      camFolder.addInput(camera, 'near')
+      camFolder.addInput(camera, 'far')
+    }
+
     if (isSpot) {
       const camera = light.shadow.camera as THREE.PerspectiveCamera
-      camFolder.addInput(camera, 'near') // .on('change', () => camera.updateProjectionMatrix())
-      camFolder.addInput(camera, 'far') // .on('change', () => camera.updateProjectionMatrix())
-      camFolder.addInput(camera, 'focus', { min: 0, max: 1 }) // .on('change', () => camera.updateProjectionMatrix())
+      camFolder.addInput(camera, 'focus', { min: 0, max: 1 })
     }
   }
 
