@@ -91,4 +91,8 @@ if (import.meta.env.THREE_XR === 'true') {
       xrSessionIsGranted = true
     })
   }
+
+  if (import.meta.env.THREE_XR_BUTTON === 'true') {
+    addButton()
+  }
 }

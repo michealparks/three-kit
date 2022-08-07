@@ -26,10 +26,6 @@ if (import.meta.env.THREE_DEBUG === 'true') {
   pane.addInput(parameters, 'rotate')
 }
 
-if (import.meta.env.THREE_XR === 'true') {
-  xr.addButton()
-}
-
 {
   const light = lights.createAmbient(undefined, 0.2)
   light.position.set(1, 1, 1).normalize()
