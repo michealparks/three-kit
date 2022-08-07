@@ -1,10 +1,9 @@
 import './main.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { renderer, camera, setAnimationLoop, xr, lights, scene } from '../src/main'
+import { renderer, camera, run, update, xr, lights, scene } from '../src/main'
 
 let debug
-let debugControls: OrbitControls
 
 const parameters = {
   scale: 1,
@@ -18,7 +17,13 @@ const parameters = {
 if (import.meta.env.THREE_DEBUG === 'true') {
   debug = await import('../src/debug')
 
-  debugControls = new OrbitControls(camera, renderer.domElement)
+  const debugControls = new OrbitControls(camera, renderer.domElement)
+  debugControls.enableDamping = true
+
+  update(() => {
+    debugControls.update()
+  })
+
   const pane = debug.addPane('game')
 
   pane.addInput(parameters, 'scale').on('change', () => {
@@ -87,7 +92,7 @@ camera.position.set(0, 2, 3)
   plane.rotation.set(-Math.PI / 2, 0, 0)
 }
 
-setAnimationLoop((elapsed: number) => {
+update((elapsed: number) => {
   if (parameters.autoRotate) {
     mesh.rotation.x += parameters.rotate.x
     mesh.rotation.y += parameters.rotate.y
@@ -97,3 +102,5 @@ setAnimationLoop((elapsed: number) => {
     debug?.update()
   }
 })
+
+run()
