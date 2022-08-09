@@ -1,6 +1,6 @@
 import { Pane } from 'tweakpane'
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
-import { renderer } from '../../lib'
+import { renderer, update } from '../../lib'
 import { addFolder } from '.'
 
 export const stats = new Pane()
@@ -14,21 +14,30 @@ const { memory } = performance as unknown as { memory: undefined | {
 } }
 
 const parameters = {
-  time: 0,
+  time: '',
   memory: memory ? memory.usedJSHeapSize / mb : 0
 }
 
+const start = performance.now()
+let total = 0
+
+const updateTime = () => {
+  const now = performance.now()
+  total = (now - start) / 1000 
+
+  const seconds = (total % 60) | 0
+  const minutes = (total / 60) | 0
+  const hours = (total / 60 / 60) | 0
+
+  parameters.time = `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`
+}
+
+updateTime()
+setInterval(updateTime, 1000)
+
 stats.addMonitor(parameters, 'time', {
   interval: 1000,
-});
-
-let last = performance.now()
-setInterval(() => {
-  const now = performance.now()
-  const diff = (now - last) / 1000
-  parameters.time += diff
-  last = now
-}, 1000)
+})
 
 export const fpsGraph = stats.addBlade({
   view: 'fpsgraph',
@@ -59,3 +68,10 @@ if (import.meta.env.THREE_POSTPROCESSING === 'true') {
   folder.addMonitor(renderer.info.render, 'points', { interval: 3_000 })
   folder.addMonitor(renderer.info.render, 'triangles', { interval: 3_000 })
 }
+
+update(() => {
+  // @TODO why are these not typed?
+  const graph = fpsGraph as unknown as { begin(): void; end(): void }
+  graph.end()
+  graph.begin()
+})

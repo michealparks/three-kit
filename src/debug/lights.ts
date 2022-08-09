@@ -129,7 +129,7 @@ export const addGui = (light: THREE.Light, pane: Panes) => {
   })
 }
 
-const addHelpers = (scene: THREE.Scene, light: THREE.Light) => {
+const addHelpers = (light: THREE.Light) => {
   let helper: LightHelper
   let shadowCameraHelper: THREE.CameraHelper | undefined
 
@@ -171,7 +171,7 @@ const addHelpers = (scene: THREE.Scene, light: THREE.Light) => {
   lightHelpers.set(light, helper)
 }
 
-const removeHelpers = (scene: THREE.Scene) => {
+const removeHelpers = () => {
   for (const [, helper] of lightHelpers) {
     scene.remove(helper)
     helper.dispose()
@@ -186,12 +186,12 @@ const removeHelpers = (scene: THREE.Scene) => {
   shadowCameraHelpers.clear()
 }
 
-export const toggleHelpers = (scene: THREE.Scene, on: boolean) => {
+export const toggleHelpers = (on: boolean) => {
   if (on) {
     for (const light of lights) {
-      addHelpers(scene, light)
+      addHelpers(light)
     }
   } else {
-    removeHelpers(scene)
+    removeHelpers()
   }
 }

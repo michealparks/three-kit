@@ -1,5 +1,6 @@
 import css from './index.css'
 import type { Pane } from 'tweakpane'
+import { save } from '../storage'
 
 const style = document.createElement('style')
 style.innerHTML = css
@@ -27,7 +28,7 @@ const createButton = (title: string) => {
 
 export const selectPanel = (title: string) => {
   selectedTitle = title
-  localStorage.setItem('threekit.selectedPanelTitle', title)
+  save('selectedPanelTitle', title)
 
   selected?.classList.add('hidden')
   selectedButton?.classList.remove('selected')
@@ -37,7 +38,6 @@ export const selectPanel = (title: string) => {
 
   selected = paneMap.get(title)!.element
   selected.classList.remove('hidden')
-
 }
 
 export const selectNextPanel = () => {

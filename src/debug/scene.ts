@@ -4,26 +4,37 @@ import { pane, addFolder } from './pane'
 import * as lights from './lights'
 import { renderer, scene, camera, update } from '../lib'
 import { addTransformInputs } from './pane/inputs'
+import { storage, save } from './storage'
 
 const sceneFolder = addFolder(pane, 'scene', 0)
 const axesHelper = new THREE.AxesHelper(1_000)
 
 {
   const params = {
-    axesHelper: false,
-    lightHelper: false,
+    axesHelper: storage.axesHelper ?? false,
+    lightHelper: storage.lightHelper ?? false,
+  }
+
+  if (storage.axesHelper) {
+    scene.add(axesHelper)
+  }
+
+  if (storage.lightHelper) {
+    lights.toggleHelpers(params.lightHelper)
   }
 
   sceneFolder.addInput(params, 'axesHelper', {
     label: 'axes',
   }).on('change', () => {
-    return params.axesHelper ? scene.add(axesHelper) : scene.remove(axesHelper)
+    scene[params.axesHelper ? 'add' : 'remove'](axesHelper)
+    save('axesHelper', params.axesHelper)
   })
 
   sceneFolder.addInput(params, 'lightHelper', {
     label: 'light helpers'
   }).on('change', () => {
-    lights.toggleHelpers(scene, params.lightHelper)
+    lights.toggleHelpers(params.lightHelper)
+    save('lightHelper', params.lightHelper)
   })  
 }
 
@@ -47,12 +58,11 @@ const camControlsFolder = addFolder(cameraFolder, 'controls')
 
 {
   const params = {
-    controls: 0,
+    controls: storage.controls ?? 0,
   }
 
   const orbitControls = new OrbitControls(camera, renderer.domElement)
   orbitControls.enableDamping = true
-  
 
   const mapControls = new MapControls(camera, renderer.domElement)
   mapControls.enableDamping = true
@@ -61,6 +71,7 @@ const camControlsFolder = addFolder(cameraFolder, 'controls')
   const setEnabledControls = () => {
     orbitControls.enabled = params.controls === 1
     mapControls.enabled = params.controls === 2
+    save('controls', params.controls)
   }
 
   const controls = [0, 1, 2]

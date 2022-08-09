@@ -2,12 +2,12 @@ import * as panels from './panels'
 import { Pane, FolderApi } from 'tweakpane'
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
-import { get, set } from '../storage'
+import { save, storage } from '../storage'
 
 export type Panes = Pane | FolderApi
 
-const savedSelectedPanelTitle = localStorage.getItem('threekit.selectedPanelTitle')
-const storedState: Record<string, boolean> = get('expandedPanes')
+const savedSelectedPanelTitle = storage.selectedPanelTitle
+const storedState: Record<string, boolean> = storage.expandedPanes
 const panes: Panes[] = []
 const paneContainers: HTMLElement[] = []
 
@@ -55,7 +55,7 @@ window.onbeforeunload = () => {
     state[pane.title!] = pane.expanded
   }
 
-  set('expandedPanes', state)
+  save('expandedPanes', state)
 }
 
 export const state = { controlling: false }
