@@ -4,6 +4,7 @@ import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLigh
 const AMBIENT_INTENSITY = Number.parseFloat(import.meta.env.THREE_AMBIENT_INTENSITY)
 const DIRECTIONAL_INTENSITY = Number.parseFloat(import.meta.env.THREE_DIRECTIONAL_INTENSITY)
 const HEMI_INTENSITY = Number.parseFloat(import.meta.env.THREE_HEMI_INTENSITY)
+const POINT_INTENSITY = Number.parseFloat(import.meta.env.THREE_POINT_INTENSITY)
 const SPOT_INTENSITY = Number.parseFloat(import.meta.env.THREE_SPOT_INTENSITY)
 
 const SHADOW_MAP = import.meta.env.THREE_SHADOW_MAP === 'true'
@@ -33,6 +34,27 @@ export const createDirectional = (
     light.shadow.camera.far = shadowFar
     light.shadow.mapSize.width = SHADOW_MAP_SIZE
     light.shadow.mapSize.height = SHADOW_MAP_SIZE
+  }
+
+  return light
+}
+
+export const createPoint = (
+  color = import.meta.env.THREE_SPOT_COLOR,
+  intensity = POINT_INTENSITY,
+  shadowNear = 2,
+  shadowFar = 50,
+) => {
+  const light = new THREE.PointLight(color, intensity)
+
+  if (SHADOW_MAP) {
+    light.castShadow = true
+    light.shadow.camera.near = shadowNear
+    light.shadow.camera.far = shadowFar
+    light.shadow.mapSize.width = SHADOW_MAP_SIZE
+    light.shadow.mapSize.height = SHADOW_MAP_SIZE
+    light.shadow.radius = 8
+    light.shadow.bias = -0.0001
   }
 
   return light
