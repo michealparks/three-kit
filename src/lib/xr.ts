@@ -77,7 +77,7 @@ export const addButton = async (parent = document.body, style?: string) => {
 
   button.textContent = xrSupportStateMessage[xrSupport]
 
-  if (import.meta.env.THREE_XR === 'true') {
+  if (import.meta.env.THREE_POSTPROCESSING === 'true') {
     button.textContent = 'XR and postprocessing not supported'
   } else if (xrSupport === xrSupportState.ALLOWED) {
     button.addEventListener('click', () => requestSession())
