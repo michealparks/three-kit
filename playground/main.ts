@@ -1,6 +1,6 @@
 import './main.css'
 import * as THREE from 'three'
-import { camera, run, update, xr, lights, scene } from '../src/main'
+import { camera, run, update, lights, scene } from '../src/main'
 
 const parameters = {
   scale: 1,

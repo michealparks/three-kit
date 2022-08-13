@@ -62,7 +62,7 @@ export const endSession = () => {
 export const addButton = async (parent = document.body, style?: string) => {
   const xrSupport = await requestXrSessionSupport()
   const button = document.createElement('button')
-  button.textContent = xrSupportStateMessage[xrSupport]
+
   button.style.cssText = style ?? `
     font-family: monospace;
     position: fixed;
@@ -74,7 +74,12 @@ export const addButton = async (parent = document.body, style?: string) => {
     background-color: transparent;
     padding: 0.75rem 1rem;
   `
-  if (xrSupport === xrSupportState.ALLOWED) {
+
+  button.textContent = xrSupportStateMessage[xrSupport]
+
+  if (import.meta.env.THREE_XR === 'true') {
+    button.textContent = 'XR and postprocessing not supported'
+  } else if (xrSupport === xrSupportState.ALLOWED) {
     button.addEventListener('click', () => requestSession())
   }
 
