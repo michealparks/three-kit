@@ -15,9 +15,9 @@ const quatSettings = {
 }
 
 export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
-  const { position, quaternion } = object3D
+  const { quaternion } = object3D
+
   const params = {
-    position,
     quaternion: new THREE.Quaternion()
   }
 
@@ -25,17 +25,9 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
     if (state.controlling) {
       quaternion.copy(params.quaternion)
     }
-
-    if (object3D instanceof THREE.Camera) {
-      const camera = object3D as THREE.Camera
-      camera.updateMatrixWorld()
-    }
   }
 
-  const posInput = pane.addInput(params, 'position', {
-    step: 0.1
-  })
-
+  const posInput = pane.addInput(object3D, 'position', { step: 0.1 })
   const rotInput = pane.addInput(params, 'quaternion', quatSettings).on('change', quaternionChange)
 
   update(() => {

@@ -38,10 +38,12 @@ renderer.toneMapping = import.meta.env.THREE_FLAT === 'true'
   ? THREE.NoToneMapping
   : THREE.ACESFilmicToneMapping
 
+const targetDPI = Number.parseFloat(import.meta.env.THREE_TARGET_DPI)
+const pixelRatio = Math.min(window.devicePixelRatio, targetDPI)
 
-export const resizeRendererToDisplaySize = (renderer: THREE.Renderer, camera: THREE.Camera, composer?: post.EffectComposer) => {
+export const resizeRendererToDisplaySize = (camera: THREE.Camera, composer?: post.EffectComposer) => {
   const canvas = renderer.domElement
-  const pixelRatio = window.devicePixelRatio
+
   const width = canvas.clientWidth * pixelRatio | 0
   const height = canvas.clientHeight * pixelRatio | 0
   const needResize = canvas.width !== width || canvas.height !== height
@@ -63,7 +65,9 @@ export const resizeRendererToDisplaySize = (renderer: THREE.Renderer, camera: TH
       composer!.setSize(width, height, false)
     }
 
-    renderer.setSize(width, height, false)
+    if (renderer.xr.isPresenting === false) {
+      renderer.setSize(width, height, false)
+    }
 
     canvas.style.width = '100%'
     canvas.style.height = '100%'

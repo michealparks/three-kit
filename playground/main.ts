@@ -82,6 +82,8 @@ for (let i = 0; i < count; i += 1) {
 
 const geometry = new THREE.IcosahedronGeometry()
 const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 })
+material.roughness = 0.5
+material.metalness = 0.5
 const mesh = new THREE.Mesh(geometry, material)
 mesh.name = 'Icosahedron'
 mesh.position.set(0, 1, -2)

@@ -15,3 +15,5 @@ export const camera = import.meta.env.THREE_CAMERA === 'orthographic'
       Number.parseFloat(import.meta.env.THREE_CAMERA_NEAR),
       Number.parseFloat(import.meta.env.THREE_CAMERA_FAR)
     )
+
+camera.name = 'defaultCamera'

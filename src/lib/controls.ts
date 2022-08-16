@@ -1,3 +1,5 @@
+import { renderer } from './renderer'
+
 export const pressedKeys: Set<string> = new Set()
 
 let keyboardControlling = false
@@ -31,6 +33,11 @@ export const gamepad = {
   start: 0,
   leftStickButton: 0,
   rightStickButton: 0,
+}
+
+export const xrControllers = {
+  leftTrigger: 0,
+  rightTrigger: 0,
 }
 
 export const update = () => {
@@ -144,6 +151,27 @@ const handleGamepadDisconnected = () => {
   gamepad.connected = false
 }
 
+const handleXrSelectStart = () => {
+
+}
+
+const handleXrSelectEnd = () => {
+
+}
+
+const handleXrControllerConnected = ({ data }: { data: XRInputSource }) => {
+  console.log(data)
+  if (data.handedness === 'left') {
+
+  } else if (data.handedness === 'right') {
+
+  }
+}
+
+const handleXrControllerDisconnected = (event: Event) => {
+  console.log(event)
+}
+
 if (import.meta.env.THREE_CONTROLS === 'true') {
   if (import.meta.env.THREE_CONTROLS_KEYBOARD === 'true') {
     window.addEventListener('keydown', handleKeyDown, { passive: true })
@@ -151,6 +179,20 @@ if (import.meta.env.THREE_CONTROLS === 'true') {
   }
 
   if (import.meta.env.THREE_CONTROLS_GAMEPAD === 'true') {
-    window.addEventListener('gamepadconnected', handleGamepadConnected)
+    window.addEventListener('gamepadconnected', handleGamepadConnected, { passive: true })
+  }
+
+  if (import.meta.env.THREE_XR === 'true') {
+    const controller1 = renderer.xr.getController(0)
+    controller1.addEventListener('selectstart', handleXrSelectStart)
+    controller1.addEventListener('selectend', handleXrSelectEnd)
+    controller1.addEventListener('connected', handleXrControllerConnected)
+    controller1.addEventListener('disconnected', handleXrControllerDisconnected)
+  
+    const controller2 = renderer.xr.getController(1)
+    controller2.addEventListener('selectstart', handleXrSelectStart)
+    controller2.addEventListener('selectend', handleXrSelectEnd)
+    controller2.addEventListener('connected', handleXrControllerConnected)
+    controller2.addEventListener('disconnected', handleXrControllerDisconnected)
   }
 }

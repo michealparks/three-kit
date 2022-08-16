@@ -1,3 +1,5 @@
+type Serializable = string | string[] | number | number[] | boolean | Record<string, unknown>
+
 const get = (key: string) => {
   try {
     return JSON.parse(localStorage.getItem(key) || '{}')
@@ -12,7 +14,15 @@ const set = (key: string, value: object) => {
 
 export const storage = get('threekit.debug')
 
-export const save = (key: string, value: string | number | boolean | Record<string, unknown>) => {
+export const save = (key: string, value: Serializable) => {
   storage[key] = value
+  set('threekit.debug', storage)
+}
+
+export const erase = (...args: string[]) => {
+  for (const arg of args) {
+    delete storage[arg]
+  }
+
   set('threekit.debug', storage)
 }

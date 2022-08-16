@@ -1,4 +1,4 @@
-import { renderer } from '.'
+import { renderer } from './renderer'
 
 let session: XRSession
 let xrSessionIsGranted = false
