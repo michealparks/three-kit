@@ -25,7 +25,7 @@ camera.position.set = (...args) => {
 
 export const orbitControls = new OrbitControls(camera, renderer.domElement)
 
-if (storage.debugCamera) {
+if (storage.debugCamera && params.controls !== constants.CONTROLS_NONE) {
   orbitControls.target.fromArray(storage.debugCamera.target)
   camera.quaternion.fromArray(storage.debugCamera.quaternion)
   camera.position.fromArray(storage.debugCamera.position)
