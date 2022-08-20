@@ -5,10 +5,16 @@ import ssl from '@vitejs/plugin-basic-ssl'
 export default defineConfig({
   publicDir: 'assets',
   server: {
+    port: 5172,
+    strictPort: true,
     https: true,
     fs: {
       strict: true,
       allow: ['.'],
+    },
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
     },
   },
   plugins: [

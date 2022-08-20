@@ -12,7 +12,9 @@ const set = (key: string, value: object) => {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
-export const storage = get('threekit.debug')
+type Storage = Record<string, any>
+
+export const storage: Storage = get('threekit.debug')
 
 export const save = (key: string, value: Serializable) => {
   storage[key] = value

@@ -7,7 +7,7 @@ import { save, storage } from '../storage'
 export type Panes = Pane | FolderApi
 
 const savedSelectedPanelTitle = storage.selectedPanelTitle
-const storedState: Record<string, boolean> = storage.expandedPanes
+const storedState: Record<string, boolean> = storage.expandedPanes ?? {}
 const panes: Panes[] = []
 const paneContainers: HTMLElement[] = []
 
