@@ -1,4 +1,3 @@
-
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { renderer, camera, update } from '../lib'
 import { pane, addFolder } from './pane'
@@ -24,7 +23,7 @@ camera.position.set = (...args) => {
   return cps(...args)
 }
 
-const orbitControls = new OrbitControls(camera, renderer.domElement)
+export const orbitControls = new OrbitControls(camera, renderer.domElement)
 
 if (storage.debugCamera) {
   orbitControls.target.fromArray(storage.debugCamera.target)
@@ -55,10 +54,12 @@ const setEnabledControls = () => {
     camera.name = 'defaultCamera'
     orbitControls.enabled = false
     window.removeEventListener('pointerup', savePosition)
+    window.removeEventListener('wheel', savePosition)
   } else {
     camera.name = 'debugCamera'
     orbitControls.enabled = true
     window.addEventListener('pointerup', savePosition, { passive: true })
+    window.addEventListener('wheel', savePosition, { passive: true })
   }
 }
 

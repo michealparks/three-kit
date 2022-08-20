@@ -5,5 +5,6 @@ import './scene'
 import './camera'
 import './postprocessing'
 
+export { orbitControls } from './camera'
 export { stats }
 export { addPane, addFolder }

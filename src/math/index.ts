@@ -1,3 +1,5 @@
+import * as THREE from 'three'
+
 /**
  * Generates a random float in [-range, range]
  * 
@@ -17,6 +19,18 @@ export const randomNumber = (range: number): number => {
  */
 export const randomNumberBetween = (min: number, max: number): number => {
   return Math.random() * (max - min) + min
+}
+
+/**
+ * Clamps a number between two values
+ * 
+ * @param n The number to clamp
+ * @param min The min value
+ * @param max The max value 
+ * @returns 
+ */
+export const clamp = (n: number, min: number, max: number) => {
+  return Math.min(Math.max(n, min), max)
 }
 
 /**
@@ -75,4 +89,16 @@ export const randomPointOnSphere = (R: number): [x: number, y: number, z: number
   const y = r * sinPhi * sinTheta
   const z = r * cosPhi
   return [x, y, z]
+}
+
+export const getForward = (object: THREE.Object3D) => {
+  const forward = new THREE.Vector3(0, 0, -1);
+  forward.applyQuaternion(object.quaternion);
+  return forward;
+}
+
+export const getUp = (object: THREE.Object3D) => {
+  const forward = new THREE.Vector3(0, 1, 0);
+  forward.applyQuaternion(object.quaternion);
+  return forward;
 }
