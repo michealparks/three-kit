@@ -1,6 +1,6 @@
 import './main.css'
 import * as THREE from 'three'
-import { camera, run, update, lights, scene, controls } from '../src/main'
+import { camera, run, update, lights, scene, meshUi, controls } from '../src/main'
 
 const parameters = {
   scale: 1,
@@ -96,10 +96,15 @@ let ry = 0
 
 const pos = new THREE.Vector3()
 
+const block = meshUi.createBlock()
+const text = meshUi.createText('hello world!')
+block.add(text)
+block.name = 'Block'
+block.position.y = 1.60
+scene.add(block)
+
 update((time: number) => {
   ry += 0.1
-
-  console.log(controls.gamepad)
 
   boxes.getMatrixAt(2, mat4)
   pos.setFromMatrixPosition(mat4)

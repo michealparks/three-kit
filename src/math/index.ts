@@ -1,5 +1,8 @@
 import * as THREE from 'three'
 
+const vec2 = new THREE.Vector2()
+const vec3 = new THREE.Vector3()
+
 /**
  * Generates a random float in [-range, range]
  * 
@@ -39,12 +42,12 @@ export const clamp = (n: number, min: number, max: number) => {
  * @param R The radius of the circle
  * @returns A random point
  */
-export const randomPointInCircle = (R: number): [x: number, y: number] => {
+export const randomPointInCircle = (R: number) => {
   const r = R * Math.sqrt(Math.random())
   const theta = Math.random() * 2 * Math.PI
-  const x = r * Math.cos(theta)
-  const y = r * Math.sin(theta)
-  return [x, y]
+  vec2.x = r * Math.cos(theta)
+  vec2.y = r * Math.sin(theta)
+  return vec2
 }
 
 /**
@@ -53,7 +56,7 @@ export const randomPointInCircle = (R: number): [x: number, y: number] => {
  * @param R The radius of the sphere
  * @returns A random point
  */
-export const randomPointInSphere = (R: number): [x: number, y: number, z: number] => {
+export const randomPointInSphere = (R: number) => {
   const u = Math.random()
   const v = Math.random()
   const theta = u * 2 * Math.PI
@@ -63,10 +66,10 @@ export const randomPointInSphere = (R: number): [x: number, y: number, z: number
   const cosTheta = Math.cos(theta)
   const sinPhi = Math.sin(phi)
   const cosPhi = Math.cos(phi)
-  const x = r * sinPhi * cosTheta
-  const y = r * sinPhi * sinTheta
-  const z = r * cosPhi
-  return [x, y, z]
+  vec3.x = r * sinPhi * cosTheta
+  vec3.y = r * sinPhi * sinTheta
+  vec3.z = r * cosPhi
+  return vec3
 }
 
 /**
@@ -75,7 +78,7 @@ export const randomPointInSphere = (R: number): [x: number, y: number, z: number
  * @param R The radius of the sphere
  * @returns A random point
  */
-export const randomPointOnSphere = (R: number): [x: number, y: number, z: number] => {
+export const randomPointOnSphere = (R: number) => {
   const u = Math.random()
   const v = Math.random()
   const theta = u * 2 * Math.PI
@@ -85,20 +88,20 @@ export const randomPointOnSphere = (R: number): [x: number, y: number, z: number
   const cosTheta = Math.cos(theta)
   const sinPhi = Math.sin(phi)
   const cosPhi = Math.cos(phi)
-  const x = r * sinPhi * cosTheta
-  const y = r * sinPhi * sinTheta
-  const z = r * cosPhi
-  return [x, y, z]
+  vec3.x = r * sinPhi * cosTheta
+  vec3.y = r * sinPhi * sinTheta
+  vec3.z = r * cosPhi
+  return vec3
 }
 
 export const getForward = (object: THREE.Object3D) => {
-  const forward = new THREE.Vector3(0, 0, -1);
-  forward.applyQuaternion(object.quaternion);
-  return forward;
+  vec3.set(0, 0, -1)
+  vec3.applyQuaternion(object.quaternion).normalize()
+  return vec3
 }
 
 export const getUp = (object: THREE.Object3D) => {
-  const forward = new THREE.Vector3(0, 1, 0);
-  forward.applyQuaternion(object.quaternion);
-  return forward;
+  vec3.set(0, 1, 0)
+  vec3.applyQuaternion(object.quaternion).normalize()
+  return vec3
 }

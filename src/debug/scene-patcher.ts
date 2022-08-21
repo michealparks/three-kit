@@ -1,6 +1,7 @@
 import { scene } from '../lib/scene'
 import * as lights from './lights'
 import * as meshes from './meshes'
+import * as objects from './objects'
 
 const add = scene.add.bind(scene)
 const remove = scene.remove.bind(scene)
@@ -12,6 +13,8 @@ scene.add = (...args) => {
     lights.register(object as THREE.Light)
   } else if ('isMesh' in object) {
     meshes.register(object as THREE.Mesh)
+  } else if ('isObject3D' in object) {
+    objects.register(object)
   }
 
   return add(...args)
@@ -24,6 +27,8 @@ scene.remove = (...args) => {
     lights.deregister(object as THREE.Light)
   } else if ('isMesh' in object) {
     meshes.register(object as THREE.Mesh)
+  } else if ('isObject3D' in object) {
+    objects.register(object)
   }
 
   return remove(...args)

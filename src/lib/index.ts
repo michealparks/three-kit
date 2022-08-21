@@ -1,5 +1,6 @@
 export * as assets from './assets'
 export * as controls from './controls'
+export * as meshUi from './mesh-ui'
 export * as lights from './lights'
 export * as xr from './xr'
 export { run, pause, update } from './update'

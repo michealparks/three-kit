@@ -33,6 +33,7 @@
     "@tweakpane/plugin-essentials": "^0.1.5",
     "postprocessing": "^6.28.5",
     "screen-space-reflections": "^2.5.0",
+    "three-mesh-ui": "^6.4.5",
     "tweakpane": "^3.1.0"
   }
 }
