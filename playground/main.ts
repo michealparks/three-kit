@@ -1,6 +1,6 @@
 import './main.css'
 import * as THREE from 'three'
-import { camera, run, update, lights, scene } from '../src/main'
+import { camera, run, update, lights, scene, controls } from '../src/main'
 
 const parameters = {
   scale: 1,
@@ -98,6 +98,8 @@ const pos = new THREE.Vector3()
 
 update((time: number) => {
   ry += 0.1
+
+  console.log(controls.gamepad)
 
   boxes.getMatrixAt(2, mat4)
   pos.setFromMatrixPosition(mat4)

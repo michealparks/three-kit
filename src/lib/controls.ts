@@ -179,6 +179,7 @@ if (import.meta.env.THREE_CONTROLS === 'true') {
   }
 
   if (import.meta.env.THREE_CONTROLS_GAMEPAD === 'true') {
+    console.log('listening for gamepad...')
     window.addEventListener('gamepadconnected', handleGamepadConnected, { passive: true })
   }
 
