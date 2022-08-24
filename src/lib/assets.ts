@@ -44,15 +44,19 @@ export const loadGLTF = async (file: string) => {
 }
 
 export const loadAseprite = async (file: string) => {
+  const path = import.meta.env.THREE_TEXTURE_PATH
+  const url = `${path}/${file.replace('sprite', 'json')}`
   const [data, tex] = await Promise.all([
-    fetch(`${import.meta.env.THREE_TEXTURE_PATH}/${file.replace('sprite', 'json')}`).then((result) => result.json()),
-    textureLoader.loadAsync(file.replace('sprite', 'png'))
+    fetch(url).then((result) => {
+      return result.json()
+    }),
+    textureLoader.loadAsync(file.replace('sprite', 'png')),
   ])
 
   const sprite = {
     frames: data.frames,
     meta: data.meta,
-    texture: tex
+    texture: tex,
   }
 
   cache.set(file, sprite)
@@ -66,14 +70,14 @@ export const get = <Type>(file: string): Type => {
 
 const loadOne = (file: string) => {
   switch (file.split('.').pop()) {
-    case 'glb': return loadGLTF(file)
-    case 'png': case 'jpg': return loadTexture(file)
-    case 'mp3': return loadAudio(file)
-    case 'json': return loadJSON(file)
-    case 'aseprite': return loadAseprite(file)
+  case 'glb': return loadGLTF(file)
+  case 'png': case 'jpg': return loadTexture(file)
+  case 'mp3': return loadAudio(file)
+  case 'json': return loadJSON(file)
+  case 'aseprite': return loadAseprite(file)
+  default:
+    throw new Error('Unsupported file type')
   }
-
-  throw new Error('Unsupported file type')
 }
 
 export const load = <Type>(file: string): Promise<Type> => {

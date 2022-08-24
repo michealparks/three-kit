@@ -1,16 +1,18 @@
 import type * as THREE from 'three'
-import { pane, addFolder } from './pane'
-import { addTransformInputs, addForwardHelperInput } from './pane/inputs'
+import { addFolder, pane } from './pane'
+import { addForwardHelperInput, addTransformInputs } from './pane/inputs'
 
 export const meshFolder = addFolder(pane, 'meshes', 2)
 
 const meshes = new Set<THREE.Mesh>()
 
 export const register = (mesh: THREE.Mesh) => {
-  const isInstanced = 'isInstancedMesh' in mesh
-
   meshes.add(mesh)
-  const folder = addFolder(meshFolder, `#${mesh.id} ${mesh.name || '[unnamed]'}${isInstanced ? ' (instanced)' : ''}`)
+
+  const isInstanced = 'isInstancedMesh' in mesh
+  const instancedFlag = isInstanced ? ' (instanced)' : ''
+  const name = `#${mesh.id} ${mesh.name || '[unnamed]'}${instancedFlag}`
+  const folder = addFolder(meshFolder, name)
   addTransformInputs(folder, mesh)
   addForwardHelperInput(folder, mesh)
 }

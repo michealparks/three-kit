@@ -1,8 +1,18 @@
-type Serializable = string | string[] | number | number[] | boolean | Record<string, unknown>
+export type Serializable =
+  | string
+  | string[]
+  | number
+  | number[]
+  | boolean
+  | Record<string, unknown>
+  | null
+  | undefined
+
+type Storage = Record<string, Serializable>
 
 const get = (key: string) => {
   try {
-    return JSON.parse(localStorage.getItem(key) || '{}')
+    return JSON.parse(localStorage.getItem(key) ?? '{}')
   } catch {
     return {}
   }
@@ -11,8 +21,6 @@ const get = (key: string) => {
 const set = (key: string, value: object) => {
   localStorage.setItem(key, JSON.stringify(value))
 }
-
-type Storage = Record<string, any>
 
 export const storage: Storage = get('threekit.debug')
 

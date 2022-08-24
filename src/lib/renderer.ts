@@ -1,14 +1,16 @@
-import * as THREE from 'three'
-import type * as post from 'postprocessing'
 import './soft-shadows'
+import * as THREE from 'three'
+import { camera } from './camera'
+import { composer } from './postprocessing'
 
 export const renderer = new THREE.WebGLRenderer({
-  powerPreference: 'high-performance',
-  antialias: import.meta.env.THREE_POSTPROCESSING !== 'true',
   alpha: import.meta.env.THREE_ALPHA === 'true',
-  stencil: import.meta.env.THREE_POSTPROCESSING !== 'true',
+  antialias: import.meta.env.THREE_POSTPROCESSING !== 'true',
   depth: import.meta.env.THREE_POSTPROCESSING !== 'true',
+  powerPreference: 'high-performance',
+  stencil: import.meta.env.THREE_POSTPROCESSING !== 'true',
 })
+
 document.body.append(renderer.domElement)
 
 renderer.physicallyCorrectLights = true
@@ -41,9 +43,8 @@ renderer.toneMapping = import.meta.env.THREE_FLAT === 'true'
 const targetDPI = Number.parseFloat(import.meta.env.THREE_TARGET_DPI)
 const pixelRatio = Math.min(window.devicePixelRatio, targetDPI)
 
-export const resizeRendererToDisplaySize = (camera: THREE.Camera, composer?: post.EffectComposer) => {
+export const resizeRendererToDisplaySize = () => {
   const canvas = renderer.domElement
-
   const width = canvas.clientWidth * pixelRatio | 0
   const height = canvas.clientHeight * pixelRatio | 0
   const needResize = canvas.width !== width || canvas.height !== height
@@ -55,17 +56,19 @@ export const resizeRendererToDisplaySize = (camera: THREE.Camera, composer?: pos
       cam.updateProjectionMatrix()
     } else {
       // @TODO support ortho camz
-      // camera.left = size.width / -2
-      // camera.right = size.width / 2
-      // camera.top = size.height / 2
-      // camera.bottom = size.height / -2
+      const cam = camera as THREE.OrthographicCamera
+      cam.left = window.innerWidth / -2
+      cam.right = window.innerWidth / 2
+      cam.top = window.innerHeight / 2
+      cam.bottom = window.innerHeight / -2
+      cam.updateProjectionMatrix()
     }
 
     if (import.meta.env.THREE_POSTPROCESSING === 'true') {
-      composer!.setSize(width, height, false)
+      composer.setSize(width, height, false)
     }
 
-    if (renderer.xr.isPresenting === false) {
+    if (!renderer.xr.isPresenting) {
       renderer.setSize(width, height, false)
     }
 

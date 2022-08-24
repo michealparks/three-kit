@@ -1,6 +1,5 @@
 import * as THREE from 'three'
-import { addFolder, Panes } from '.'
-import { state } from '.'
+import { Panes, addFolder, state } from '.'
 import { update } from '../../lib'
 
 const vec3 = new THREE.Vector3()
@@ -9,16 +8,16 @@ const quat = new THREE.Quaternion()
 const mat4 = new THREE.Matrix4()
 
 const quatSettings = {
-  view: 'rotation',
+  expanded: true,
   picker: 'inline',
-  expanded: true
+  view: 'rotation',
 }
 
 export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
   const { quaternion } = object3D
 
   const params = {
-    quaternion: new THREE.Quaternion()
+    quaternion: new THREE.Quaternion(),
   }
 
   const quaternionChange = () => {
@@ -28,12 +27,12 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
   }
 
   const posInput = pane.addInput(object3D, 'position', { step: 0.1 })
-  const rotInput = pane.addInput(params, 'quaternion', quatSettings).on('change', quaternionChange)
+  const rotInput = pane.addInput(params, 'quaternion', quatSettings)
+    .on('change', quaternionChange)
 
   update(() => {
     if (pane.expanded && !state.controlling) {
       params.quaternion.copy(quaternion)
-
       rotInput.refresh()
       posInput.refresh()
     }
@@ -48,6 +47,14 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
       position: new THREE.Vector3(),
       quaternion: new THREE.Quaternion(),
     }
+
+    const imeshIndex = imeshFolder.addInput(imeshParams, 'index', {
+      max: imesh.count - 1,
+      min: 0,
+      step: 1,
+    })
+    const imeshPos = imeshFolder.addInput(imeshParams, 'position')
+    const imeshRot = imeshFolder.addInput(imeshParams, 'quaternion', quatSettings)
 
     const instanceIndexChange = () => {
       imesh.getMatrixAt(imeshParams.index, mat4)
@@ -66,14 +73,14 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
       imesh.setMatrixAt(imeshParams.index, mat4)
       imesh.instanceMatrix.needsUpdate = true
     }
-  
-    imeshFolder.addInput(imeshParams, 'index', { step: 1, min: 0, max: imesh.count - 1 }).on('change', instanceIndexChange)
-    const imeshPos = imeshFolder.addInput(imeshParams, 'position').on('change', instanceChange)
-    const imeshRot = imeshFolder.addInput(imeshParams, 'quaternion', quatSettings).on('change', instanceChange)
+
+    imeshIndex.on('change', instanceIndexChange)
+    imeshPos.on('change', instanceChange)
+    imeshRot.on('change', instanceChange)
 
     update(() => {
-      imeshParams.quaternion.copy(quaternion)
       if (imeshFolder.expanded && !state.controlling) {
+        imeshParams.quaternion.copy(quaternion)
         imeshPos.refresh()
         imeshRot.refresh()
       }
@@ -83,7 +90,7 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
 
 export const addForwardHelperInput = (pane: Panes, object3D: THREE.Object3D) => {
   const helper = new THREE.ArrowHelper()
-  helper.setLength(1.5)
+  helper.setLength(1)
 
   const params = {
     forwardHelper: false,

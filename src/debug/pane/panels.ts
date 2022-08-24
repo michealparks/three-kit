@@ -1,5 +1,5 @@
-import css from './index.css'
 import type { Pane } from 'tweakpane'
+import css from './index.css'
 import { save } from '../storage'
 
 const style = document.createElement('style')
@@ -17,15 +17,6 @@ document.body.append(element)
 export const paneMap = new Map<string, Pane>()
 export const paneTitles: string[] = []
 
-const createButton = (title: string) => {
-  const button = document.createElement('button')
-  button.className = 'tp-fldv_b panels-button'
-  button.dataset.title = title
-  button.textContent = title
-  button.addEventListener('click', () => selectPanel(title))
-  return button
-}
-
 export const selectPanel = (title: string) => {
   selectedTitle = title
   save('selectedPanelTitle', title)
@@ -33,11 +24,28 @@ export const selectPanel = (title: string) => {
   selected?.classList.add('hidden')
   selectedButton?.classList.remove('selected')
 
-  selectedButton = element.querySelector<HTMLButtonElement>(`[data-title="${title}"]`)!
+  const button = element.querySelector<HTMLButtonElement>(`[data-title="${title}"]`)
+
+  if (button === null) {
+    throw new Error(`panel of title ${title} does not exist!`)
+  }
+
+  selectedButton = button
   selectedButton.classList.add('selected')
 
   selected = paneMap.get(title)!.element
   selected.classList.remove('hidden')
+}
+
+const createButton = (title: string) => {
+  const button = document.createElement('button')
+  button.className = 'tp-fldv_b panels-button'
+  button.dataset.title = title
+  button.textContent = title
+  button.addEventListener('click', () => {
+    selectPanel(title)
+  })
+  return button
 }
 
 export const selectNextPanel = () => {

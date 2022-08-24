@@ -1,20 +1,23 @@
 import { renderer } from './renderer'
 
-let session: XRSession
-let xrSessionIsGranted = false
+let session: XRSession | undefined
+
+export const xrState = {
+  sessionGranted: false,
+}
 
 export const xrSupportState = {
-  NOT_SUPPORTED: 0,
-  NOT_SECURE: 1,
-  NOT_ALLOWED: 2,
-  ALLOWED: 3
+  ALLOWED: 0,
+  NOT_ALLOWED: 1,
+  NOT_SECURE: 2,
+  NOT_SUPPORTED: 3,
 } as const
 
 export const xrSupportStateMessage = {
-  0: 'XR not supported',
-  1: 'XR requires HTTPS',
-  2: 'XR is not allowed',
-  3: 'Enter XR'
+  0: 'Enter XR',
+  1: 'XR is not allowed',
+  2: 'XR requires HTTPS',
+  3: 'XR not supported',
 } as const
 
 export const requestXrSessionSupport = async () => {
@@ -22,10 +25,10 @@ export const requestXrSessionSupport = async () => {
     return xrSupportState.NOT_SUPPORTED
   }
 
-  if (window.isSecureContext === false) {
+  if (!window.isSecureContext) {
     return xrSupportState.NOT_SECURE
   }
-  
+
   try {
     const supported = await navigator.xr.isSessionSupported('immersive-vr')
 
@@ -34,32 +37,36 @@ export const requestXrSessionSupport = async () => {
     }
 
     return xrSupportState.NOT_SUPPORTED
-
-  } catch (error) {
-    console.error(error)
-
+  } catch {
     return xrSupportState.NOT_ALLOWED
   }
 }
 
 export const requestSession = async () => {
-  session = await navigator.xr!.requestSession('immersive-vr', {
+  if (navigator.xr === undefined) {
+    throw new Error('navigator.xr is undefined!')
+  }
+
+  session = await navigator.xr.requestSession('immersive-vr', {
     optionalFeatures: [
       'local-floor',
       'bounded-floor',
       'hand-tracking',
-      'layers'
-    ]
+      'layers',
+    ],
   })
 
   return renderer.xr.setSession(session)
 }
 
 export const endSession = () => {
-  session!.end()
+  if (session === undefined) {
+    throw new Error('Tried to end undefined session!')
+  }
+  session.end()
 }
 
-export const addButton = async (parent = document.body, style?: string) => {
+export const addButton = async (parent?: HTMLElement, style?: string) => {
   const xrSupport = await requestXrSessionSupport()
   const button = document.createElement('button')
 
@@ -80,20 +87,28 @@ export const addButton = async (parent = document.body, style?: string) => {
   if (import.meta.env.THREE_POSTPROCESSING === 'true') {
     button.textContent = 'XR and postprocessing not supported'
   } else if (xrSupport === xrSupportState.ALLOWED) {
-    button.addEventListener('click', () => requestSession())
+    button.addEventListener('click', () => {
+      return requestSession()
+    })
   }
 
-  parent.append(button)
+  const element = parent ?? document.body
+  element.append(button)
 }
 
 if (import.meta.env.THREE_XR === 'true') {
-  // WebXRViewer (based on Firefox) has a bug where addEventListener
-  // throws a silent exception and aborts execution entirely.
-  if (navigator.xr === undefined || /WebXRViewer\//i.test(navigator.userAgent)) {
-    // do nothing
+  /*
+   * WebXRViewer (based on Firefox) has a bug where addEventListener
+   * throws a silent exception and aborts execution entirely.
+   */
+  if (
+    navigator.xr === undefined ||
+    (/WebXRViewer\//ui).test(navigator.userAgent)
+  ) {
+    // Do nothing
   } else {
     navigator.xr.addEventListener('sessiongranted', () => {
-      xrSessionIsGranted = true
+      xrState.sessionGranted = true
     })
   }
 

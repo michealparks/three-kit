@@ -1,6 +1,8 @@
-import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory'
 import * as THREE from 'three'
 import { renderer, scene } from '../lib'
+import {
+  XRControllerModelFactory
+} from 'three/examples/jsm/webxr/XRControllerModelFactory'
 
 export const createControllerModels = () => {
   const controllerModelFactory = new XRControllerModelFactory()
@@ -16,7 +18,7 @@ export const createControllerModels = () => {
   const geometry = new THREE.BufferGeometry()
   geometry.setFromPoints([
     new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(0, 0, - 5)
+    new THREE.Vector3(0, 0, -5),
   ])
 
   const controller1 = renderer.xr.getController(0)

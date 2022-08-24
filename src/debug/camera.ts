@@ -1,13 +1,13 @@
+import { camera, renderer, update } from '../lib'
+import { erase, save, storage } from './storage'
+import { addFolder, pane } from './pane'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { renderer, camera, update } from '../lib'
-import { pane, addFolder } from './pane'
 import { addTransformInputs } from './pane/inputs'
-import { storage, save, erase } from './storage'
 
 const constants = {
+  CONTROLS_MAP: 2,
   CONTROLS_NONE: 0,
   CONTROLS_ORBIT: 1,
-  CONTROLS_MAP: 2
 }
 
 const params = {
@@ -26,16 +26,21 @@ camera.position.set = (...args) => {
 export const orbitControls = new OrbitControls(camera, renderer.domElement)
 
 if (storage.debugCamera && params.controls !== constants.CONTROLS_NONE) {
-  orbitControls.target.fromArray(storage.debugCamera.target)
-  camera.quaternion.fromArray(storage.debugCamera.quaternion)
-  camera.position.fromArray(storage.debugCamera.position)
+  const cam = storage.debugCamera as {
+    target: number[]
+    quaternion: number[]
+    position: number[]
+  }
+  orbitControls.target.fromArray(cam.target)
+  camera.quaternion.fromArray(cam.quaternion)
+  camera.position.fromArray(cam.position)
   orbitControls.update()
 }
 
 const controls = [
   constants.CONTROLS_NONE,
   constants.CONTROLS_ORBIT,
-  constants.CONTROLS_MAP
+  constants.CONTROLS_MAP,
 ]
 
 const savePosition = () => {
@@ -67,19 +72,21 @@ const handleCameraChange = () => {
   camera.updateProjectionMatrix()
 }
 
-const cameraFolder = addFolder(pane, `camera`, 1)
+const cameraFolder = addFolder(pane, 'camera', 1)
 
 const titles = ['none', 'orbit', 'map']
 
 cameraFolder.addInput(params, 'controls', {
-  view: 'radiogrid',
+  cells: (x: number, y: number) => {
+    return {
+      title: titles[controls[(y * 3) + x]],
+      value: controls[(y * 3) + x],
+    }
+  },
   groupName: 'controls',
-  size: [3, 1],
-  cells: (x: number, y: number) => ({
-    title: titles[controls[y * 3 + x]],
-    value: controls[y * 3 + x],
-  }),
   label: 'controls',
+  size: [3, 1],
+  view: 'radiogrid',
 }).on('change', setEnabledControls)
 
 cameraFolder.addInput(camera, 'near').on('change', handleCameraChange)

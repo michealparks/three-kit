@@ -1,5 +1,5 @@
-import { update } from './update'
 import * as ThreeMeshUI from 'three-mesh-ui'
+import { update } from './update'
 
 const font = import.meta.env.THREE_MESH_UI_FONT
 
@@ -9,11 +9,17 @@ export interface Options {
   padding?: number
   borderRadius?: number
   fontSize?: number
-  justifyContent?: 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly'
+  justifyContent?:
+    | 'start'
+    | 'center'
+    | 'end'
+    | 'space-between'
+    | 'space-around'
+    | 'space-evenly'
   contentDirection?: 'row-reverse'
 }
 
-export const createBlock = ({ 
+export const createBlock = ({
   width = 1,
   height = 0.5,
   padding = 0.1,
@@ -23,23 +29,23 @@ export const createBlock = ({
   contentDirection = 'row-reverse',
 }: Options = {}) => {
   return new ThreeMeshUI.Block({
-    justifyContent,
-		contentDirection,
-    width,
-    height,
-    padding,
     borderRadius,
-    fontSize,
+    contentDirection,
     fontFamily: `${font}.json`,
+    fontSize,
     fontTexture: `${font}.png`,
+    height,
+    justifyContent,
+    padding,
+    width,
   })
 }
 
 export const createText = (content: string, fontSize?: number, fontColor?: string) => {
   return new ThreeMeshUI.Text({
     content,
+    fontColor,
     fontSize,
-		fontColor,
   })
 }
 

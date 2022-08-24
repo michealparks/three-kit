@@ -2,39 +2,39 @@ import { renderer } from './renderer'
 
 const isXr = import.meta.env.THREE_XR === 'true'
 
-export const pressedKeys: Set<string> = new Set()
+export const pressedKeys = new Set<string>()
 
 let keyboardControlling = false
 
 export const keyboard = {
+  e: 0,
+  q: 0,
+  shift: 0,
+  space: 0,
   x: 0,
   y: 0,
-  space: 0,
-  q: 0,
-  e: 0,
-  shift: 0,
 }
 
 export const gamepad = {
-  connected: false,
-  leftStickX: 0,
-  leftStickY: 0,
-  rightStickX: 0,
-  rightStickY: 0,
-  padX: 0,
-  padY: 0,
   A: 0,
   B: 0,
   X: 0,
   Y: 0,
-  leftBumper: 0,
-  rightBumper: 0,
-  leftTrigger: 0,
-  rightTrigger: 0,
   back: 0,
-  start: 0,
+  connected: false,
+  leftBumper: 0,
   leftStickButton: 0,
+  leftStickX: 0,
+  leftStickY: 0,
+  leftTrigger: 0,
+  padX: 0,
+  padY: 0,
+  rightBumper: 0,
   rightStickButton: 0,
+  rightStickX: 0,
+  rightStickY: 0,
+  rightTrigger: 0,
+  start: 0,
 }
 
 export const xrControllers: {
@@ -53,52 +53,35 @@ export const xrGamepads: {
   right: undefined,
 }
 
-export const update = () => {
-  if (gamepad.connected === false || keyboardControlling === true) {
-    return
-  }
-
-  if (isXr) {
-    if (xrGamepads.left !== undefined && xrGamepads.right !== undefined) {
-      return handleXrGamepads()
-    }
-  }
-
-  const [pad1, pad2] = window.navigator.getGamepads()
-
-  if (pad1 !== null) {
-    handleGamepad(pad1)
-  }
-
-  if (pad2 !== null) {
-    handleGamepad(pad2)
-  }
-}
-
 /**
  * Configured currently for oculus quest 2 controllers
  */
 const handleXrGamepads = () => {
-  const left = xrGamepads.left!
-  const right = xrGamepads.right!
+  const { left, right } = xrGamepads
 
-  gamepad.leftStickX = left.axes[2]
-  gamepad.leftStickY = left.axes[3]
-  gamepad.leftTrigger = left.buttons[0].value
-  gamepad.leftBumper = left.buttons[1].value
-  gamepad.back = left.buttons[2].value // ???
-  gamepad.leftStickButton = left.buttons[3].value
-  gamepad.X = left.buttons[4].value
-  gamepad.Y = left.buttons[5].value
+  if (left !== undefined) {
+    gamepad.leftStickX = left.axes[2]
+    gamepad.leftStickY = left.axes[3]
+    gamepad.leftTrigger = left.buttons[0].value
+    gamepad.leftBumper = left.buttons[1].value
+    // ???
+    gamepad.back = left.buttons[2].value
+    gamepad.leftStickButton = left.buttons[3].value
+    gamepad.X = left.buttons[4].value
+    gamepad.Y = left.buttons[5].value
+  }
 
-  gamepad.rightStickX = right.axes[2]
-  gamepad.rightStickY = right.axes[3]
-  gamepad.rightTrigger = right.buttons[0].value
-  gamepad.rightBumper = right.buttons[1].value
-  gamepad.start = right.buttons[2].value // ???
-  gamepad.rightStickButton = right.buttons[3].value
-  gamepad.A = right.buttons[4].value
-  gamepad.B = right.buttons[5].value
+  if (right !== undefined) {
+    gamepad.rightStickX = right.axes[2]
+    gamepad.rightStickY = right.axes[3]
+    gamepad.rightTrigger = right.buttons[0].value
+    gamepad.rightBumper = right.buttons[1].value
+    // ???
+    gamepad.start = right.buttons[2].value
+    gamepad.rightStickButton = right.buttons[3].value
+    gamepad.A = right.buttons[4].value
+    gamepad.B = right.buttons[5].value
+  }
 }
 
 const handleGamepad = ({ axes, buttons }: Gamepad) => {
@@ -127,6 +110,29 @@ const handleGamepad = ({ axes, buttons }: Gamepad) => {
   gamepad.padX = buttons[14].pressed ? -1 : buttons[15].pressed ? 1 : 0
 }
 
+export const update = () => {
+  if (!gamepad.connected || keyboardControlling) {
+    return
+  }
+
+  if (isXr) {
+    if (xrGamepads.left !== undefined || xrGamepads.right !== undefined) {
+      handleXrGamepads()
+      return
+    }
+  }
+
+  const [pad1, pad2] = window.navigator.getGamepads()
+
+  if (pad1 !== null) {
+    handleGamepad(pad1)
+  }
+
+  if (pad2 !== null) {
+    handleGamepad(pad2)
+  }
+}
+
 const handleKey = (key: string, pressed: number) => {
   switch (key.toLowerCase()) {
   case 's':
@@ -153,6 +159,8 @@ const handleKey = (key: string, pressed: number) => {
   case 'shift':
     keyboard[key as 'q' | 'e' | 'shift'] = +1 * pressed
     break
+  default:
+    break
   }
 }
 
@@ -162,8 +170,8 @@ const handleKeyDown = (event: { key: string }) => {
 
   pressedKeys.add(key)
 
-  for (const key of pressedKeys) {
-    handleKey(key, 1)
+  for (const pressedKey of pressedKeys) {
+    handleKey(pressedKey, 1)
   }
 }
 
@@ -174,12 +182,18 @@ const handleKeyUp = (event: { key: string }) => {
 
   handleKey(key, 0)
 
-  for (const key of pressedKeys) {
-    handleKey(key, 1)
+  for (const pressedKey of pressedKeys) {
+    handleKey(pressedKey, 1)
   }
 
   if (pressedKeys.size === 0) {
     keyboardControlling = false
+  }
+}
+
+const handleGamepadDisconnected = () => {
+  if (xrGamepads.left === undefined && xrGamepads.right === undefined) {
+    gamepad.connected = false
   }
 }
 
@@ -194,16 +208,13 @@ const handleGamepadConnected = () => {
   window.addEventListener('gamepaddisconnected', handleGamepadDisconnected)
 }
 
-const handleGamepadDisconnected = () => {
-  gamepad.connected = false
-}
 
 const handleXrSelectStart = () => {
-
+  /** TODO */
 }
 
 const handleXrSelectEnd = () => {
-
+  /** TODO */
 }
 
 const handleXrControllerConnected = ({ data }: { data: XRInputSource }) => {
@@ -215,7 +226,7 @@ const handleXrControllerConnected = ({ data }: { data: XRInputSource }) => {
     xrGamepads.right = data.gamepad
   }
 
-  if (xrGamepads.left !== undefined && xrGamepads.right !== undefined) {
+  if (xrGamepads.left !== undefined || xrGamepads.right !== undefined) {
     gamepad.connected = true
   }
 }
@@ -250,17 +261,17 @@ if (import.meta.env.THREE_CONTROLS === 'true') {
     const controller1 = renderer.xr.getController(0)
     controller1.addEventListener('selectstart', handleXrSelectStart)
     controller1.addEventListener('selectend', handleXrSelectEnd)
-    // @ts-ignore
+    // @ts-expect-error this is not correctly typed
     controller1.addEventListener('connected', handleXrControllerConnected)
-    // @ts-ignore
+    // @ts-expect-error this is not correctly typed
     controller1.addEventListener('disconnected', handleXrControllerDisconnected)
-  
+
     const controller2 = renderer.xr.getController(1)
     controller2.addEventListener('selectstart', handleXrSelectStart)
     controller2.addEventListener('selectend', handleXrSelectEnd)
-    // @ts-ignore
+    // @ts-expect-error this is not correctly typed
     controller2.addEventListener('connected', handleXrControllerConnected)
-    // @ts-ignore
+    // @ts-expect-error this is not correctly typed
     controller2.addEventListener('disconnected', handleXrControllerDisconnected)
   }
 }

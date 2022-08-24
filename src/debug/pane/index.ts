@@ -1,13 +1,13 @@
-import * as panels from './panels'
-import { Pane, FolderApi } from 'tweakpane'
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
+import * as panels from './panels'
+import { FolderApi, Pane } from 'tweakpane'
 import { save, storage } from '../storage'
 
 export type Panes = Pane | FolderApi
 
 const savedSelectedPanelTitle = storage.selectedPanelTitle
-const storedState: Record<string, boolean> = storage.expandedPanes ?? {}
+const storedState = (storage.expandedPanes ?? {}) as Record<string, boolean | undefined>
 const panes: Panes[] = []
 const paneContainers: HTMLElement[] = []
 
@@ -15,9 +15,9 @@ let isVisible = true
 
 export const addFolder = (pane: Pane | FolderApi, title: string, index?: number) => {
   const folder = pane.addFolder({
-    title,
-    index,
     expanded: storedState[title] ?? false,
+    index,
+    title,
   })
 
   panes.push(folder)
@@ -51,8 +51,8 @@ if (!savedSelectedPanelTitle) {
 
 window.onbeforeunload = () => {
   const state: Record<string, boolean> = {}
-  for (const pane of panes) {
-    state[pane.title!] = pane.expanded
+  for (const { expanded } of panes) {
+    state[pane.title!] = expanded
   }
 
   save('expandedPanes', state)
@@ -68,25 +68,27 @@ pane.element.addEventListener('mouseup', () => {
 })
 
 document.addEventListener('keypress', (event) => {
-  if (event.shiftKey === false) {
+  if (!event.shiftKey) {
     return
   }
 
   switch (event.key.toLowerCase()) {
-    case 'a':
-      for (const element of paneContainers) {
-        element.style.transform = isVisible ? 'translate(110%, 0)' : ''
-      }
-      panels.element.style.transform = isVisible ? 'translate(0, -150%)' : ''
-      isVisible = !isVisible
-      break
+  case 'a':
+    for (const element of paneContainers) {
+      element.style.transform = isVisible ? 'translate(110%, 0)' : ''
+    }
+    panels.element.style.transform = isVisible ? 'translate(0, -150%)' : ''
+    isVisible = !isVisible
+    break
 
-    case '~':
-      panels.selectPreviousPanel()
-      break
+  case '~':
+    panels.selectPreviousPanel()
+    break
 
-    case '!':
-      panels.selectNextPanel()
-      break
+  case '!':
+    panels.selectNextPanel()
+    break
+  default:
+    break
   }
 })

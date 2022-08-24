@@ -1,7 +1,7 @@
-import { scene } from '../lib/scene'
 import * as lights from './lights'
 import * as meshes from './meshes'
 import * as objects from './objects'
+import { scene } from '../lib/scene'
 
 const add = scene.add.bind(scene)
 const remove = scene.remove.bind(scene)

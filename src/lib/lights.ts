@@ -1,8 +1,10 @@
 import * as THREE from 'three'
-import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib'
+import {
+  RectAreaLightUniformsLib
+} from 'three/examples/jsm/lights/RectAreaLightUniformsLib'
 
 const AMBIENT_INTENSITY = Number.parseFloat(import.meta.env.THREE_AMBIENT_INTENSITY)
-const DIRECTIONAL_INTENSITY = Number.parseFloat(import.meta.env.THREE_DIRECTIONAL_INTENSITY)
+const DIR_INTENSITY = Number.parseFloat(import.meta.env.THREE_DIRECTIONAL_INTENSITY)
 const HEMI_INTENSITY = Number.parseFloat(import.meta.env.THREE_HEMI_INTENSITY)
 const POINT_INTENSITY = Number.parseFloat(import.meta.env.THREE_POINT_INTENSITY)
 const SPOT_INTENSITY = Number.parseFloat(import.meta.env.THREE_SPOT_INTENSITY)
@@ -22,12 +24,12 @@ export const createAmbient = (
 
 export const createDirectional = (
   color = import.meta.env.THREE_DIRECTIONAL_COLOR,
-  intensity = DIRECTIONAL_INTENSITY,
+  intensity = DIR_INTENSITY,
   shadowNear = 2,
-  shadowFar = 50,
+  shadowFar = 50
 ) => {
   const light = new THREE.DirectionalLight(color, intensity)
-  
+
   if (SHADOW_MAP) {
     light.castShadow = true
     light.shadow.camera.near = shadowNear
@@ -43,7 +45,7 @@ export const createPoint = (
   color = import.meta.env.THREE_SPOT_COLOR,
   intensity = POINT_INTENSITY,
   shadowNear = 2,
-  shadowFar = 50,
+  shadowFar = 50
 ) => {
   const light = new THREE.PointLight(color, intensity)
 
@@ -75,7 +77,7 @@ export const createRectArea = (
   width = 1,
   height = 1
 ) => {
-  if (rectAreaUniformsAdded === false) {
+  if (!rectAreaUniformsAdded) {
     RectAreaLightUniformsLib.init()
     rectAreaUniformsAdded = true
   }
@@ -90,7 +92,7 @@ export const createSpot = (
   penumbra = 1,
   decay = 2,
   shadowNear = 2,
-  shadowFar = 50,
+  shadowFar = 50
 ) => {
   const light = new THREE.SpotLight(color, intensity)
   light.penumbra = penumbra

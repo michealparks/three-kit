@@ -1,13 +1,13 @@
+import * as controls from './controls'
 import { renderer, resizeRendererToDisplaySize } from './renderer'
+import { camera } from './camera'
 import { composer } from './postprocessing'
 import { scene } from './scene'
-import { camera } from './camera'
-import * as controls from './controls'
 
 const callbacks: XRFrameRequestCallback[] = []
 
 const loop: XRFrameRequestCallback = (time, frame) => {
-  resizeRendererToDisplaySize(camera, composer)
+  resizeRendererToDisplaySize()
 
   if (import.meta.env.THREE_CONTROLS === 'true') {
     controls.update()

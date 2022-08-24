@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 export const scene = new THREE.Scene()
 
-export const clearScene = (scene: THREE.Scene): void => {
+export const clearScene = (): void => {
   const toDelete = new Set<THREE.Object3D>()
 
   scene.traverse((object) => {
@@ -16,8 +16,8 @@ export const clearScene = (scene: THREE.Scene): void => {
       object.geometry.dispose()
 
       if (Array.isArray(object.material)) {
-        for (const m of object.material) {
-          m.dispose()
+        for (const material of object.material) {
+          material.dispose()
         }
       } else {
         object.material.dispose()
