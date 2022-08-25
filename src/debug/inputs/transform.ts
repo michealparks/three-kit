@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Panes, addFolder, state } from '.'
+import { Panes, addFolder, state } from '../pane'
 import { update } from '../../lib'
 
 const vec3 = new THREE.Vector3()
@@ -38,8 +38,7 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
     }
   })
 
-  if ('isInstancedMesh' in object3D) {
-    const imesh = object3D as THREE.InstancedMesh
+  if (object3D instanceof THREE.InstancedMesh) {
     const imeshFolder = addFolder(pane, 'instances')
 
     const imeshParams = {
@@ -49,7 +48,7 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
     }
 
     const imeshIndex = imeshFolder.addInput(imeshParams, 'index', {
-      max: imesh.count - 1,
+      max: object3D.count - 1,
       min: 0,
       step: 1,
     })
@@ -57,7 +56,7 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
     const imeshRot = imeshFolder.addInput(imeshParams, 'quaternion', quatSettings)
 
     const instanceIndexChange = () => {
-      imesh.getMatrixAt(imeshParams.index, mat4)
+      object3D.getMatrixAt(imeshParams.index, mat4)
       mat4.decompose(vec3, quat, scale)
       imeshParams.position.copy(vec3)
       imeshParams.quaternion.copy(quat)
@@ -70,8 +69,8 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
       vec3.copy(imeshParams.position)
       mat4.makeRotationFromQuaternion(quat)
       mat4.setPosition(vec3)
-      imesh.setMatrixAt(imeshParams.index, mat4)
-      imesh.instanceMatrix.needsUpdate = true
+      object3D.setMatrixAt(imeshParams.index, mat4)
+      object3D.instanceMatrix.needsUpdate = true
     }
 
     imeshIndex.on('change', instanceIndexChange)
@@ -86,21 +85,4 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
       }
     })
   }
-}
-
-export const addForwardHelperInput = (pane: Panes, object3D: THREE.Object3D) => {
-  const helper = new THREE.ArrowHelper()
-  helper.setLength(1)
-
-  const params = {
-    forwardHelper: false,
-  }
-
-  pane.addInput(params, 'forwardHelper').on('change', () => {
-    if (params.forwardHelper) {
-      object3D.add(helper)
-    } else {
-      object3D.remove(helper)
-    }
-  })
 }

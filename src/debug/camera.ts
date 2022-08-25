@@ -2,7 +2,7 @@ import { camera, renderer, update } from '../lib'
 import { erase, save, storage } from './storage'
 import { addFolder, pane } from './pane'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { addTransformInputs } from './pane/inputs'
+import { addTransformInputs } from './inputs/transform'
 
 const constants = {
   CONTROLS_MAP: 2,

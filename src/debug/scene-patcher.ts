@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import * as lights from './lights'
 import * as meshes from './meshes'
 import * as objects from './objects'
@@ -9,12 +10,14 @@ const remove = scene.remove.bind(scene)
 scene.add = (...args) => {
   const [object] = args
 
-  if ('isLight' in object) {
-    lights.register(object as THREE.Light)
-  } else if ('isMesh' in object) {
+  if (object instanceof THREE.Light) {
+    lights.register(object)
+  } else if (object instanceof THREE.Mesh) {
     meshes.register(object as THREE.Mesh)
-  } else if ('isObject3D' in object) {
+  } else if (object instanceof THREE.Object3D) {
     objects.register(object)
+  } else {
+    // @TODO Surface uncaught objects
   }
 
   return add(...args)
@@ -23,12 +26,12 @@ scene.add = (...args) => {
 scene.remove = (...args) => {
   const [object] = args
 
-  if ('isLight' in object) {
-    lights.deregister(object as THREE.Light)
-  } else if ('isMesh' in object) {
-    meshes.register(object as THREE.Mesh)
-  } else if ('isObject3D' in object) {
-    objects.register(object)
+  if (object instanceof THREE.Light) {
+    lights.deregister(object)
+  } else if (object instanceof THREE.Mesh) {
+    meshes.deregister(object)
+  } else if (object instanceof THREE.Object3D) {
+    objects.deregister(object)
   }
 
   return remove(...args)

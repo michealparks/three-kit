@@ -1,7 +1,8 @@
 import * as controls from './controls'
-import { renderer, resizeRendererToDisplaySize } from './renderer'
 import { camera } from './camera'
 import { composer } from './postprocessing'
+import { renderer } from './renderer'
+import { resizeRendererToDisplaySize } from './render-to-display-size'
 import { scene } from './scene'
 
 const callbacks: XRFrameRequestCallback[] = []

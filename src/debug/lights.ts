@@ -1,7 +1,8 @@
 import * as THREE from 'three'
 import { Panes, addFolder, pane } from './pane'
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
-import { addTransformInputs } from './pane/inputs'
+import { addTransformInputs } from './inputs/transform'
+import { defaultMinMax } from './constants'
 import { scene } from '../lib'
 
 type LightHelper =
@@ -12,12 +13,6 @@ type LightHelper =
   | THREE.PointLightHelper
   | THREE.CameraHelper
 
-type LightWithShadow =
-  | THREE.SpotLight
-  | THREE.DirectionalLight
-  | THREE.PointLight
-  | THREE.DirectionalLight
-
 export const lightFolder = addFolder(pane, 'lights', 1)
 
 const lights = new Set<THREE.Light>()
@@ -27,12 +22,6 @@ const shadowCameraHelpers = new Map<THREE.Light, THREE.CameraHelper>()
 const helpersOn = false
 
 export const addGui = (light: THREE.Light, parent: Panes) => {
-  const isDirectional = 'isDirectionalLight' in light
-  const isHemi = 'isHemisphereLight' in light
-  const isSpot = 'isSpotLight' in light
-  const isPoint = 'isPointLight' in light
-  const isRectArea = 'isRectAreaLight' in light
-
   const folder = addFolder(parent, `#${light.id} ${light.name} (${light.type})`)
 
   const lightColor = {
@@ -46,40 +35,47 @@ export const addGui = (light: THREE.Light, parent: Panes) => {
     })
   folder.addInput(light, 'intensity')
 
-  if (isHemi) {
-    folder.addInput(light as THREE.HemisphereLight, 'groundColor')
+  if (light instanceof THREE.HemisphereLight) {
+    folder.addInput(light, 'groundColor')
   }
 
-  if (isDirectional || isSpot || isPoint) {
-    folder.addInput(light as LightWithShadow, 'castShadow')
+  if (
+    light instanceof THREE.DirectionalLight ||
+    light instanceof THREE.SpotLight ||
+    light instanceof THREE.PointLight
+  ) {
+    folder.addInput(light, 'castShadow')
     addTransformInputs(folder, light)
     // @TODO camera position
   }
 
-  if (isSpot) {
-    folder.addInput(light as THREE.SpotLight, 'angle', {
+  if (light instanceof THREE.SpotLight) {
+    folder.addInput(light, 'angle', {
       max: Math.PI / 2,
       min: 0,
     })
-    folder.addInput(light as THREE.SpotLight, 'penumbra', {
-      max: 1,
-      min: 0,
-    })
+    folder.addInput(light, 'penumbra', defaultMinMax)
   }
 
-  if (isSpot || isPoint) {
-    folder.addInput(light as THREE.SpotLight | THREE.PointLight, 'decay')
-    folder.addInput(light as THREE.SpotLight | THREE.PointLight, 'distance')
+  if (
+    light instanceof THREE.SpotLight ||
+    light instanceof THREE.PointLight
+  ) {
+    folder.addInput(light, 'decay')
+    folder.addInput(light, 'distance')
   }
 
-  if (isSpot || isPoint || isRectArea) {
-    const spotlight = light as THREE.SpotLight | THREE.PointLight | THREE.RectAreaLight
-    folder.addInput(spotlight, 'power')
+  if (
+    light instanceof THREE.SpotLight ||
+    light instanceof THREE.PointLight ||
+    light instanceof THREE.RectAreaLight
+  ) {
+    folder.addInput(light, 'power')
   }
 
-  if (isRectArea) {
-    folder.addInput(light as THREE.RectAreaLight, 'width')
-    folder.addInput(light as THREE.RectAreaLight, 'height')
+  if (light instanceof THREE.RectAreaLight) {
+    folder.addInput(light, 'width')
+    folder.addInput(light, 'height')
   }
 
   if (light.castShadow) {
@@ -109,18 +105,18 @@ export const addGui = (light: THREE.Light, parent: Panes) => {
       step: 0.001,
     })
 
-    if (isSpot || isDirectional) {
-      const camera = light.shadow.camera as THREE.OrthographicCamera
+    if (
+      light instanceof THREE.SpotLight ||
+      light instanceof THREE.DirectionalLight
+    ) {
+      const camera = light.shadow.camera
       camFolder.addInput(camera, 'near')
       camFolder.addInput(camera, 'far')
     }
 
-    if (isSpot) {
-      const camera = light.shadow.camera as THREE.PerspectiveCamera
-      camFolder.addInput(camera, 'focus', {
-        max: 1,
-        min: 0,
-      })
+    if (light instanceof THREE.SpotLight) {
+      const camera = light.shadow.camera
+      camFolder.addInput(camera, 'focus', defaultMinMax)
     }
   }
 
@@ -157,27 +153,27 @@ const addHelpers = (light: THREE.Light) => {
   let helper: LightHelper
   let shadowCameraHelper: THREE.CameraHelper | undefined
 
-  if ('isAmbientLight' in light) {
+  if (light instanceof THREE.AmbientLight) {
     return
-  } else if ('isSpotLight' in light) {
+  } else if (light instanceof THREE.SpotLight) {
     helper = new THREE.SpotLightHelper(light)
     if (light.castShadow) {
       shadowCameraHelper = new THREE.CameraHelper(light.shadow.camera)
     }
-  } else if ('isDirectionalLight' in light) {
-    helper = new THREE.DirectionalLightHelper(light as THREE.DirectionalLight)
+  } else if (light instanceof THREE.DirectionalLight) {
+    helper = new THREE.DirectionalLightHelper(light)
     if (light.castShadow) {
       shadowCameraHelper = new THREE.CameraHelper(light.shadow.camera)
     }
-  } else if ('isHemisphereLight' in light) {
-    helper = new THREE.HemisphereLightHelper(light as THREE.HemisphereLight, 10)
-  } else if ('isRectAreaLight' in light) {
-    helper = new RectAreaLightHelper(light as THREE.RectAreaLight)
+  } else if (light instanceof THREE.HemisphereLight) {
+    helper = new THREE.HemisphereLightHelper(light, 10)
+  } else if (light instanceof THREE.RectAreaLight) {
+    helper = new RectAreaLightHelper(light)
     if (light.castShadow) {
       shadowCameraHelper = new THREE.CameraHelper(light.shadow.camera)
     }
-  } else {
-    helper = new THREE.PointLightHelper(light as THREE.PointLight, 10)
+  } else if (light instanceof THREE.PointLight) {
+    helper = new THREE.PointLightHelper(light, 10)
   }
 
   if (shadowCameraHelper) {

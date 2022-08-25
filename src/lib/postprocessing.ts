@@ -5,7 +5,6 @@ import { camera } from './camera'
 import { renderer } from './renderer'
 import { scene } from './scene'
 
-
 export let composer: post.EffectComposer
 export let smaaEffect: post.SMAAEffect
 export let bloomEffect: post.BloomEffect
@@ -30,7 +29,7 @@ if (import.meta.env.THREE_POSTPROCESSING === 'true') {
   if (import.meta.env.THREE_POST_BLOOM === 'true') {
     bloomEffect = new post.BloomEffect({
       height: 480,
-      intensity: 20,
+      intensity: 1,
       kernelSize: post.KernelSize.VERY_LARGE,
       width: 480,
     })

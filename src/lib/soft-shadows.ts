@@ -57,7 +57,7 @@ float PCF_Filter(sampler2D shadowMap, vec2 uv, float zReceiver, float filterRadi
   }
   for (int i = 0; i < PCF_NUM_SAMPLES; i++) {
     float depth = unpackRGBAToDepth(texture2D(
-      xshadowMap, uv + -poissonDisk[ i ].yx * filterRadius));
+      shadowMap, uv + -poissonDisk[ i ].yx * filterRadius));
     if (zReceiver <= depth) sum += 1.0;
   }
   return sum / (2.0 * float(PCF_NUM_SAMPLES));

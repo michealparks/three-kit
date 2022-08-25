@@ -1,6 +1,7 @@
 import type * as THREE from 'three'
 import { addFolder, pane } from './pane'
-import { addForwardHelperInput, addTransformInputs } from './pane/inputs'
+import { addForwardHelperInput } from './inputs/helper-forward'
+import { addTransformInputs } from './inputs/transform'
 
 export const objectFolder = addFolder(pane, 'objects', 3)
 

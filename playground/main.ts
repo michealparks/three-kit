@@ -56,6 +56,8 @@ if (import.meta.env.THREE_DEBUG === 'true') {
 {
   const planeGeo = new THREE.PlaneGeometry(10, 10)
   const planeMat = new THREE.MeshStandardMaterial()
+  planeMat.flatShading = true
+
   const plane = new THREE.Mesh(planeGeo, planeMat)
   plane.name = 'Floor'
   plane.receiveShadow = true
@@ -68,6 +70,8 @@ const size = 0.5
 const count = 5
 const boxGeo = new THREE.BoxGeometry(size, size, size)
 const boxMat = new THREE.MeshStandardMaterial({ color: 'hotpink' })
+boxMat.flatShading = true
+
 const boxes = new THREE.InstancedMesh(boxGeo, boxMat, count)
 boxes.name = 'Boxes'
 boxes.castShadow = true
@@ -81,9 +85,17 @@ for (let i = 0; i < count; i += 1) {
 }
 
 const geometry = new THREE.IcosahedronGeometry()
-const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 })
-material.roughness = 0.5
-material.metalness = 0.5
+const material = new THREE.MeshPhysicalMaterial({ color: 0x00ff00 })
+material.side = THREE.DoubleSide
+material.transparent = true
+material.flatShading = true
+material.opacity = 0.5
+material.roughness = 0.1
+material.metalness = 0.01
+material.reflectivity = 1
+material.clearcoat = 1
+material.clearcoatRoughness = 0
+
 const mesh = new THREE.Mesh(geometry, material)
 mesh.name = 'Icosahedron'
 mesh.position.set(0, 1, -2)

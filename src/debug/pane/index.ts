@@ -31,7 +31,12 @@ export const addPane = (title: string) => {
   pane.registerPlugin(RotationPlugin)
   pane.element.classList.add('pane')
 
-  const parent = pane.element.parentElement!
+  const parent = pane.element.parentElement
+
+  if (parent === null) {
+    throw new Error(`Parent of pane ${title} is null!`)
+  }
+
   parent.style.transition = 'transform 300ms'
   parent.style.width = '300px'
   paneContainers.push(parent)
@@ -51,8 +56,12 @@ if (!savedSelectedPanelTitle) {
 
 window.onbeforeunload = () => {
   const state: Record<string, boolean> = {}
-  for (const { expanded } of panes) {
-    state[pane.title!] = expanded
+  for (const { title, expanded } of panes) {
+    if (title === undefined) {
+      throw new Error('Pane has undefined title!')
+    }
+
+    state[title] = expanded
   }
 
   save('expandedPanes', state)
