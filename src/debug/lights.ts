@@ -96,6 +96,7 @@ export const addGui = (light: THREE.Light, parent: Panes) => {
       light.shadow.mapSize.width = shadowMapParams.mapSize
       light.shadow.mapSize.height = shadowMapParams.mapSize
       light.shadow.dispose()
+      // @ts-expect-error This is needed to recalculate the shadow map.
       light.shadow.map = null
     })
 
@@ -174,6 +175,8 @@ const addHelpers = (light: THREE.Light) => {
     }
   } else if (light instanceof THREE.PointLight) {
     helper = new THREE.PointLightHelper(light, 10)
+  } else {
+    throw new Error(`Unsupported light type ${light.type}!`)
   }
 
   if (shadowCameraHelper) {

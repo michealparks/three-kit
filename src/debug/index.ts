@@ -5,6 +5,8 @@ import './postprocessing'
 
 import { addFolder, addPane } from './pane'
 import { stats } from './pane/stats'
-export { orbitControls } from './camera'
-export { stats }
+
 export { addPane, addFolder }
+export { orbitControls } from './camera'
+export { save, storage } from './storage'
+export { stats }
