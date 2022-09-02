@@ -9,6 +9,7 @@ const axesHelper = new THREE.AxesHelper(1_000)
 
 const params = {
   axesHelper: storage.axesHelper ?? false,
+  fogColor: `#${scene.fog?.color.getHexString().toUpperCase()}`,
   lightHelper: storage.lightHelper ?? false,
 }
 
@@ -18,6 +19,20 @@ if (storage.axesHelper) {
 
 if (storage.lightHelper) {
   lights.toggleHelpers(params.lightHelper as boolean)
+}
+
+if (scene.fog) {
+  const fogFolder = addFolder(sceneFolder, 'fog')
+  fogFolder.addInput(params, 'fogColor', {
+    label: 'color',
+  }).on('change', () => {
+    scene.fog?.color.set(params.fogColor!)
+  })
+
+  if (scene.fog instanceof THREE.Fog) {
+    fogFolder.addInput(scene.fog, 'near')
+    fogFolder.addInput(scene.fog, 'far')
+  }
 }
 
 sceneFolder.addInput(params, 'axesHelper', {

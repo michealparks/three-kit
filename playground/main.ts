@@ -2,6 +2,8 @@ import './main.css'
 import * as THREE from 'three'
 import { camera, run, update, lights, scene, meshUi } from '../src/main'
 
+scene.fog = new THREE.Fog()
+
 const parameters = {
   scale: 1,
   autoRotate: true,

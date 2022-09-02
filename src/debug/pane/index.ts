@@ -8,7 +8,7 @@ export type Panes = Pane | FolderApi
 
 const savedSelectedPanelTitle = storage.selectedPanelTitle
 const storedState = (storage.expandedPanes ?? {}) as Record<string, boolean | undefined>
-const panes: Panes[] = []
+const folders: Panes[] = []
 const paneContainers: HTMLElement[] = []
 
 let isVisible = true
@@ -20,7 +20,7 @@ export const addFolder = (pane: Pane | FolderApi, title: string, index?: number)
     title,
   })
 
-  panes.push(folder)
+  folders.push(folder)
 
   return folder
 }
@@ -49,6 +49,12 @@ export const addPane = (title: string) => {
   return pane
 }
 
+const closeFolders = () => {
+  for (const folder of folders) {
+    folder.expanded = false
+  }
+}
+
 export const pane = addPane('world')
 if (!savedSelectedPanelTitle) {
   panels.selectPanel('world')
@@ -56,7 +62,7 @@ if (!savedSelectedPanelTitle) {
 
 window.onbeforeunload = () => {
   const state: Record<string, boolean> = {}
-  for (const { title, expanded } of panes) {
+  for (const { title, expanded } of folders) {
     if (title === undefined) {
       throw new Error('Pane has undefined title!')
     }
@@ -88,6 +94,10 @@ document.addEventListener('keypress', (event) => {
     }
     panels.element.style.transform = isVisible ? 'translate(0, -150%)' : ''
     isVisible = !isVisible
+    break
+
+  case 'x':
+    closeFolders()
     break
 
   case '~':

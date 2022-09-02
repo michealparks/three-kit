@@ -106,8 +106,8 @@ const handleGamepad = ({ axes, buttons }: Gamepad) => {
   gamepad.leftStickButton = buttons[10].value
   gamepad.rightStickButton = buttons[11].value
 
-  gamepad.padY = buttons[12].pressed ? -1 : buttons[13].pressed ? 1 : 0
-  gamepad.padX = buttons[14].pressed ? -1 : buttons[15].pressed ? 1 : 0
+  gamepad.padY = -buttons[12].value || buttons[13].value
+  gamepad.padX = -buttons[14].value || buttons[15].value
 }
 
 export const update = () => {

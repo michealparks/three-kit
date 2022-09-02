@@ -25,14 +25,24 @@ const loop: XRFrameRequestCallback = (time, frame) => {
   }
 }
 
+/**
+ * Starts the animation loop.
+ */
 export const run = () => {
   renderer.setAnimationLoop(loop)
 }
 
+/**
+ * Pauses the animation looop.
+ */
 export const pause = () => {
   renderer.setAnimationLoop(null)
 }
 
+/**
+ * Registers a callback that will be executed on each frame.
+ * @param callback The callback to execute on each frame.
+ */
 export const update = (callback: XRFrameRequestCallback) => {
   callbacks.push(callback)
 }

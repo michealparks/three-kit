@@ -35,6 +35,7 @@ module.exports = {
       imports: 'never',
       objects: 'always-multiline',
     }],
+    'default-last-param': 'off',
     'dot-location': ['error', 'property'],
     'function-call-argument-newline': ['error', 'consistent'],
     'id-length': 'off',
