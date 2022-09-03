@@ -6,7 +6,7 @@ import {
 import { raycaster } from './raycaster'
 import { renderer } from './renderer'
 import { scene } from './scene'
-
+import { user } from './camera'
 
 const offsetPosition = {
   w: 1,
@@ -15,9 +15,10 @@ const offsetPosition = {
   z: 0,
 }
 
-const offsetRotation = new THREE.Quaternion()
+// const offsetRotation = new THREE.Quaternion()
 const m4 = new THREE.Matrix4()
 const objects: THREE.Object3D[] = []
+const originalPosition = new THREE.Vector3()
 
 const raylines: THREE.Line[] = []
 const controllers: THREE.XRTargetRaySpace[] = []
@@ -83,10 +84,12 @@ const handleSelectEnd = (event: { target: THREE.Object3D }) => {
     offsetPosition.y = -intersection.y
     offsetPosition.z = -intersection.z
 
-    const transform = new XRRigidTransform(offsetPosition, offsetRotation)
-    const teleportSpaceOffset = baseReferenceSpace!.getOffsetReferenceSpace(transform)
+    user.position.copy(intersection)
 
-    renderer.xr.setReferenceSpace(teleportSpaceOffset)
+    // const transform = new XRRigidTransform(offsetPosition, offsetRotation)
+    // const teleportSpaceOffset = baseReferenceSpace!.getOffsetReferenceSpace(transform)
+
+    // renderer.xr.setReferenceSpace(teleportSpaceOffset)
   }
 }
 
@@ -162,10 +165,12 @@ export const enableTeleport = (navMesh: THREE.Object3D) => {
 
   objects.push(navMesh)
   scene.add(marker)
-  scene.add(controllers[0])
-  scene.add(controllers[1])
-  scene.add(grips[0])
-  scene.add(grips[1])
+  user.add(controllers[0])
+  user.add(controllers[1])
+  user.add(grips[0])
+  user.add(grips[1])
+
+  originalPosition.copy(user.position)
 
   update(handleUpdate)
 
@@ -175,10 +180,12 @@ export const enableTeleport = (navMesh: THREE.Object3D) => {
 export const disableTeleport = () => {
   objects.pop()
   scene.remove(marker)
-  scene.remove(controllers[0])
-  scene.remove(controllers[1])
-  scene.remove(grips[0])
-  scene.remove(grips[1])
+  user.remove(controllers[0])
+  user.remove(controllers[1])
+  user.remove(grips[0])
+  user.remove(grips[1])
+
+  user.position.copy(originalPosition)
 
   removeUpdate(handleUpdate)
 
