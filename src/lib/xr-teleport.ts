@@ -7,6 +7,7 @@ import { raycaster } from './raycaster'
 import { renderer } from './renderer'
 import { scene } from './scene'
 
+
 const offsetPosition = {
   w: 1,
   x: 0,
