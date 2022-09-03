@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { Panes, addFolder, state } from '../pane'
-import { update } from '../../lib'
+import { Panes, addFolder, deleteFolder, state } from '../pane'
+import { removeUpdate, update } from '../../lib/update'
 
 const vec3 = new THREE.Vector3()
 const scale = new THREE.Vector3()
@@ -30,13 +30,17 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
   const rotInput = pane.addInput(params, 'quaternion', quatSettings)
     .on('change', quaternionChange)
 
-  update(() => {
+  const handleTransformUpdate = () => {
     if (pane.expanded && !state.controlling) {
       params.quaternion.copy(quaternion)
       rotInput.refresh()
       posInput.refresh()
     }
-  })
+  }
+
+  update(handleTransformUpdate)
+
+  let imeshDispose: (() => void) | undefined
 
   if (object3D instanceof THREE.InstancedMesh) {
     const imeshFolder = addFolder(pane, 'instances')
@@ -77,12 +81,30 @@ export const addTransformInputs = (pane: Panes, object3D: THREE.Object3D) => {
     imeshPos.on('change', instanceChange)
     imeshRot.on('change', instanceChange)
 
-    update(() => {
+    const handleInstancedMeshUpdate = () => {
       if (imeshFolder.expanded && !state.controlling) {
         imeshParams.quaternion.copy(quaternion)
         imeshPos.refresh()
         imeshRot.refresh()
       }
-    })
+    }
+
+    update(handleInstancedMeshUpdate)
+
+    imeshDispose = () => {
+      deleteFolder(imeshFolder)
+      removeUpdate(handleInstancedMeshUpdate)
+    }
   }
+
+  const dispose = () => {
+    posInput.dispose()
+    rotInput.dispose()
+
+    removeUpdate(handleTransformUpdate)
+
+    imeshDispose?.()
+  }
+
+  return dispose
 }

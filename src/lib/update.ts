@@ -46,3 +46,7 @@ export const pause = () => {
 export const update = (callback: XRFrameRequestCallback) => {
   callbacks.push(callback)
 }
+
+export const removeUpdate = (callback: XRFrameRequestCallback) => {
+  callbacks.splice(callbacks.indexOf(callback), 1)
+}

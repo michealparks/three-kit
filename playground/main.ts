@@ -65,7 +65,7 @@ if (import.meta.env.THREE_DEBUG === 'true') {
   floor.rotation.set(-Math.PI / 2, 0, 0)
 
   if (import.meta.env.THREE_XR) {
-    xr.addXrTeleport(floor)
+    xr.enableTeleport(floor)
   }
 }
 

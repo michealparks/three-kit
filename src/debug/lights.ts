@@ -1,9 +1,11 @@
 import * as THREE from 'three'
-import { Panes, addFolder, pane } from './pane'
+import { addFolder, deleteFolder, pane } from './pane'
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
 import { addTransformInputs } from './inputs/transform'
 import { defaultMinMax } from './constants'
 import { scene } from '../lib'
+
+type Disposer = () => void
 
 type LightHelper =
   | THREE.SpotLightHelper
@@ -16,13 +18,14 @@ type LightHelper =
 export const lightFolder = addFolder(pane, 'lights', 1)
 
 const lights = new Set<THREE.Light>()
+const disposers = new WeakMap<THREE.Light, Disposer>()
 const lightHelpers = new Map<THREE.Light, LightHelper>()
 const shadowCameraHelpers = new Map<THREE.Light, THREE.CameraHelper>()
 
-const helpersOn = false
+export const register = (light: THREE.Light) => {
+  lights.add(light)
 
-export const addGui = (light: THREE.Light, parent: Panes) => {
-  const folder = addFolder(parent, `#${light.id} ${light.name} (${light.type})`)
+  const folder = addFolder(lightFolder, `#${light.id} ${light.name} (${light.type})`)
 
   const lightColor = {
     color: `#${light.color.getHexString().toUpperCase()}`,
@@ -126,28 +129,32 @@ export const addGui = (light: THREE.Light, parent: Panes) => {
     lightHelpers.get(light)?.update?.()
     shadowCameraHelpers.get(light)?.update()
   })
-}
 
-export const register = (light: THREE.Light) => {
-  lights.add(light)
+  disposers.set(light, () => {
+    deleteFolder(folder)
 
-  addGui(light, lightFolder)
+    const helper = lightHelpers.get(light)
+
+    if (helper !== undefined) {
+      helper.dispose()
+      scene.remove(helper)
+      lightHelpers.delete(light)
+
+      const shadowHelper = shadowCameraHelpers.get(light)
+
+      if (shadowHelper !== undefined) {
+        shadowHelper.dispose()
+        scene.remove(shadowHelper)
+        shadowCameraHelpers.delete(light)
+      }
+    }
+  })
 }
 
 export const deregister = (light: THREE.Light) => {
   lights.delete(light)
-
-  const helper = lightHelpers.get(light)
-
-  if (helpersOn && helper !== undefined) {
-    helper.dispose()
-    scene.remove(helper)
-    lightHelpers.delete(light)
-
-    if (shadowCameraHelpers.has(light)) {
-      // @Todo
-    }
-  }
+  disposers.get(light)!()
+  disposers.delete(light)
 }
 
 const addHelpers = (light: THREE.Light) => {

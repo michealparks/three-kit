@@ -25,6 +25,11 @@ export const addFolder = (pane: Pane | FolderApi, title: string, index?: number)
   return folder
 }
 
+export const deleteFolder = (folder: Pane | FolderApi) => {
+  folders.splice(folders.indexOf(folder), 1)
+  folder.dispose()
+}
+
 export const addPane = (title: string) => {
   const pane = new Pane()
   pane.registerPlugin(EssentialsPlugin)

@@ -16,4 +16,8 @@ export const addForwardHelperInput = (pane: Panes, object3D: THREE.Object3D) => 
       object3D.remove(helper)
     }
   })
+
+  return () => {
+    object3D.remove(helper)
+  }
 }

@@ -1,6 +1,6 @@
 import { renderer } from './renderer'
 
-export { addXrTeleport } from './xr-teleport'
+export { enableTeleport, disableTeleport } from './xr-teleport'
 
 let session: XRSession | undefined
 
