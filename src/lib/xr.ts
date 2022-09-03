@@ -1,5 +1,7 @@
 import { renderer } from './renderer'
 
+export { addXrTeleport } from './xr-teleport'
+
 let session: XRSession | undefined
 
 export const xrState = {

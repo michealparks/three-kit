@@ -1,8 +1,6 @@
 import './main.css'
 import * as THREE from 'three'
-import { camera, run, update, lights, scene, meshUi } from '../src/main'
-
-scene.fog = new THREE.Fog()
+import { camera, run, update, lights, scene, meshUi, xr } from '../src/main'
 
 const parameters = {
   scale: 1,
@@ -60,11 +58,15 @@ if (import.meta.env.THREE_DEBUG === 'true') {
   const planeMat = new THREE.MeshStandardMaterial()
   planeMat.flatShading = true
 
-  const plane = new THREE.Mesh(planeGeo, planeMat)
-  plane.name = 'Floor'
-  plane.receiveShadow = true
-  scene.add(plane)
-  plane.rotation.set(-Math.PI / 2, 0, 0)
+  const floor = new THREE.Mesh(planeGeo, planeMat)
+  floor.name = 'Floor'
+  floor.receiveShadow = true
+  scene.add(floor)
+  floor.rotation.set(-Math.PI / 2, 0, 0)
+
+  if (import.meta.env.THREE_XR) {
+    xr.addXrTeleport(floor)
+  }
 }
 
 const mat4 = new THREE.Matrix4()
