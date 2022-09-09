@@ -9,10 +9,16 @@ export const renderer = new THREE.WebGLRenderer({
   stencil: import.meta.env.THREE_POSTPROCESSING !== 'true',
 })
 
-document.body.append(renderer.domElement)
-
 renderer.physicallyCorrectLights = true
 renderer.xr.enabled = import.meta.env.THREE_XR === 'true'
+
+renderer.outputEncoding = import.meta.env.THREE_LINEAR === 'true'
+  ? THREE.LinearEncoding
+  : THREE.sRGBEncoding
+
+renderer.toneMapping = import.meta.env.THREE_FLAT === 'true'
+  ? THREE.NoToneMapping
+  : THREE.ACESFilmicToneMapping
 
 if (import.meta.env.THREE_SHADOW_MAP === 'true') {
   renderer.shadowMap.enabled = true
@@ -30,10 +36,4 @@ if (import.meta.env.THREE_SHADOW_MAP === 'true') {
   }
 }
 
-renderer.outputEncoding = import.meta.env.THREE_LINEAR === 'true'
-  ? THREE.LinearEncoding
-  : THREE.sRGBEncoding
-
-renderer.toneMapping = import.meta.env.THREE_FLAT === 'true'
-  ? THREE.NoToneMapping
-  : THREE.ACESFilmicToneMapping
+document.body.append(renderer.domElement)
