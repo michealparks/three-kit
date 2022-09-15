@@ -32,23 +32,24 @@ if (import.meta.env.THREE_DEBUG === 'true') {
   scene.add(light)
 }
 
-{
-  const light = lights.createDirectional(undefined, 0.5)
-  light.castShadow = true
-  light.position.set(3, 3, 3)
-  scene.add(light)
-}
+// {
+//   const light = lights.createDirectional(undefined, 0.5)
+//   light.castShadow = true
+//   light.position.set(3, 3, 3)
+//   scene.add(light)
+// }
+
+// {
+//   const light = lights.createRectArea(undefined, 1, 1, 3)
+//   light.position.set(0, 5, 1)
+//   light.rotation.set(-Math.PI / 4, 0, 0)
+//   scene.add(light)
+// }
 
 {
-  const light = lights.createRectArea(undefined, 1, 1, 3)
-  light.position.set(0, 5, 1)
-  light.rotation.set(-Math.PI / 4, 0, 0)
-  scene.add(light)
-}
-
-{
-  const light = lights.createSpot()
-  light.castShadow = true
+  const light = lights.createVolumetricSpot()
+  light.name = 'Volumetric Spot'
+  // light.castShadow = true
   light.position.set(0, 5, 0)
   scene.add(light)
 }
@@ -64,7 +65,7 @@ if (import.meta.env.THREE_DEBUG === 'true') {
   scene.add(floor)
   floor.rotation.set(-Math.PI / 2, 0, 0)
 
-  if (import.meta.env.THREE_XR) {
+  if (import.meta.env.THREE_XR === 'true') {
     xr.enableTeleport(floor)
   }
 }

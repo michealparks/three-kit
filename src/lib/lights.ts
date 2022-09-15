@@ -91,12 +91,14 @@ export const createSpot = (
   intensity = SPOT_INTENSITY,
   penumbra = 1,
   decay = 2,
+  distance = 0,
   shadowNear = 2,
   shadowFar = 50
 ) => {
   const light = new THREE.SpotLight(color, intensity)
   light.penumbra = penumbra
   light.decay = decay
+  light.distance = distance
 
   if (SHADOW_MAP) {
     light.castShadow = true
@@ -108,3 +110,5 @@ export const createSpot = (
 
   return light
 }
+
+export { createVolumetricSpot } from './spotlight'
