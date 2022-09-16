@@ -15,21 +15,21 @@ uniform float cameraFar;
 varying float vViewZ;
 varying float vIntensity;
 uniform float opacity;
-float readDepth( sampler2D depthSampler, vec2 coord ) {
+float readDepth(sampler2D depthSampler, vec2 coord) {
   float fragCoordZ = texture2D( depthSampler, coord ).x;
   float viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar);
   return viewZ;
 }
 void main() {
   float d = 1.0;
-  bool isSoft = resolution[0] > 0.0 && resolution[1] > 0.0;
+  bool isSoft = resolution.x > 0.0 && resolution.y > 0.0;
   if (isSoft) {
     vec2 sUv = gl_FragCoord.xy / resolution;
     d = readDepth(depth, sUv);
   }
   float intensity = vIntensity;
   vec3 normal = vec3(vNormal.x, vNormal.y, abs(vNormal.z));
-  float angleIntensity = pow( dot(normal, vec3(0.0, 0.0, 1.0)), anglePower );
+  float angleIntensity = pow(dot(normal, vec3(0.0, 0.0, 1.0)), anglePower);
   intensity *= angleIntensity;
   // fades when z is close to sampled depth,
   // meaning the cone is intersecting existing geometry
@@ -50,15 +50,14 @@ uniform vec3 spotPosition;
 uniform float attenuation;      
 void main() {
   // compute intensity
-  vNormal = normalize( normalMatrix * normal );
-  vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
+  vNormal = normalize(normalMatrix * normal);
+  vec4 worldPosition = modelMatrix * vec4(position, 1.0);
   vWorldPosition = worldPosition.xyz;
   vec4 viewPosition = viewMatrix * worldPosition;
   vViewZ = viewPosition.z;
   float intensity = distance(worldPosition.xyz, spotPosition) / attenuation;
   intensity = 1.0 - clamp(intensity, 0.0, 1.0);
   vIntensity = intensity;        
-  // set gl_Position
   gl_Position = projectionMatrix * viewPosition;
 }`
 
