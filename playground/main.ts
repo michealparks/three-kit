@@ -1,6 +1,6 @@
 import './main.css'
 import * as THREE from 'three'
-import { camera, run, update, lights, scene, meshUi, xr } from '../src/main'
+import { camera, cameraShake, run, update, lights, scene, meshUi, xr } from '../src/main'
 
 const parameters = {
   scale: 1,
@@ -141,3 +141,5 @@ update((time: number) => {
 })
 
 run()
+
+cameraShake.enable()
