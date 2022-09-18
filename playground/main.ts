@@ -49,8 +49,10 @@ if (import.meta.env.THREE_DEBUG === 'true') {
 {
   const light = lights.createVolumetricSpot()
   light.name = 'Volumetric Spot'
-  // light.castShadow = true
-  light.position.set(0, 5, 0)
+  light.castShadow = true
+  light.angle = 1.09
+  light.penumbra = 0.37
+  light.position.set(0, 3, 0)
   scene.add(light)
 }
 
@@ -142,4 +144,4 @@ update((time: number) => {
 
 run()
 
-cameraShake.enable()
+// cameraShake.enable()
