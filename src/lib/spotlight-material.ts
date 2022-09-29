@@ -1,5 +1,25 @@
 import * as THREE from 'three'
 
+const vertexShader = `
+varying vec3 vNormal;
+varying vec3 vWorldPosition;
+varying float vViewZ;
+varying float vIntensity;
+uniform vec3 spotPosition;
+uniform float attenuation;      
+void main() {
+  // compute intensity
+  vNormal = normalize(normalMatrix * normal);
+  vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+  vWorldPosition = worldPosition.xyz;
+  vec4 viewPosition = viewMatrix * worldPosition;
+  vViewZ = viewPosition.z;
+  float intensity = distance(worldPosition.xyz, spotPosition) / attenuation;
+  intensity = 1.0 - clamp(intensity, 0.0, 1.0);
+  vIntensity = intensity;        
+  gl_Position = projectionMatrix * viewPosition;
+}`
+
 const fragmentShader = `
 #include <packing>
 varying vec3 vNormal;
@@ -16,7 +36,7 @@ varying float vViewZ;
 varying float vIntensity;
 uniform float opacity;
 float readDepth(sampler2D depthSampler, vec2 coord) {
-  float fragCoordZ = texture2D( depthSampler, coord ).x;
+  float fragCoordZ = texture2D(depthSampler, coord).x;
   float viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar);
   return viewZ;
 }
@@ -39,26 +59,6 @@ void main() {
   gl_FragColor = vec4(lightColor, intensity * opacity);
   #include <tonemapping_fragment>
   #include <encodings_fragment>
-}`
-
-const vertexShader = `
-varying vec3 vNormal;
-varying vec3 vWorldPosition;
-varying float vViewZ;
-varying float vIntensity;
-uniform vec3 spotPosition;
-uniform float attenuation;      
-void main() {
-  // compute intensity
-  vNormal = normalize(normalMatrix * normal);
-  vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-  vWorldPosition = worldPosition.xyz;
-  vec4 viewPosition = viewMatrix * worldPosition;
-  vViewZ = viewPosition.z;
-  float intensity = distance(worldPosition.xyz, spotPosition) / attenuation;
-  intensity = 1.0 - clamp(intensity, 0.0, 1.0);
-  vIntensity = intensity;        
-  gl_Position = projectionMatrix * viewPosition;
 }`
 
 export const createSpotlightMaterial = (

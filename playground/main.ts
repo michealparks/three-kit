@@ -1,6 +1,7 @@
 import './main.css'
 import * as THREE from 'three'
-import { camera, cameraShake, run, update, lights, scene, meshUi, xr } from '../src/main'
+import debug from 'three-debug'
+import { camera, cameraShake, run, update, lights, scene, meshUi, xr, composer, renderer } from '../src/main'
 
 const parameters = {
   scale: 1,
@@ -9,21 +10,6 @@ const parameters = {
     x: 0.01,
     y: 0.01,
   },
-}
-
-/**
- * This is how debugging should be imported to allow tree-shaking
- */
-if (import.meta.env.THREE_DEBUG === 'true') {
-  const debug = await import('../src/debug')
-  const pane = debug.addPane('game')
-
-  pane.addInput(parameters, 'scale').on('change', () => {
-    mesh.scale.setScalar(parameters.scale)
-  })
-
-  pane.addInput(parameters, 'autoRotate')
-  pane.addInput(parameters, 'rotate')
 }
 
 {
@@ -50,6 +36,9 @@ if (import.meta.env.THREE_DEBUG === 'true') {
   const light = lights.createVolumetricSpot()
   light.name = 'Volumetric Spot'
   light.castShadow = true
+  light.shadow.normalBias = -0.1
+  light.shadow.camera.near = 2
+  light.shadow.camera.far = 10
   light.angle = 1.09
   light.penumbra = 0.37
   light.position.set(0, 3, 0)
@@ -145,3 +134,20 @@ update((time: number) => {
 run()
 
 // cameraShake.enable()
+
+/**
+ * This is how debugging should be imported to allow tree-shaking
+ */
+ if (import.meta.env.THREE_DEBUG === 'true') {
+  
+  const pane = debug.addPane('game')
+
+  pane.addInput(parameters, 'scale').on('change', () => {
+    mesh.scale.setScalar(parameters.scale)
+  })
+
+  pane.addInput(parameters, 'autoRotate')
+  pane.addInput(parameters, 'rotate')
+
+  debug.init(THREE, scene, camera, renderer, composer)
+}
