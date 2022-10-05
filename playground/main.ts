@@ -1,6 +1,6 @@
 import './main.css'
 import * as THREE from 'three'
-import debug from 'three-debug'
+import Debug from 'three-debug'
 import { camera, cameraShake, run, update, lights, scene, meshUi, xr, composer, renderer } from '../src/main'
 
 const parameters = {
@@ -139,6 +139,8 @@ run()
  * This is how debugging should be imported to allow tree-shaking
  */
  if (import.meta.env.THREE_DEBUG === 'true') {
+
+  const debug = new Debug(THREE, scene, camera, renderer, composer)
   
   const pane = debug.addPane('game')
 
@@ -148,6 +150,4 @@ run()
 
   pane.addInput(parameters, 'autoRotate')
   pane.addInput(parameters, 'rotate')
-
-  debug.init(THREE, scene, camera, renderer, composer)
 }
