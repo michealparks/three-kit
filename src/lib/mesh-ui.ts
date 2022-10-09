@@ -51,6 +51,7 @@ export const createTextBlock = (content: string, options?: Options) => {
   const block = createBlock(options)
   const text = createText(content)
   block.add(text)
+
   return block
 }
 

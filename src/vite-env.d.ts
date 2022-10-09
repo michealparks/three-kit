@@ -55,6 +55,8 @@ declare const kit__CAMERA_PERSPECTIVE: boolean
 declare const kit__CAMERA_FOV: number
 declare const kit__CAMERA_NEAR: number
 declare const kit__CAMERA_FAR: number
+declare const kit__CAMERA_ORTHO_WIDTH: number
+declare const kit__CAMERA_ORTHO_HEIGHT: number
 
 declare const kit__CONTROLS: boolean
 declare const kit__CONTROLS_KEYBOARD: boolean

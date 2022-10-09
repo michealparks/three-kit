@@ -8,7 +8,14 @@ export const camera = kit__CAMERA_PERSPECTIVE
     kit__CAMERA_NEAR,
     kit__CAMERA_FAR
   )
-  : new THREE.OrthographicCamera(0, 0, 0, 0, kit__CAMERA_NEAR, kit__CAMERA_FAR)
+  : new THREE.OrthographicCamera(
+    kit__CAMERA_ORTHO_WIDTH / -2,
+    kit__CAMERA_ORTHO_WIDTH / +2,
+    kit__CAMERA_ORTHO_HEIGHT / +2,
+    kit__CAMERA_ORTHO_HEIGHT / -2,
+    kit__CAMERA_NEAR,
+    kit__CAMERA_FAR
+  )
 
 camera.name = 'defaultCamera'
 

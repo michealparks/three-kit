@@ -6,15 +6,22 @@ import { scene } from './scene'
 
 let rectAreaUniformsAdded = false
 
+/**
+ * Creates an Ambient light and adds it to the scene.
+ */
 export const createAmbient = (
   color = 0xFFF5B6,
   intensity = 0.5
 ) => {
   const light = new THREE.AmbientLight(color, intensity)
+
   scene.add(light)
   return light
 }
 
+/**
+ * Creates a directional light and adds it to the scene.
+ */
 export const createDirectional = (
   color = 0xEFC070,
   intensity = 2.5,
@@ -35,6 +42,9 @@ export const createDirectional = (
   return light
 }
 
+/**
+ * Creates a Hemisphere light and adds it to the scene.
+ */
 export const createHemisphere = (
   skyColor = 0xFFFFBB,
   groundColor = 0x080820,
@@ -46,6 +56,9 @@ export const createHemisphere = (
   return light
 }
 
+/**
+ * Creates a Point light and adds it to the scene.
+ */
 export const createPoint = (
   color = 0xEFC070,
   intensity = 2,
@@ -68,6 +81,9 @@ export const createPoint = (
   return light
 }
 
+/**
+ * Creates a RectArea light and adds it to the scene.
+ */
 export const createRectArea = (
   color = 0xFFF5B6,
   intensity = 1,
@@ -85,6 +101,9 @@ export const createRectArea = (
   return light
 }
 
+/**
+ * Creates a Spot light and adds it to the scene.
+ */
 export const createSpot = (
   color = 0xEFC070,
   intensity = 5,
