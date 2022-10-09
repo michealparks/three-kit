@@ -1,7 +1,5 @@
 import { renderer } from './renderer'
 
-const isXr = import.meta.env.THREE_XR === 'true'
-
 export const pressedKeys = new Set<string>()
 
 let keyboardControlling = false
@@ -115,7 +113,7 @@ export const update = () => {
     return
   }
 
-  if (isXr) {
+  if (XR_ENABLED) {
     if (xrGamepads.left !== undefined || xrGamepads.right !== undefined) {
       handleXrGamepads()
       return
@@ -200,7 +198,7 @@ const handleGamepadDisconnected = () => {
 const handleGamepadConnected = () => {
   const [pad1, pad2] = navigator.getGamepads()
 
-  if (!pad1 && !pad2) {
+  if (pad1 === null && pad2 === null) {
     return
   }
 
@@ -247,17 +245,17 @@ const handleXrControllerDisconnected = ({ data }: { data: XRInputSource }) => {
   }
 }
 
-if (import.meta.env.THREE_CONTROLS === 'true') {
-  if (import.meta.env.THREE_CONTROLS_KEYBOARD === 'true') {
+if (CONTROLS) {
+  if (CONTROLS_KEYBOARD) {
     window.addEventListener('keydown', handleKeyDown, { passive: true })
     window.addEventListener('keyup', handleKeyUp, { passive: true })
   }
 
-  if (import.meta.env.THREE_CONTROLS_GAMEPAD === 'true') {
+  if (CONTROLS_GAMEPAD) {
     window.addEventListener('gamepadconnected', handleGamepadConnected, { passive: true })
   }
 
-  if (isXr) {
+  if (XR_ENABLED) {
     const controller1 = renderer.xr.getController(0)
     controller1.addEventListener('selectstart', handleXrSelectStart)
     controller1.addEventListener('selectend', handleXrSelectEnd)

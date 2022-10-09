@@ -1,4 +1,7 @@
-// Inspired by http://john-chapman-graphics.blogspot.com/2013/01/good-enough-volumetrics-for-spotlights.html
+/*
+ * Inspired by
+ * http://john-chapman-graphics.blogspot.com/2013/01/good-enough-volumetrics-for-spotlights.html
+ */
 
 import * as THREE from 'three'
 import { camera } from './camera'
@@ -7,13 +10,12 @@ import { update } from './update'
 
 const m4 = new THREE.Matrix4()
 const vec3 = new THREE.Vector3()
-const SPOT_INTENSITY = Number.parseFloat(import.meta.env.THREE_SPOT_INTENSITY)
 
 export const createVolumetricSpot = ({
   angle = Math.PI / 3,
-  color = new THREE.Color(import.meta.env.THREE_SPOT_COLOR),
+  color = 0xEFC070,
   distance = 5,
-  intensity = SPOT_INTENSITY,
+  intensity = 5,
   opacity = 1,
   radiusTop = 0.1,
   radiusBottom = angle * 7,
@@ -24,7 +26,7 @@ export const createVolumetricSpot = ({
   angle?: number
   anglePower?: number
   attenuation?: number
-  color?: THREE.Color
+  color?: THREE.Color | number
   distance?: number
   intensity?: number
   opacity?: number

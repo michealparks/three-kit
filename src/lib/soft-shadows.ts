@@ -1,14 +1,11 @@
 import * as THREE from 'three'
 
-const PCSS_SIZE = Number.parseFloat(import.meta.env.THREE_PCSS_SIZE)
-const PCSS_FRUSTUM = Number.parseFloat(import.meta.env.THREE_PCSS_FRUSTUM)
-
 const pcss = `#define LIGHT_WORLD_SIZE ${PCSS_SIZE}
 #define LIGHT_FRUSTUM_WIDTH ${PCSS_FRUSTUM}
 #define LIGHT_SIZE_UV (LIGHT_WORLD_SIZE / LIGHT_FRUSTUM_WIDTH)
-#define NEAR_PLANE ${Number.parseFloat(import.meta.env.THREE_PCSS_NEAR)}
-#define NUM_SAMPLES ${Number.parseInt(import.meta.env.THREE_PCSS_SAMPLES, 10)}
-#define NUM_RINGS ${Number.parseInt(import.meta.env.THREE_PCSS_RINGS, 10)}
+#define NEAR_PLANE ${PCSS_NEAR}
+#define NUM_SAMPLES ${PCSS_SAMPLES}
+#define NUM_RINGS ${PCSS_RINGS}
 #define BLOCKER_SEARCH_NUM_SAMPLES NUM_SAMPLES
 #define PCF_NUM_SAMPLES NUM_SAMPLES
 
@@ -74,7 +71,7 @@ float PCSS(sampler2D shadowMap, vec4 coords) {
   return PCF_Filter(shadowMap, uv, zReceiver, filterRadius);
 }`
 
-if (import.meta.env.THREE_SOFT_SHADOWS === 'true') {
+if (PCSS) {
   const shader = THREE.ShaderChunk.shadowmap_pars_fragment
     .replace(
       '#ifdef USE_SHADOWMAP',

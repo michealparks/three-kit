@@ -2,28 +2,28 @@ import './soft-shadows'
 import * as THREE from 'three'
 
 export const renderer = new THREE.WebGLRenderer({
-  alpha: import.meta.env.THREE_ALPHA === 'true',
-  antialias: import.meta.env.THREE_POSTPROCESSING !== 'true',
-  depth: import.meta.env.THREE_POSTPROCESSING !== 'true',
+  alpha: RENDERER_ALPHA,
+  antialias: !POSTPROCESSING,
+  depth: !POSTPROCESSING,
   powerPreference: 'high-performance',
-  stencil: import.meta.env.THREE_POSTPROCESSING !== 'true',
+  stencil: !POSTPROCESSING,
 })
 
 renderer.physicallyCorrectLights = true
-renderer.xr.enabled = import.meta.env.THREE_XR === 'true'
+renderer.xr.enabled = XR_ENABLED
 
-renderer.outputEncoding = import.meta.env.THREE_LINEAR === 'true'
-  ? THREE.LinearEncoding
-  : THREE.sRGBEncoding
+renderer.outputEncoding = RENDERER_SRGB
+  ? THREE.sRGBEncoding
+  : THREE.LinearEncoding
 
-renderer.toneMapping = import.meta.env.THREE_FLAT === 'true'
-  ? THREE.NoToneMapping
-  : THREE.ACESFilmicToneMapping
+renderer.toneMapping = RENDERER_TONEMAPPING
+  ? THREE.ACESFilmicToneMapping
+  : THREE.NoToneMapping
 
-if (import.meta.env.THREE_SHADOW_MAP === 'true') {
+if (RENDERER_SHADOWMAP) {
   renderer.shadowMap.enabled = true
 
-  const type = import.meta.env.THREE_SHADOW_MAP_TYPE ?? 'basic'
+  const type = RENDERER_SHADOWMAP_TYPE
 
   if (type === 'basic') {
     renderer.shadowMap.type = THREE.BasicShadowMap

@@ -2,8 +2,7 @@ import { camera } from './camera'
 import { composer } from './postprocessing'
 import { renderer } from './renderer'
 
-const targetDPI = Number.parseFloat(import.meta.env.THREE_TARGET_DPI)
-const pixelRatio = Math.min(window.devicePixelRatio, targetDPI)
+const pixelRatio = Math.min(window.devicePixelRatio, RENDERER_DPI)
 
 export const resizeRendererToDisplaySize = () => {
   const canvas = renderer.domElement
@@ -12,7 +11,7 @@ export const resizeRendererToDisplaySize = () => {
   const needResize = canvas.width !== width || canvas.height !== height
 
   if (needResize) {
-    if (import.meta.env.THREE_CAMERA === 'perspective') {
+    if (CAMERA === 'perspective') {
       const cam = camera as THREE.PerspectiveCamera
       cam.aspect = canvas.clientWidth / canvas.clientHeight
       cam.updateProjectionMatrix()
@@ -26,7 +25,7 @@ export const resizeRendererToDisplaySize = () => {
       cam.updateProjectionMatrix()
     }
 
-    if (import.meta.env.THREE_POSTPROCESSING === 'true') {
+    if (POSTPROCESSING) {
       composer.setSize(width, height, false)
     }
 

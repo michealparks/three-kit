@@ -12,6 +12,9 @@ const parameters = {
   },
 }
 
+lights.godrayDir.position.set(1, 2, 1)
+scene.add(lights.godrayDir)
+
 {
   const light = lights.createAmbient(undefined, 0.2)
   light.position.set(1, 1, 1).normalize()
@@ -32,18 +35,18 @@ const parameters = {
 //   scene.add(light)
 // }
 
-{
-  const light = lights.createVolumetricSpot()
-  light.name = 'Volumetric Spot'
-  light.castShadow = true
-  light.shadow.normalBias = -0.1
-  light.shadow.camera.near = 2
-  light.shadow.camera.far = 10
-  light.angle = 1.09
-  light.penumbra = 0.37
-  light.position.set(0, 3, 0)
-  scene.add(light)
-}
+// {
+//   const light = lights.createVolumetricSpot()
+//   light.name = 'Volumetric Spot'
+//   light.castShadow = true
+//   light.shadow.normalBias = -0.1
+//   light.shadow.camera.near = 2
+//   light.shadow.camera.far = 10
+//   light.angle = 1.09
+//   light.penumbra = 0.37
+//   light.position.set(0, 3, 0)
+//   scene.add(light)
+// }
 
 {
   const planeGeo = new THREE.PlaneGeometry(10, 10)
@@ -56,7 +59,7 @@ const parameters = {
   scene.add(floor)
   floor.rotation.set(-Math.PI / 2, 0, 0)
 
-  if (import.meta.env.THREE_XR === 'true') {
+  if (XR_ENABLED) {
     xr.enableTeleport(floor)
   }
 }
@@ -135,19 +138,12 @@ run()
 
 // cameraShake.enable()
 
-/**
- * This is how debugging should be imported to allow tree-shaking
- */
- if (import.meta.env.THREE_DEBUG === 'true') {
+const debug = new Debug(THREE, scene, camera, renderer, composer)
+const pane = debug.addPane('game')
 
-  const debug = new Debug(THREE, scene, camera, renderer, composer)
-  
-  const pane = debug.addPane('game')
+pane.addInput(parameters, 'scale').on('change', () => {
+  mesh.scale.setScalar(parameters.scale)
+})
 
-  pane.addInput(parameters, 'scale').on('change', () => {
-    mesh.scale.setScalar(parameters.scale)
-  })
-
-  pane.addInput(parameters, 'autoRotate')
-  pane.addInput(parameters, 'rotate')
-}
+pane.addInput(parameters, 'autoRotate')
+pane.addInput(parameters, 'rotate')

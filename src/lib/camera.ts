@@ -1,20 +1,13 @@
 import * as THREE from 'three'
 import { scene } from './scene'
 
-export const camera = import.meta.env.THREE_CAMERA === 'orthographic'
-  ? new THREE.OrthographicCamera(
-    0,
-    0,
-    0,
-    0,
-    Number.parseFloat(import.meta.env.THREE_CAMERA_NEAR),
-    Number.parseFloat(import.meta.env.THREE_CAMERA_FAR)
-  )
+export const camera = CAMERA === 'orthographic'
+  ? new THREE.OrthographicCamera(0, 0, 0, 0, CAMERA_NEAR, CAMERA_FAR)
   : new THREE.PerspectiveCamera(
-    Number.parseFloat(import.meta.env.THREE_CAMERA_FOV),
+    CAMERA_FOV,
     window.innerWidth / window.innerHeight,
-    Number.parseFloat(import.meta.env.THREE_CAMERA_NEAR),
-    Number.parseFloat(import.meta.env.THREE_CAMERA_FAR)
+    CAMERA_NEAR,
+    CAMERA_FAR
   )
 
 camera.name = 'defaultCamera'

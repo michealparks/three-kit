@@ -1,8 +1,6 @@
 import * as ThreeMeshUI from 'three-mesh-ui'
 import { update } from './update'
 
-const font = import.meta.env.THREE_MESH_UI_FONT
-
 export interface Options {
   width?: number
   height?: number
@@ -31,9 +29,9 @@ export const createBlock = ({
   return new ThreeMeshUI.Block({
     borderRadius,
     contentDirection,
-    fontFamily: `${font}.json`,
+    fontFamily: `${MESH_UI_FONT}.json`,
     fontSize,
-    fontTexture: `${font}.png`,
+    fontTexture: `${MESH_UI_FONT}.png`,
     height,
     justifyContent,
     padding,
@@ -56,7 +54,7 @@ export const createTextBlock = (content: string, options?: Options) => {
   return block
 }
 
-if (import.meta.env.THREE_MESH_UI === 'true') {
+if (MESH_UI) {
   update(() => {
     ThreeMeshUI.update()
   })

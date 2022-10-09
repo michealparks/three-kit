@@ -29,6 +29,7 @@ const updateRotation = () => {
 const enable = (controls?: OrbitControls) => {
   then = performance.now()
   initialRotation.copy(camera.rotation)
+  // eslint-disable-next-line no-use-before-define
   update(tick)
 
   if (controls) {
@@ -38,6 +39,7 @@ const enable = (controls?: OrbitControls) => {
 }
 
 const disable = () => {
+  // eslint-disable-next-line no-use-before-define
   removeUpdate(tick)
 
   if (activeControls) {

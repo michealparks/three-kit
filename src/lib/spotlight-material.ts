@@ -66,7 +66,7 @@ export const createSpotlightMaterial = (
   attenuation: number,
   cameraNear: number,
   cameraFar: number,
-  color: THREE.Color,
+  color: THREE.Color | number,
   depthBuffer: THREE.DepthTexture | null,
   opacity: number
 ) => {

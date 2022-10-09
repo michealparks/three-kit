@@ -1,9 +1,12 @@
 import * as THREE from 'three'
 import * as post from 'postprocessing'
+import { godrayDir, godraySpot } from './lights'
+import { GodraysPass } from 'three-good-godrays'
 import { SSREffect } from 'screen-space-reflections'
 import { camera } from './camera'
 import { renderer } from './renderer'
 import { scene } from './scene'
+
 
 export let composer: post.EffectComposer
 export let smaaEffect: post.SMAAEffect
@@ -13,72 +16,72 @@ export let dofEffect: post.DepthOfFieldEffect
 export let ssrEffect: typeof SSREffect
 export let vignetteEffect: post.VignetteEffect
 
-if (import.meta.env.THREE_POSTPROCESSING === 'true') {
+export let godraysPass: GodraysPass
+
+if (POSTPROCESSING) {
   composer = new post.EffectComposer(renderer, {
     frameBufferType: THREE.HalfFloatType,
   })
-
-  if (import.meta.env.THREE_POST_MULTISAMPLING) {
-    const multisampling = Number.parseFloat(import.meta.env.THREE_POST_MULTISAMPLING)
-    composer.multisampling = multisampling
-  }
+  composer.multisampling = POST_MULTISAMPLING ?? 0
 
   const effects = []
 
-  if (import.meta.env.THREE_POST_SMAA === 'true') {
+  if (POST_SMAA) {
     smaaEffect = new post.SMAAEffect({
       preset: post.SMAAPreset.ULTRA,
     })
     effects.push(smaaEffect)
   }
 
-  if (import.meta.env.THREE_POST_BLOOM === 'true') {
-    const height = Number.parseFloat(import.meta.env.THREE_POST_BLOOM_HEIGHT ?? '200')
-    const width = Number.parseFloat(import.meta.env.THREE_POST_BLOOM_WIDTH ?? '200')
-    const intensity = Number.parseFloat(import.meta.env.THREE_POST_BLOOM_INTENSITY ?? '0.4')
-    const luminanceThreshold = Number.parseFloat(
-      import.meta.env.THREE_POST_BLOOM_LUMINANCE_THRESHOLD ?? '0.4')
-    const luminanceSmoothing = Number.parseFloat(
-      import.meta.env.THREE_POST_BLOOM_LUMINANCE_SMOOTHING ?? '0.9'
-    )
-
+  if (POST_BLOOM) {
     bloomEffect = new post.BloomEffect({
-      height,
-      intensity,
+      height: POST_BLOOM_HEIGHT,
+      intensity: POST_BLOOM_INTENSITY,
       kernelSize: post.KernelSize.VERY_LARGE,
-      luminanceSmoothing,
-      luminanceThreshold,
-      width,
+      luminanceSmoothing: POST_BLOOM_LUMINANCE_SMOOTHING,
+      luminanceThreshold: POST_BLOOM_LUMINANCE_THRESHOLD,
+      width: POST_BLOOM_WIDTH,
     })
+
     effects.push(bloomEffect)
   }
 
-  if (import.meta.env.THREE_POST_NOISE === 'true') {
-    const noiseOpacity = Number.parseFloat(import.meta.env.THREE_POST_NOISE_OPACITY ?? '0.06')
-
+  if (POST_NOISE) {
     noiseEffect = new post.NoiseEffect({
       blendFunction: post.BlendFunction.COLOR_DODGE,
     })
-    noiseEffect.blendMode.opacity.value = noiseOpacity
+    noiseEffect.blendMode.opacity.value = POST_NOISE_OPACITY
     effects.push(noiseEffect)
   }
 
-  if (import.meta.env.THREE_POST_VIGNETTE) {
+  if (POST_VIGNETTE) {
     vignetteEffect = new post.VignetteEffect()
     vignetteEffect.technique = post.VignetteTechnique.DEFAULT
     effects.push(vignetteEffect)
   }
 
-  if (import.meta.env.THREE_POST_DOF === 'true') {
+  if (POST_DOF) {
     dofEffect = new post.DepthOfFieldEffect(camera)
     effects.push(dofEffect)
   }
 
-  if (import.meta.env.THREE_POST_SSR === 'true') {
+  if (POST_SSR) {
     ssrEffect = new SSREffect(scene, camera)
     effects.push(ssrEffect)
   }
 
-  composer.addPass(new post.RenderPass(scene, camera))
-  composer.addPass(new post.EffectPass(camera, ...effects))
+  const perspective = camera as THREE.PerspectiveCamera
+  const renderPass = new post.RenderPass(scene, camera)
+  renderPass.renderToScreen = false
+  composer.addPass(renderPass)
+
+  if (POST_GODRAYS) {
+    godraysPass = new GodraysPass(godrayDir, perspective)
+    godraysPass.renderToScreen = false
+    composer.addPass(godraysPass)
+  }
+
+  const effectPass = new post.EffectPass(camera, ...effects)
+  effectPass.renderToScreen = true
+  composer.addPass(effectPass)
 }

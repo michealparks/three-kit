@@ -10,7 +10,7 @@ const callbacks: XRFrameRequestCallback[] = []
 const loop: XRFrameRequestCallback = (time, frame) => {
   resizeRendererToDisplaySize()
 
-  if (import.meta.env.THREE_CONTROLS === 'true') {
+  if (CONTROLS) {
     controls.update()
   }
 
@@ -18,7 +18,7 @@ const loop: XRFrameRequestCallback = (time, frame) => {
     callbacks[i](time, frame)
   }
 
-  if (import.meta.env.THREE_POSTPROCESSING === 'true') {
+  if (POSTPROCESSING) {
     composer.render()
   } else {
     renderer.render(scene, camera)
