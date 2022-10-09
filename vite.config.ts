@@ -1,19 +1,11 @@
 import { defineConfig } from 'vite'
 import ssl from '@vitejs/plugin-basic-ssl'
-import vitePluginString from 'vite-plugin-string'
-import define from './env'
+import env from './env'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  build: {
-    minify: 'terser',
-  },
-  envPrefix: 'THREE',
   plugins: [
     ssl(),
-    vitePluginString.default({
-      exclude: 'node_modules/**',
-    }),
   ],
   publicDir: 'assets',
   server: {
@@ -29,5 +21,5 @@ export default defineConfig({
     port: 5172,
     strictPort: true,
   },
-  define,
+  define: env,
 })

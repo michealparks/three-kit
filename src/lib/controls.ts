@@ -113,7 +113,7 @@ export const update = () => {
     return
   }
 
-  if (XR_ENABLED) {
+  if (kit__XR_ENABLED) {
     if (xrGamepads.left !== undefined || xrGamepads.right !== undefined) {
       handleXrGamepads()
       return
@@ -245,17 +245,17 @@ const handleXrControllerDisconnected = ({ data }: { data: XRInputSource }) => {
   }
 }
 
-if (CONTROLS) {
-  if (CONTROLS_KEYBOARD) {
+if (kit__CONTROLS) {
+  if (kit__CONTROLS_KEYBOARD) {
     window.addEventListener('keydown', handleKeyDown, { passive: true })
     window.addEventListener('keyup', handleKeyUp, { passive: true })
   }
 
-  if (CONTROLS_GAMEPAD) {
+  if (kit__CONTROLS_GAMEPAD) {
     window.addEventListener('gamepadconnected', handleGamepadConnected, { passive: true })
   }
 
-  if (XR_ENABLED) {
+  if (kit__XR_ENABLED) {
     const controller1 = renderer.xr.getController(0)
     controller1.addEventListener('selectstart', handleXrSelectStart)
     controller1.addEventListener('selectend', handleXrSelectEnd)

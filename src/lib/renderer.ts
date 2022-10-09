@@ -2,37 +2,40 @@ import './soft-shadows'
 import * as THREE from 'three'
 
 export const renderer = new THREE.WebGLRenderer({
-  alpha: RENDERER_ALPHA,
-  antialias: !POSTPROCESSING,
-  depth: !POSTPROCESSING,
+  alpha: kit__RENDERER_ALPHA,
+  antialias: !kit__POSTPROCESSING,
+  depth: !kit__POSTPROCESSING,
   powerPreference: 'high-performance',
-  stencil: !POSTPROCESSING,
+  stencil: !kit__POSTPROCESSING,
 })
 
 renderer.physicallyCorrectLights = true
-renderer.xr.enabled = XR_ENABLED
+renderer.xr.enabled = kit__XR_ENABLED
 
-renderer.outputEncoding = RENDERER_SRGB
+renderer.outputEncoding = kit__RENDERER_SRGB
   ? THREE.sRGBEncoding
   : THREE.LinearEncoding
 
-renderer.toneMapping = RENDERER_TONEMAPPING
+renderer.toneMapping = kit__RENDERER_TONEMAPPING
   ? THREE.ACESFilmicToneMapping
   : THREE.NoToneMapping
 
-if (RENDERER_SHADOWMAP) {
+if (kit__RENDERER_SHADOWMAP) {
   renderer.shadowMap.enabled = true
 
-  const type = RENDERER_SHADOWMAP_TYPE
-
-  if (type === 'basic') {
-    renderer.shadowMap.type = THREE.BasicShadowMap
-  } else if (type === 'pcf') {
+  switch (kit__RENDERER_SHADOWMAP_TYPE) {
+  case 'pcf':
     renderer.shadowMap.type = THREE.PCFShadowMap
-  } else if (type === 'pcf_soft') {
+    break
+  case 'pcf_soft':
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
-  } else if (type === 'vsm') {
+    break
+  case 'vsm':
     renderer.shadowMap.type = THREE.VSMShadowMap
+    break
+  default:
+    renderer.shadowMap.type = THREE.BasicShadowMap
+    break
   }
 }
 

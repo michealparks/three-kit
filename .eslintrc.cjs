@@ -26,8 +26,8 @@ module.exports = {
   rules: {
     'array-bracket-newline': ['error', 'consistent'],
     'array-element-newline': ['error', 'consistent'],
-    'arrow-body-style': ['error', 'always'],
-    'camelcase': ['error', { properties: 'never' }],
+    'arrow-body-style': 'off',
+    'camelcase': 'off',
     'comma-dangle': ['error', {
       arrays: 'always-multiline',
       exports: 'never',
@@ -60,5 +60,6 @@ module.exports = {
     'quote-props': ['error', 'consistent-as-needed'],
     'quotes': ['error', 'single'],
     'semi': ['error', 'never'],
+    
   },
 }

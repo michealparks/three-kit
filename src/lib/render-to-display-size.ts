@@ -2,7 +2,7 @@ import { camera } from './camera'
 import { composer } from './postprocessing'
 import { renderer } from './renderer'
 
-const pixelRatio = Math.min(window.devicePixelRatio, RENDERER_DPI)
+const pixelRatio = Math.min(window.devicePixelRatio, kit__RENDERER_DPI ?? window.devicePixelRatio)
 
 export const resizeRendererToDisplaySize = () => {
   const canvas = renderer.domElement
@@ -11,12 +11,11 @@ export const resizeRendererToDisplaySize = () => {
   const needResize = canvas.width !== width || canvas.height !== height
 
   if (needResize) {
-    if (CAMERA === 'perspective') {
+    if (kit__CAMERA_PERSPECTIVE) {
       const cam = camera as THREE.PerspectiveCamera
       cam.aspect = canvas.clientWidth / canvas.clientHeight
       cam.updateProjectionMatrix()
     } else {
-      // @TODO support ortho camz
       const cam = camera as THREE.OrthographicCamera
       cam.left = window.innerWidth / -2
       cam.right = window.innerWidth / 2
@@ -25,7 +24,7 @@ export const resizeRendererToDisplaySize = () => {
       cam.updateProjectionMatrix()
     }
 
-    if (POSTPROCESSING) {
+    if (kit__POSTPROCESSING) {
       composer.setSize(width, height, false)
     }
 

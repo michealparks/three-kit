@@ -86,7 +86,7 @@ export const addButton = async (parent?: HTMLElement, style?: string) => {
 
   button.textContent = xrSupportStateMessage[xrSupport]
 
-  if (POSTPROCESSING) {
+  if (kit__POSTPROCESSING) {
     button.textContent = 'XR and postprocessing not supported'
   } else if (xrSupport === xrSupportState.ALLOWED) {
     button.addEventListener('click', () => {
@@ -98,7 +98,7 @@ export const addButton = async (parent?: HTMLElement, style?: string) => {
   element.append(button)
 }
 
-if (XR_ENABLED) {
+if (kit__XR_ENABLED) {
   /*
    * WebXRViewer (based on Firefox) has a bug where addEventListener
    * throws a silent exception and aborts execution entirely.
@@ -114,7 +114,7 @@ if (XR_ENABLED) {
     })
   }
 
-  if (XR_BUTTON) {
+  if (kit__XR_BUTTON) {
     addButton()
   }
 }

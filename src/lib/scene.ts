@@ -14,7 +14,7 @@ const disposeMaterial = (material: THREE.Material) => {
   }
 }
 
-export const clearScene = (): void => {
+export const disposeScene = (): void => {
   scene.traverse((object) => {
     if (object instanceof THREE.Mesh) {
       const { geometry, material } = object as THREE.Mesh

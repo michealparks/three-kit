@@ -29,9 +29,9 @@ export const createBlock = ({
   return new ThreeMeshUI.Block({
     borderRadius,
     contentDirection,
-    fontFamily: `${MESH_UI_FONT}.json`,
+    fontFamily: `${kit__MESH_UI_FONT}.json`,
     fontSize,
-    fontTexture: `${MESH_UI_FONT}.png`,
+    fontTexture: `${kit__MESH_UI_FONT}.png`,
     height,
     justifyContent,
     padding,
@@ -54,7 +54,7 @@ export const createTextBlock = (content: string, options?: Options) => {
   return block
 }
 
-if (MESH_UI) {
+if (kit__MESH_UI) {
   update(() => {
     ThreeMeshUI.update()
   })

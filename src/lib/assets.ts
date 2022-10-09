@@ -7,9 +7,9 @@ export const audioLoader = new THREE.AudioLoader(manager)
 export const gltfLoader = new GLTFLoader(manager)
 export const cache = new Map()
 
-textureLoader.setPath(DIR_TEXTURES)
-audioLoader.setPath(DIR_AUDIO)
-gltfLoader.setPath(DIR_GLB)
+textureLoader.setPath(kit__DIR_TEXTURES)
+audioLoader.setPath(kit__DIR_AUDIO)
+gltfLoader.setPath(kit__DIR_GLB)
 
 export const loadJSON = async (file: string) => {
   const result = cache.get(file)
@@ -18,7 +18,7 @@ export const loadJSON = async (file: string) => {
     return result
   }
 
-  const response = await fetch(`${DIR_JSON}/${file}`)
+  const response = await fetch(`${kit__DIR_JSON}/${file}`)
   const json = await response.json()
   cache.set(file, json)
   return json
@@ -31,7 +31,7 @@ export const loadFile = async (file: string) => {
     return result
   }
 
-  const response = await fetch(`${DIR_FILE}/${file}`)
+  const response = await fetch(`${kit__DIR_FILE}/${file}`)
   const text = await response.text()
   cache.set(file, text)
   return text
@@ -84,7 +84,7 @@ export const loadAseprite = async (file: string) => {
     return result
   }
 
-  const url = `${DIR_TEXTURES}/${file.replace('sprite', 'json')}`
+  const url = `${kit__DIR_TEXTURES}/${file.replace('sprite', 'json')}`
   const [data, tex] = await Promise.all([
     fetch(url).then(toJSON),
     textureLoader.loadAsync(file.replace('sprite', 'png')),

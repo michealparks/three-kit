@@ -59,7 +59,7 @@ scene.add(lights.godrayDir)
   scene.add(floor)
   floor.rotation.set(-Math.PI / 2, 0, 0)
 
-  if (XR_ENABLED) {
+  if (kit__XR_ENABLED) {
     xr.enableTeleport(floor)
   }
 }

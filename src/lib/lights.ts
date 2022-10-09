@@ -23,16 +23,15 @@ export const createDirectional = (
 ) => {
   const light = new THREE.DirectionalLight(color, intensity)
 
-  if (RENDERER_SHADOWMAP) {
+  if (kit__RENDERER_SHADOWMAP) {
     light.castShadow = true
     light.shadow.camera.near = shadowNear
     light.shadow.camera.far = shadowFar
-    light.shadow.mapSize.width = RENDERER_SHADOWMAP_SIZE
-    light.shadow.mapSize.height = RENDERER_SHADOWMAP_SIZE
+    light.shadow.mapSize.width = kit__RENDERER_SHADOWMAP_SIZE
+    light.shadow.mapSize.height = kit__RENDERER_SHADOWMAP_SIZE
   }
 
   scene.add(light)
-
   return light
 }
 
@@ -42,6 +41,7 @@ export const createHemisphere = (
   intensity = 1
 ) => {
   const light = new THREE.HemisphereLight(skyColor, groundColor, intensity)
+
   scene.add(light)
   return light
 }
@@ -54,18 +54,17 @@ export const createPoint = (
 ) => {
   const light = new THREE.PointLight(color, intensity)
 
-  if (RENDERER_SHADOWMAP) {
+  if (kit__RENDERER_SHADOWMAP) {
     light.castShadow = true
     light.shadow.camera.near = shadowNear
     light.shadow.camera.far = shadowFar
-    light.shadow.mapSize.width = RENDERER_SHADOWMAP_SIZE
-    light.shadow.mapSize.height = RENDERER_SHADOWMAP_SIZE
+    light.shadow.mapSize.width = kit__RENDERER_SHADOWMAP_SIZE
+    light.shadow.mapSize.height = kit__RENDERER_SHADOWMAP_SIZE
     light.shadow.radius = 8
     light.shadow.bias = -0.0001
   }
 
   scene.add(light)
-
   return light
 }
 
@@ -81,6 +80,7 @@ export const createRectArea = (
   }
 
   const light = new THREE.RectAreaLight(color, intensity, width, height)
+
   scene.add(light)
   return light
 }
@@ -99,23 +99,22 @@ export const createSpot = (
   light.decay = decay
   light.distance = distance
 
-  if (RENDERER_SHADOWMAP) {
+  if (kit__RENDERER_SHADOWMAP) {
     light.castShadow = true
     light.shadow.camera.near = shadowNear
     light.shadow.camera.far = shadowFar
-    light.shadow.mapSize.width = RENDERER_SHADOWMAP_SIZE
-    light.shadow.mapSize.height = RENDERER_SHADOWMAP_SIZE
+    light.shadow.mapSize.width = kit__RENDERER_SHADOWMAP_SIZE
+    light.shadow.mapSize.height = kit__RENDERER_SHADOWMAP_SIZE
   }
 
   scene.add(light)
-
   return light
 }
 
 export { createVolumetricSpot } from './spotlight'
 
 export const godraySpot = createPoint()
-godraySpot.castShadow = RENDERER_SHADOWMAP
+godraySpot.castShadow = kit__RENDERER_SHADOWMAP
 
 export const godrayDir = createDirectional()
-godrayDir.castShadow = RENDERER_SHADOWMAP
+godrayDir.castShadow = kit__RENDERER_SHADOWMAP

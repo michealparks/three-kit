@@ -10,7 +10,7 @@ const callbacks: XRFrameRequestCallback[] = []
 const loop: XRFrameRequestCallback = (time, frame) => {
   resizeRendererToDisplaySize()
 
-  if (CONTROLS) {
+  if (kit__CONTROLS) {
     controls.update()
   }
 
@@ -18,7 +18,7 @@ const loop: XRFrameRequestCallback = (time, frame) => {
     callbacks[i](time, frame)
   }
 
-  if (POSTPROCESSING) {
+  if (kit__POSTPROCESSING) {
     composer.render()
   } else {
     renderer.render(scene, camera)
