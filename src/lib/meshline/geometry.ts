@@ -12,8 +12,6 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
   indices_array: number[] = []
   uvs: number[] = []
   counters: number[] = []
-  _points: Float32Array = new Float32Array()
-
   attenuation: 'none' | 'squared' = 'none'
 
   widthCallback: null | ((n: number) => number) = null
@@ -25,22 +23,17 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     super()
 
     if (params.points) {
-      this.points = params.points
+      this.setPoints(params.points)
     }
   }
 
-  get points () {
-    return this._points
-  }
-
-  set points (value: Float32Array) {
+  setPoints (value: Float32Array) {
     /*
      * As the points are mutated we store them
      * for later retreival when necessary (declaritive architectures)
      */
-    this._points = value
-    this.positions = []
-    this.counters = []
+    this.positions.splice(0, this.positions.length)
+    this.counters.splice(0, this.counters.length)
 
     for (let j = 0, l = value.length; j < l; j += 3) {
       const count = j / value.length
@@ -60,6 +53,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
   compareV3 (a: number, b: number) {
     const aa = a * 6
     const ab = b * 6
+
     return (
       this.positions[aa] === this.positions[ab] &&
       this.positions[aa + 1] === this.positions[ab + 1] &&
@@ -75,12 +69,12 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
   process () {
     const l = this.positions.length / 6
 
-    this.previous = []
-    this.next = []
-    this.side = []
-    this.width = []
-    this.indices_array = []
-    this.uvs = []
+    this.previous.splice(0, this.previous.length)
+    this.next.splice(0, this.next.length)
+    this.side.splice(0, this.side.length)
+    this.width.splice(0, this.width.length)
+    this.indices_array.splice(0, this.indices_array.length)
+    this.uvs.splice(0, this.uvs.length)
 
     let w = 0
     let v
@@ -101,13 +95,14 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
       this.side.push(-1)
 
       // Widths
-      if (this.attenuation === 'none') {
-        w = 1
+      if (this.widthCallback !== null) {
+        w = this.widthCallback(j / (l - 1))
       } else if (this.attenuation === 'squared') {
         w = (j / (l - 1)) ** 2
-      } else if (this.widthCallback !== null) {
-        w = this.widthCallback(j / (l - 1))
+      } else {
+        w = 1
       }
+
       this.width.push(w)
       this.width.push(w)
 
@@ -116,7 +111,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
       this.uvs.push(j / (l - 1), 1)
 
       if (j < l - 1) {
-        // Points previous to poisitions
+        // Points previous to positions
         v = this.copyV3(j)
         this.previous.push(v[0], v[1], v[2])
         this.previous.push(v[0], v[1], v[2])
@@ -127,7 +122,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
         this.indices_array.push(n + 2, n + 1, n + 3)
       }
       if (j > 0) {
-        // Points after poisitions
+        // Points after positions
         v = this.copyV3(j)
         this.next.push(v[0], v[1], v[2])
         this.next.push(v[0], v[1], v[2])
@@ -159,19 +154,19 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
         width: new THREE.BufferAttribute(new Float32Array(this.width), 1),
       }
     } else {
-      this._attributes.position.copyArray(new Float32Array(this.positions))
+      this._attributes.position.copyArray(this.positions)
       this._attributes.position.needsUpdate = true
-      this._attributes.previous.copyArray(new Float32Array(this.previous))
+      this._attributes.previous.copyArray(this.previous)
       this._attributes.previous.needsUpdate = true
-      this._attributes.next.copyArray(new Float32Array(this.next))
+      this._attributes.next.copyArray(this.next)
       this._attributes.next.needsUpdate = true
-      this._attributes.side.copyArray(new Float32Array(this.side))
+      this._attributes.side.copyArray(this.side)
       this._attributes.side.needsUpdate = true
-      this._attributes.width.copyArray(new Float32Array(this.width))
+      this._attributes.width.copyArray(this.width)
       this._attributes.width.needsUpdate = true
-      this._attributes.uv.copyArray(new Float32Array(this.uvs))
+      this._attributes.uv.copyArray(this.uvs)
       this._attributes.uv.needsUpdate = true
-      this._attributes.index.copyArray(new Uint16Array(this.indices_array))
+      this._attributes.index.copyArray(this.indices_array)
       this._attributes.index.needsUpdate = true
     }
 

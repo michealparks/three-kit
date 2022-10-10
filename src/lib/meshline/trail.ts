@@ -85,7 +85,7 @@ export class Trail extends THREE.Mesh {
       }
       this.prevPosition.copy(newPosition)
 
-      this.geometry.points = this.points
+      this.geometry.setPoints(this.points) 
     }
 
     this.frameCount += 1
