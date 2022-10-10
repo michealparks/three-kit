@@ -41,6 +41,7 @@ module.exports = {
     'id-length': 'off',
     'indent': ['error', 2],
     'init-declarations': 'off',
+    'lines-between-class-members': 'off',
     'linebreak-style': ['error', 'unix'],
     'lines-around-comment': 'off',
     'max-len': ['error', { code: 100 }],

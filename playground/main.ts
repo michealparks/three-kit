@@ -1,7 +1,7 @@
 import './main.css'
 import * as THREE from 'three'
 import Debug from 'three-debug'
-import { camera, cameraShake, run, update, lights, scene, meshUi, xr, composer, renderer } from '../src/main'
+import { camera, cameraShake, run, update, lights, scene, meshUi, xr, composer, renderer, MeshLineGeometry, MeshLineMaterial, Trail } from '../src/main'
 
 const parameters = {
   scale: 1,
@@ -101,6 +101,15 @@ mesh.position.set(0, 1, -2)
 mesh.castShadow = true
 scene.add(mesh)
 
+const trail = new Trail({ target: mesh })
+trail.geometry.attenuation = 'squared'
+scene.add(trail)
+
+update(() => {
+  trail.material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight)
+  trail.update()
+})
+
 camera.position.set(0, 2, 3)
 
 let ry = 0
@@ -128,6 +137,7 @@ update((time: number) => {
   boxes.instanceMatrix.needsUpdate = true
 
   if (parameters.autoRotate) {
+    mesh.position.x = (Math.cos(time / 1000) / 3)
     mesh.position.y = (Math.sin(time / 1000) / 2) + 2
     mesh.rotation.x += parameters.rotate.x
     mesh.rotation.y += parameters.rotate.y
@@ -147,3 +157,22 @@ pane.addInput(parameters, 'scale').on('change', () => {
 
 pane.addInput(parameters, 'autoRotate')
 pane.addInput(parameters, 'rotate')
+
+{
+  const points: number[] = [];
+
+  for (let j = 0; j < Math.PI; j += 2 * Math.PI / 100) {
+    points.push(Math.cos(j), Math.sin(j), 0);
+  }
+
+  const geometry = new MeshLineGeometry({ points })
+  const material = new MeshLineMaterial()
+  material.color = new THREE.Color('red')
+  material.lineWidth = 0.1
+  
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.name = 'Line'
+  scene.add(mesh)
+
+  mesh.position.z = 2
+}
