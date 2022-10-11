@@ -2,26 +2,7 @@
 import * as THREE from 'three'
 import { MeshLineGeometry } from './geometry'
 import { MeshLineMaterial } from './material'
-
-type Settings = {
-  width?: number
-  length: number
-  decay: number
-  /**
-   * Wether to use the target's world or local positions
-   */
-  local: boolean
-  // Min distance between previous and current points
-  stride: number
-  // Number of frames to wait before next calculation
-  interval: number
-}
-
-type TrailProps = {
-  color?: THREE.ColorRepresentation
-  attenuation?: (width: number) => number
-  target: THREE.Object3D
-} & Partial<Settings>
+import type { TrailProps } from './types'
 
 const shiftLeft = (collection: Float32Array, steps = 1): Float32Array => {
   collection.set(collection.subarray(steps))
@@ -29,8 +10,8 @@ const shiftLeft = (collection: Float32Array, steps = 1): Float32Array => {
   return collection
 }
 
-export class Trail extends THREE.Mesh {
-  worldPosition = new THREE.Vector3()
+export class Trail extends THREE.Mesh<MeshLineGeometry, MeshLineMaterial> {
+  #worldPosition = new THREE.Vector3()
   prevPosition = new THREE.Vector3()
   frameCount = 0
   decay = 1
@@ -43,12 +24,11 @@ export class Trail extends THREE.Mesh {
   points: Float32Array
   target: THREE.Object3D
 
-  constructor (props: TrailProps) {
-    const { color = 'hotpink', target } = props
-
+  constructor (props: TrailProps = {}) {
+    const { target = new THREE.Object3D() } = props
     const geometry = new MeshLineGeometry()
     const material = new MeshLineMaterial({
-      color,
+      color: props.color ?? 'hotpink',
       lineWidth: 0.1,
       resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
       sizeAttenuation: 1,
@@ -64,6 +44,14 @@ export class Trail extends THREE.Mesh {
     }, (_, i) => target.position.getComponent(i % 3))
   }
 
+  get attenuation () {
+    return this.geometry.attenuation
+  }
+
+  set attenuation (value: 'none' | 'squared') {
+    this.geometry.attenuation = value
+  }
+
   update () {
     if (this.frameCount === 0) {
       let newPosition: THREE.Vector3
@@ -71,8 +59,8 @@ export class Trail extends THREE.Mesh {
       if (this.local) {
         newPosition = this.target.position
       } else {
-        this.target.getWorldPosition(this.worldPosition)
-        newPosition = this.worldPosition
+        this.target.getWorldPosition(this.#worldPosition)
+        newPosition = this.#worldPosition
       }
 
       for (let i = 0; i < this.decay; i += 1) {
@@ -85,14 +73,14 @@ export class Trail extends THREE.Mesh {
       }
       this.prevPosition.copy(newPosition)
 
-      this.geometry.setPoints(this.points) 
+      this.geometry.setPoints(this.points)
     }
 
     this.frameCount += 1
     this.frameCount %= this.interval
   }
 
-  setAttenuation (callback) {
+  setWidthCallback (callback: (n: number) => number) {
     this.geometry.widthCallback = callback
   }
 }

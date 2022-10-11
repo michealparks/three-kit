@@ -107,7 +107,7 @@ void main() {
     discard;
   }
 
-  if (true) {
+  if (useDash == 1.0) {
     color.a *= ceil(mod(vCounters + dashOffset, dashArray) - (dashArray * dashRatio));
   }
 

@@ -14,8 +14,6 @@ export const createAmbient = (
   intensity = 0.5
 ) => {
   const light = new THREE.AmbientLight(color, intensity)
-
-  scene.add(light)
   return light
 }
 
@@ -38,7 +36,6 @@ export const createDirectional = (
     light.shadow.mapSize.height = kit__RENDERER_SHADOWMAP_SIZE
   }
 
-  scene.add(light)
   return light
 }
 
@@ -51,8 +48,6 @@ export const createHemisphere = (
   intensity = 1
 ) => {
   const light = new THREE.HemisphereLight(skyColor, groundColor, intensity)
-
-  scene.add(light)
   return light
 }
 
@@ -77,7 +72,6 @@ export const createPoint = (
     light.shadow.bias = -0.0001
   }
 
-  scene.add(light)
   return light
 }
 
@@ -96,8 +90,6 @@ export const createRectArea = (
   }
 
   const light = new THREE.RectAreaLight(color, intensity, width, height)
-
-  scene.add(light)
   return light
 }
 
@@ -126,7 +118,6 @@ export const createSpot = (
     light.shadow.mapSize.height = kit__RENDERER_SHADOWMAP_SIZE
   }
 
-  scene.add(light)
   return light
 }
 
