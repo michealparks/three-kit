@@ -110,6 +110,12 @@ update(() => {
   trail.update()
 })
 
+{
+  const target = new THREE.Object3D()
+  const trail = new Trail({ target })
+  scene.add(trail)
+}
+
 camera.position.set(0, 2, 3)
 
 let ry = 0

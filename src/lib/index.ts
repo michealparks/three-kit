@@ -1,4 +1,4 @@
-export * as assets from './assets'
+export * as assets from './loaders'
 export * as controls from './controls'
 export * as meshUi from './mesh-ui'
 export * as lights from './lights'

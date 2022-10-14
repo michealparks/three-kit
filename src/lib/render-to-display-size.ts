@@ -11,16 +11,18 @@ export const resizeRendererToDisplaySize = () => {
   const needResize = canvas.width !== width || canvas.height !== height
 
   if (needResize) {
+    const aspect = canvas.clientWidth / canvas.clientHeight
+
     if (kit__CAMERA_PERSPECTIVE) {
       const cam = camera as THREE.PerspectiveCamera
-      cam.aspect = canvas.clientWidth / canvas.clientHeight
+      cam.aspect = aspect
       cam.updateProjectionMatrix()
     } else {
       const cam = camera as THREE.OrthographicCamera
-      cam.left = window.innerWidth / -2
-      cam.right = window.innerWidth / 2
-      cam.top = window.innerHeight / 2
-      cam.bottom = window.innerHeight / -2
+      cam.left = cam.userData.size * aspect / -2
+      cam.right = cam.userData.size * aspect / 2
+      cam.top = cam.userData.size / 2
+      cam.bottom = cam.userData.size / -2
       cam.updateProjectionMatrix()
     }
 

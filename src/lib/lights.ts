@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import {
   RectAreaLightUniformsLib
 } from 'three/examples/jsm/lights/RectAreaLightUniformsLib'
-import { scene } from './scene'
 
 let rectAreaUniformsAdded = false
 

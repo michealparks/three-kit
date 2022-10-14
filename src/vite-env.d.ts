@@ -15,13 +15,15 @@ declare const kit__DIR_GLB: string
 declare const kit__DIR_JSON: string
 declare const kit__DIR_FILE: string
 
+declare const kit__checkShaderErrors: boolean
+declare const kit__physicallyCorrectLights: boolean
 declare const kit__RENDERER_ALPHA: boolean
 declare const kit__RENDERER_SRGB: boolean
 declare const kit__RENDERER_TONEMAPPING: boolean
 declare const kit__RENDERER_SHADOWMAP: boolean
 declare const kit__RENDERER_SHADOWMAP_TYPE: 'basic' | 'pcf' | 'pcf_soft' | 'vsm'
 declare const kit__RENDERER_SHADOWMAP_SIZE: 128 | 256 | 512 | 1024 | 2048
-declare const kit__RENDERER_DPI: number
+declare const kit__RENDERER_DPI: number | undefined
 
 declare const kit__PCSS: boolean
 declare const kit__PCSS_SIZE: number
@@ -55,8 +57,7 @@ declare const kit__CAMERA_PERSPECTIVE: boolean
 declare const kit__CAMERA_FOV: number
 declare const kit__CAMERA_NEAR: number
 declare const kit__CAMERA_FAR: number
-declare const kit__CAMERA_ORTHO_WIDTH: number
-declare const kit__CAMERA_ORTHO_HEIGHT: number
+declare const kit__CAMERA_ORTHO_SIZE: number
 
 declare const kit__CONTROLS: boolean
 declare const kit__CONTROLS_KEYBOARD: boolean

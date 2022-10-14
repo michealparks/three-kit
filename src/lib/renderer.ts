@@ -9,7 +9,8 @@ export const renderer = new THREE.WebGLRenderer({
   stencil: !kit__POSTPROCESSING,
 })
 
-renderer.physicallyCorrectLights = true
+renderer.debug.checkShaderErrors = kit__checkShaderErrors
+renderer.physicallyCorrectLights = kit__physicallyCorrectLights
 renderer.xr.enabled = kit__XR_ENABLED
 
 renderer.outputEncoding = kit__RENDERER_SRGB
