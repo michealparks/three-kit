@@ -24,19 +24,12 @@ body {
   overflow: hidden;
 }
 
-#app {
-  width: 100vw;
-  margin: 0 auto;
-  text-align: center;
-  overflow: hidden;
-}
-
 canvas {
   position: absolute;
   left: 0;
   top: 0;
-  width: 100vw !important;
-  height: 100vh !important;
+  width: 100vw;
+  height: 100vh;
 }
 
 #logs {
