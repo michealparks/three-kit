@@ -38,6 +38,6 @@
     "three-mesh-ui": "^6.5.2"
   },
   "peerDependencies": {
-    "three": "^0.145.0"
+    "three": "*"
   }
 }
