@@ -1,6 +1,6 @@
 import './main.css'
 import * as THREE from 'three'
-import Debug from 'three-debug'
+import Inspector from 'three-inspect'
 import { camera, cameraShake, run, update, lights, scene, meshUi, xr, composer, renderer, MeshLineGeometry, MeshLineMaterial, Trail } from '../src/main'
 
 const parameters = {
@@ -154,8 +154,8 @@ run()
 
 // cameraShake.enable()
 
-const debug = new Debug(THREE, scene, camera, renderer, composer)
-const pane = debug.addPane('game')
+const inspector = new Inspector(THREE, scene, camera, renderer, composer)
+const pane = inspector.addPane('game')
 
 pane.addInput(parameters, 'scale').on('change', () => {
   mesh.scale.setScalar(parameters.scale)
