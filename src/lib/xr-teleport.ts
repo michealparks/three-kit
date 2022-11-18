@@ -118,12 +118,8 @@ for (let i = 0; i < 2; i += 1) {
   const controller = renderer.xr.getController(i)
   controller.addEventListener('selectstart', handleSelectStart)
   controller.addEventListener('selectend', handleSelectEnd)
-  controller.addEventListener('connected', () => {
-    controller.add(line)
-  })
-  controller.addEventListener('disconnected', () => {
-    controller.remove(controller.children[0])
-  })
+  controller.addEventListener('connected', () => controller.add(line))
+  controller.addEventListener('disconnected', () => controller.remove(controller.children[0]))
   controller.name = `XR Controller ${i + 1}`
   controller.userData.index = i
   controllers.push(controller)
