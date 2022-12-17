@@ -20,15 +20,15 @@
   },
   "devDependencies": {
     "@types/three": "^0.146.0",
-    "@typescript-eslint/eslint-plugin": "^5.45.0",
-    "@typescript-eslint/parser": "^5.45.0",
-    "@vitejs/plugin-basic-ssl": "^0.1.2",
-    "eslint": "^8.28.0",
-    "terser": "^5.16.0",
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
+    "eslint": "^8.30.0",
+    "terser": "^5.16.1",
     "three": "^0.147.0",
     "three-inspect": "^0.2.0",
-    "typescript": "^4.9.3",
-    "vite": "^3.2.4"
+    "typescript": "^4.9.4",
+    "vite": "^4.0.1"
   },
   "dependencies": {
     "postprocessing": "^6.29.1",
