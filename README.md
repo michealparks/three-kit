@@ -1,3 +1,6 @@
+### Note:
+This is no longer maintained, and I am developing [TRZY](https://github.com/michealparks/trzy) for the same purpose.
+
 ### Configuration
 
 env.ts file:
